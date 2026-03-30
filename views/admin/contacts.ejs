@@ -1,0 +1,83 @@
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Contact Submissions</h1>
+    <p class="adm-page-sub"><%= total %> total · filter by status below</p>
+  </div>
+</div>
+
+<!-- Status filter tabs -->
+<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+  <% const statuses = [['','All'], ['new','New'], ['read','Read'], ['replied','Replied'], ['archived','Archived']]; %>
+  <% statuses.forEach(([s, label]) => { %>
+  <a href="/admin/contacts<%= s ? '?status='+s : '' %>"
+    style="padding:7px 16px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid;transition:all 0.15s;
+    <%= status === s ? 'background:var(--adm-blue);color:#fff;border-color:var(--adm-blue)' : 'background:transparent;color:var(--adm-muted);border-color:var(--adm-border)' %>">
+    <%= label %>
+  </a>
+  <% }) %>
+</div>
+
+<div class="adm-card">
+  <table class="adm-table">
+    <thead>
+      <tr>
+        <th>Contact</th>
+        <th>Company</th>
+        <th>Service</th>
+        <th>Status</th>
+        <th>Lang</th>
+        <th>Received</th>
+        <th style="text-align:right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% contacts.forEach(c => { %>
+      <tr>
+        <td>
+          <a href="/admin/contacts/<%= c._id %>" style="font-weight:600;display:block"><%= c.name %></a>
+          <a href="mailto:<%= c.email %>" style="font-size:11px;color:var(--adm-muted)"><%= c.email %></a>
+          <% if (c.phone) { %><div style="font-size:11px;color:var(--adm-muted)"><%= c.phone %></div><% } %>
+        </td>
+        <td style="font-size:13px;color:var(--adm-muted)"><%= c.company || '—' %></td>
+        <td><span class="badge badge-blue" style="font-size:10px;text-transform:capitalize"><%= (c.service||'general').replace(/-/g,' ') %></span></td>
+        <td>
+          <form action="/admin/contacts/<%= c._id %>/status" method="POST" style="display:inline">
+            <select name="status" class="adm-filter-select" style="padding:4px 8px;font-size:11px" onchange="this.form.submit()">
+              <option value="new"      <%= c.status==='new'?'selected':'' %>>New</option>
+              <option value="read"     <%= c.status==='read'?'selected':'' %>>Read</option>
+              <option value="replied"  <%= c.status==='replied'?'selected':'' %>>Replied</option>
+              <option value="archived" <%= c.status==='archived'?'selected':'' %>>Archived</option>
+            </select>
+          </form>
+        </td>
+        <td style="font-size:12px;color:var(--adm-muted)"><%= c.lang || 'en' %></td>
+        <td style="font-size:12px;color:var(--adm-muted);white-space:nowrap">
+          <%= new Date(c.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) %>
+          <div style="font-size:11px"><%= new Date(c.createdAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) %></div>
+        </td>
+        <td style="text-align:right;white-space:nowrap">
+          <a href="/admin/contacts/<%= c._id %>" class="adm-btn adm-btn-ghost adm-btn-sm">View</a>
+          <a href="mailto:<%= c.email %>?subject=Re: Your inquiry to IDEA Asia" class="adm-btn adm-btn-ghost adm-btn-sm">Reply</a>
+          <form action="/admin/contacts/<%= c._id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this contact?')">
+            <button type="submit" class="adm-btn adm-btn-danger adm-btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+      <% if (contacts.length === 0) { %>
+      <tr><td colspan="7" style="text-align:center;color:var(--adm-muted);padding:40px">No contact submissions yet.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<% if (totalPages > 1) { %>
+<div class="adm-pagination">
+  <% if (page > 1) { %><a href="/admin/contacts?page=<%= page-1 %>&status=<%= status %>" class="adm-page-btn">‹</a><% } %>
+  <% for(let i=1;i<=totalPages;i++) { %>
+  <a href="/admin/contacts?page=<%= i %>&status=<%= status %>" class="adm-page-btn <%= i===page?'active':'' %>"><%= i %></a>
+  <% } %>
+  <% if (page < totalPages) { %><a href="/admin/contacts?page=<%= page+1 %>&status=<%= status %>" class="adm-page-btn">›</a><% } %>
+</div>
+<% } %>

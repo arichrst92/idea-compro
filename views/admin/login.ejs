@@ -1,0 +1,39 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M5 22L12 8L14.5 13L9 22Z" fill="white"/>
+          <path d="M11 22L18 8L20.5 13L15 22Z" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      <h1>IDEA Admin</h1>
+      <p>Integrated Digital Ecosystem Asia</p>
+    </div>
+
+    <% if (error === 'invalid') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      Invalid username or password.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } %>
+
+    <form action="/admin/login" method="POST">
+      <div class="adm-form-group">
+        <label class="adm-label">Username</label>
+        <input type="text" name="username" class="adm-input" placeholder="admin" required autocomplete="username">
+      </div>
+      <div class="adm-form-group">
+        <label class="adm-label">Password</label>
+        <input type="password" name="password" class="adm-input" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;padding:12px">
+        Sign In to Dashboard
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,0.3)">
+      Protected area. Authorized personnel only.
+    </p>
+  </div>
+</div>

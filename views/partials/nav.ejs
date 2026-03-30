@@ -1,0 +1,38 @@
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="/" class="nav-logo">
+      <img src="/images/logo-idea.png" alt="IDEA Asia Logo" class="logo-img" height="38">
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/" class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'home') ? 'active' : '' %>">
+        <%= lang === 'id' ? 'Beranda' : 'Home' %>
+      </a></li>
+      <li><a href="/services" class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'services') ? 'active' : '' %>">
+        <%= lang === 'id' ? 'Layanan' : 'Services' %>
+      </a></li>
+      <li><a href="/blog" class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'blog') ? 'active' : '' %>">Blog</a></li>
+      <li><a href="/about" class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'about') ? 'active' : '' %>">
+        <%= lang === 'id' ? 'Tentang Kami' : 'About Us' %>
+      </a></li>
+      <li><a href="/contact" class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'contact') ? 'active' : '' %>">
+        <%= lang === 'id' ? 'Kontak' : 'Contact' %>
+      </a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <!-- Language switcher -->
+      <div class="lang-switcher">
+        <a href="/lang/en" class="lang-btn <%= lang === 'en' ? 'active' : '' %>">EN</a>
+        <span class="lang-sep">|</span>
+        <a href="/lang/id" class="lang-btn <%= lang === 'id' ? 'active' : '' %>">ID</a>
+      </div>
+      <a href="/contact" class="btn btn-primary nav-cta">
+        <%= lang === 'id' ? 'Mulai Sekarang' : 'Get Started' %>
+      </a>
+      <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>

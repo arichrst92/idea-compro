@@ -1,0 +1,328 @@
+<%
+const serviceContent = {
+  'it-consulting': {
+    taglineEn: 'Strategy That Moves at the Speed of Business',
+    taglineId: 'Strategi yang Bergerak Secepat Bisnis Anda',
+    heroEn: 'Most IT investments fail not because of bad technology — but because of misaligned strategy. IDEA\'s IT Consulting practice bridges the gap between your business ambitions and the technology decisions that actually move the needle. We\'ve guided 20+ enterprise clients across banking, energy, and telco sectors to build IT ecosystems that scale.',
+    heroId: 'Sebagian besar investasi IT gagal bukan karena teknologinya buruk — melainkan karena strateginya tidak selaras. Praktik IT Consulting IDEA menjembatani kesenjangan antara ambisi bisnis Anda dan keputusan teknologi yang benar-benar berdampak. Kami telah memandu 20+ klien enterprise di sektor perbankan, energi, dan telekomunikasi untuk membangun ekosistem IT yang scalable.',
+    diffEn: [
+      ['Business-First, Not Tech-First', 'We start with your KPIs and revenue goals, not the latest technology trends. Every recommendation is tied to a measurable business outcome.'],
+      ['Proven Enterprise Track Record', 'Our consultants have delivered transformation programs for clients including BRI, Telkomsel, and Pertamina — we understand large-scale complexity.'],
+      ['Independent Advisory', 'We are vendor-neutral. Our recommendations are based solely on what is best for your organization — not on partnership incentives.'],
+      ['From Strategy to Execution', 'Unlike pure advisory firms, IDEA can execute the roadmap we design — through our own squads, hiring, or managed services.'],
+    ],
+    diffId: [
+      ['Business-First, Bukan Tech-First', 'Kami mulai dari KPI dan target pendapatan Anda, bukan tren teknologi terkini. Setiap rekomendasi terikat pada hasil bisnis yang terukur.'],
+      ['Track Record Enterprise yang Terbukti', 'Konsultan kami telah menjalankan program transformasi untuk klien termasuk BRI, Telkomsel, dan Pertamina — kami memahami kompleksitas skala besar.'],
+      ['Advisory yang Independen', 'Kami vendor-neutral. Rekomendasi kami didasarkan semata-mata pada apa yang terbaik untuk organisasi Anda — bukan pada insentif kemitraan vendor.'],
+      ['Dari Strategi hingga Eksekusi', 'Berbeda dengan firma advisory murni, IDEA dapat mengeksekusi roadmap yang kami rancang — melalui squad kami sendiri, hiring, atau managed services.'],
+    ],
+    stepsEn: [
+      ['Discovery', 'Deep-dive assessment of your current IT landscape, pain points, and business objectives. Typically 2–4 weeks.'],
+      ['Analysis', 'Gap analysis, benchmarking against industry standards, risk identification, and opportunity mapping.'],
+      ['Roadmap Design', 'Prioritized 12–36 month technology roadmap with phased investment plans and quick-win identification.'],
+      ['Governance Setup', 'IT governance framework, KPI dashboards, and vendor management structure to sustain the roadmap.'],
+      ['Ongoing Advisory', 'Monthly strategic review sessions to adapt the roadmap to business changes and emerging opportunities.'],
+    ],
+    stepsId: [
+      ['Discovery', 'Assessment mendalam terhadap lanskap IT Anda saat ini, pain points, dan tujuan bisnis. Biasanya 2–4 minggu.'],
+      ['Analisis', 'Gap analysis, benchmarking terhadap standar industri, identifikasi risiko, dan pemetaan peluang.'],
+      ['Desain Roadmap', 'Roadmap teknologi 12–36 bulan yang diprioritaskan dengan rencana investasi bertahap dan identifikasi quick-win.'],
+      ['Governance Setup', 'Kerangka IT governance, dashboard KPI, dan struktur manajemen vendor untuk mempertahankan roadmap.'],
+      ['Advisory Berkelanjutan', 'Sesi review strategis bulanan untuk mengadaptasi roadmap terhadap perubahan bisnis dan peluang baru.'],
+    ],
+    proofsEn: ['Reduced IT spend misalignment by avg. 35%', '12–36 month roadmap delivered in 6–8 weeks', 'Vendor-neutral — 100% objective recommendations'],
+    proofsId: ['Mengurangi misalignment pengeluaran IT rata-rata 35%', 'Roadmap 12–36 bulan diselesaikan dalam 6–8 minggu', 'Vendor-neutral — rekomendasi 100% objektif'],
+  },
+  'it-outsourcing': {
+    taglineEn: 'Operational Excellence, Without the Operational Burden',
+    taglineId: 'Keunggulan Operasional, Tanpa Beban Operasional',
+    heroEn: 'Running an in-house IT operation is expensive, complex, and pulls your team\'s focus away from what actually drives business value. IDEA\'s managed IT services let you hand off the complexity while retaining full visibility and control. SLA-driven. Transparent. Built for enterprise reliability.',
+    heroId: 'Menjalankan operasi IT in-house itu mahal, kompleks, dan mengalihkan fokus tim Anda dari apa yang benar-benar mendorong nilai bisnis. Managed IT services IDEA memungkinkan Anda menyerahkan kompleksitas tersebut sambil tetap mempertahankan visibilitas dan kontrol penuh. Berbasis SLA. Transparan. Dibangun untuk keandalan enterprise.',
+    diffEn: [
+      ['SLA-Guaranteed Uptime', 'We don\'t just promise reliability — we contractually guarantee it. Defined response times, escalation paths, and penalty clauses built into every engagement.'],
+      ['Dedicated Account Manager', 'One point of contact who understands your business context, not a rotating helpdesk that treats every ticket as the first.'],
+      ['Proactive, Not Reactive', 'Our NOC monitors your systems 24/7 and resolves issues before they impact your operations — not after users start complaining.'],
+      ['Transparent Monthly Reporting', 'Full visibility into ticket volumes, resolution times, system health, and cost-per-service — no black boxes.'],
+    ],
+    diffId: [
+      ['Uptime Terjamin SLA', 'Kami tidak sekadar menjanjikan keandalan — kami menjaminnya secara kontraktual. Waktu respons yang terdefinisi, jalur eskalasi, dan klausul penalti ada di setiap engagement.'],
+      ['Dedicated Account Manager', 'Satu titik kontak yang memahami konteks bisnis Anda, bukan helpdesk bergilir yang memperlakukan setiap tiket seolah pertama kalinya.'],
+      ['Proaktif, Bukan Reaktif', 'NOC kami memantau sistem Anda 24/7 dan menyelesaikan masalah sebelum berdampak pada operasional — bukan setelah pengguna mulai mengeluh.'],
+      ['Pelaporan Bulanan yang Transparan', 'Visibilitas penuh ke volume tiket, waktu resolusi, kesehatan sistem, dan biaya per layanan — tanpa kotak hitam.'],
+    ],
+    stepsEn: [
+      ['Onboarding Assessment', 'Comprehensive audit of your existing IT infrastructure, documenting every system, dependency, and risk area.'],
+      ['Transition Planning', '30–60–90 day transition plan to transfer knowledge and responsibilities with zero service disruption.'],
+      ['SLA Definition', 'Jointly define service levels, KPIs, escalation matrix, and reporting cadence aligned to your business needs.'],
+      ['Go-Live & Stabilization', 'Managed handover period with IDEA and your team operating in parallel until full confidence is established.'],
+      ['Continuous Improvement', 'Quarterly service review with optimization recommendations to reduce costs and improve performance over time.'],
+    ],
+    stepsId: [
+      ['Assessment Onboarding', 'Audit komprehensif infrastruktur IT Anda yang ada, mendokumentasikan setiap sistem, dependensi, dan area risiko.'],
+      ['Perencanaan Transisi', 'Rencana transisi 30–60–90 hari untuk transfer pengetahuan dan tanggung jawab tanpa gangguan layanan.'],
+      ['Definisi SLA', 'Mendefinisikan bersama tingkat layanan, KPI, matriks eskalasi, dan jadwal pelaporan sesuai kebutuhan bisnis Anda.'],
+      ['Go-Live & Stabilisasi', 'Periode handover terkelola dengan IDEA dan tim Anda beroperasi paralel hingga kepercayaan penuh terbentuk.'],
+      ['Peningkatan Berkelanjutan', 'Review layanan kuartalan dengan rekomendasi optimasi untuk mengurangi biaya dan meningkatkan performa.'],
+    ],
+    proofsEn: ['Avg. 30% IT operational cost reduction', '99.5% SLA uptime guaranteed', '24/7 NOC monitoring included'],
+    proofsId: ['Rata-rata pengurangan biaya operasional IT 30%', 'Uptime SLA 99.5% terjamin', 'Pemantauan NOC 24/7 sudah termasuk'],
+  },
+  'cloud-infrastructure': {
+    taglineEn: 'Cloud That Works for Your Business, Not Against It',
+    taglineId: 'Cloud yang Bekerja untuk Bisnis Anda, Bukan Melawannya',
+    heroEn: 'Cloud migration promises agility and cost savings — but only if done right. Too many enterprises end up with cloud bills that exceed their on-premise costs, and systems that are harder to manage than before. IDEA\'s Cloud Infrastructure practice ensures your cloud journey is architected for performance, cost efficiency, and long-term scalability from day one.',
+    heroId: 'Migrasi cloud menjanjikan kelincahan dan penghematan biaya — tetapi hanya jika dilakukan dengan benar. Terlalu banyak enterprise yang berakhir dengan tagihan cloud yang melebihi biaya on-premise mereka, dan sistem yang lebih sulit dikelola dari sebelumnya. Praktik Cloud Infrastructure IDEA memastikan perjalanan cloud Anda dirancang untuk performa, efisiensi biaya, dan skalabilitas jangka panjang dari hari pertama.',
+    diffEn: [
+      ['Multi-Cloud Certified Architects', 'AWS, Azure, and GCP certified architects who can design the right cloud mix for your workloads — not just the cloud your vendor is pushing.'],
+      ['Cost-Optimized from the Start', 'We build FinOps discipline into every architecture — rightsizing, reserved instances, and auto-scaling to prevent bill shock.'],
+      ['Migration Without Disruption', 'Our phased migration methodology ensures business continuity throughout — with rollback plans at every stage.'],
+      ['Security Embedded by Design', 'Cloud security is not an afterthought. Every architecture includes IAM, encryption, network segmentation, and compliance controls from day one.'],
+    ],
+    diffId: [
+      ['Arsitek Multi-Cloud Bersertifikat', 'Arsitek bersertifikat AWS, Azure, dan GCP yang dapat merancang kombinasi cloud yang tepat untuk beban kerja Anda — bukan hanya cloud yang didorong vendor.'],
+      ['Dioptimalkan Biaya Sejak Awal', 'Kami membangun disiplin FinOps ke dalam setiap arsitektur — rightsizing, reserved instances, dan auto-scaling untuk mencegah tagihan mengejutkan.'],
+      ['Migrasi Tanpa Gangguan', 'Metodologi migrasi bertahap kami memastikan kelangsungan bisnis sepanjang proses — dengan rencana rollback di setiap tahap.'],
+      ['Keamanan Tertanam by Design', 'Keamanan cloud bukan afterthought. Setiap arsitektur mencakup IAM, enkripsi, segmentasi jaringan, dan kontrol kepatuhan dari hari pertama.'],
+    ],
+    stepsEn: [
+      ['Cloud Readiness Assessment', 'Evaluate current workloads, dependencies, and data sensitivity to determine the right cloud strategy (lift-and-shift, re-platform, or re-architect).'],
+      ['Architecture Design', 'Design target-state cloud architecture with security, networking, cost, and performance requirements defined upfront.'],
+      ['Pilot Migration', 'Migrate 1–2 non-critical workloads first to validate the approach, tooling, and team readiness before full migration.'],
+      ['Full Migration', 'Phased migration of all workloads with parallel running, testing, and sign-off at each phase gate.'],
+      ['Optimize & Operate', 'Continuous cost optimization, performance tuning, and security hardening post-migration.'],
+    ],
+    stepsId: [
+      ['Cloud Readiness Assessment', 'Evaluasi beban kerja, dependensi, dan sensitivitas data saat ini untuk menentukan strategi cloud yang tepat.'],
+      ['Desain Arsitektur', 'Rancang arsitektur cloud target-state dengan keamanan, jaringan, biaya, dan persyaratan performa yang didefinisikan di awal.'],
+      ['Pilot Migration', 'Migrasikan 1–2 beban kerja non-kritis terlebih dahulu untuk memvalidasi pendekatan, tooling, dan kesiapan tim.'],
+      ['Migrasi Penuh', 'Migrasi bertahap semua beban kerja dengan operasi paralel, pengujian, dan persetujuan di setiap gate fase.'],
+      ['Optimasi & Operasikan', 'Optimasi biaya berkelanjutan, penyetelan performa, dan penguatan keamanan pasca-migrasi.'],
+    ],
+    proofsEn: ['Avg. 40% cloud cost reduction post-optimization', 'Zero-downtime migration methodology', 'Multi-cloud (AWS, Azure, GCP) certified team'],
+    proofsId: ['Rata-rata pengurangan biaya cloud 40% pasca-optimasi', 'Metodologi migrasi zero-downtime', 'Tim bersertifikat multi-cloud (AWS, Azure, GCP)'],
+  },
+  'it-security': {
+    taglineEn: 'Because the Cost of a Breach Far Exceeds the Cost of Prevention',
+    taglineId: 'Karena Biaya Kebocoran Jauh Melebihi Biaya Pencegahan',
+    heroEn: 'Cyber threats are no longer a question of if — but when. For enterprises operating across Southeast Asia, the threat landscape is complex, fast-moving, and increasingly sophisticated. IDEA\'s IT Security practice delivers proactive, layered defense built around your specific industry risks, regulatory requirements, and operational realities.',
+    heroId: 'Ancaman siber bukan lagi soal apakah — melainkan kapan. Bagi enterprise yang beroperasi di seluruh Asia Tenggara, lanskap ancaman itu kompleks, bergerak cepat, dan semakin canggih. Praktik IT Security IDEA menghadirkan pertahanan berlapis yang proaktif, dibangun di sekitar risiko industri spesifik, persyaratan regulasi, dan realitas operasional Anda.',
+    diffEn: [
+      ['Offense-Informed Defense', 'Our security architects think like attackers. We use real-world threat intelligence and red team techniques to find gaps before adversaries do.'],
+      ['Regulatory-Ready', 'Deep expertise in OJK, BI, PDP Law, ISO 27001, and SOC 2 compliance — we align security controls to your regulatory obligations, not just best practices.'],
+      ['Zero Trust by Default', 'We design architectures that assume breach — with micro-segmentation, least-privilege access, and continuous verification at every layer.'],
+      ['SOC-as-a-Service', '24/7 threat monitoring and incident response through our managed SOC — giving you enterprise-grade security operations without the enterprise headcount.'],
+    ],
+    diffId: [
+      ['Pertahanan Berbasis Serangan', 'Arsitek keamanan kami berpikir seperti penyerang. Kami menggunakan intelijen ancaman dunia nyata dan teknik red team untuk menemukan celah sebelum musuh menemukannya.'],
+      ['Siap Regulasi', 'Keahlian mendalam dalam kepatuhan OJK, BI, UU PDP, ISO 27001, dan SOC 2 — kami menyelaraskan kontrol keamanan dengan kewajiban regulasi Anda.'],
+      ['Zero Trust by Default', 'Kami merancang arsitektur yang mengasumsikan pelanggaran — dengan micro-segmentation, akses least-privilege, dan verifikasi berkelanjutan di setiap lapisan.'],
+      ['SOC-as-a-Service', 'Pemantauan ancaman dan respons insiden 24/7 melalui managed SOC kami — memberi Anda operasi keamanan kelas enterprise tanpa headcount enterprise.'],
+    ],
+    stepsEn: [
+      ['Security Assessment', 'Comprehensive audit of your security posture: network, application, endpoint, access controls, and data governance.'],
+      ['Risk Prioritization', 'Risk matrix mapping threats by likelihood and business impact — so you invest where it matters most.'],
+      ['Architecture Hardening', 'Implement prioritized controls: network segmentation, MFA, endpoint protection, SIEM integration, and patching cadence.'],
+      ['Penetration Testing', 'Ethical hacking by certified penetration testers to validate controls and uncover residual vulnerabilities.'],
+      ['Ongoing Monitoring', 'Continuous threat monitoring, alert triage, incident response, and monthly security reporting.'],
+    ],
+    stepsId: [
+      ['Security Assessment', 'Audit komprehensif postur keamanan Anda: jaringan, aplikasi, endpoint, kontrol akses, dan tata kelola data.'],
+      ['Prioritisasi Risiko', 'Matriks risiko yang memetakan ancaman berdasarkan kemungkinan dan dampak bisnis — agar investasi tepat sasaran.'],
+      ['Penguatan Arsitektur', 'Implementasi kontrol yang diprioritaskan: segmentasi jaringan, MFA, perlindungan endpoint, integrasi SIEM.'],
+      ['Penetration Testing', 'Ethical hacking oleh penetration tester bersertifikat untuk memvalidasi kontrol dan mengungkap kerentanan residual.'],
+      ['Pemantauan Berkelanjutan', 'Pemantauan ancaman terus-menerus, triase alert, respons insiden, dan pelaporan keamanan bulanan.'],
+    ],
+    proofsEn: ['ISO 27001 & OJK/BI compliance expertise', '24/7 SOC monitoring available', 'Certified penetration testing (CEH, OSCP)'],
+    proofsId: ['Keahlian kepatuhan ISO 27001 & OJK/BI', 'Pemantauan SOC 24/7 tersedia', 'Penetration testing bersertifikat (CEH, OSCP)'],
+  },
+  'squad-delivery': {
+    taglineEn: 'The Speed of a Startup. The Reliability of an Enterprise.',
+    taglineId: 'Kecepatan Startup. Keandalan Enterprise.',
+    heroEn: 'Digital product delivery fails when it\'s treated as a project — with fixed scope, rigid timelines, and handoffs between siloed teams. IDEA embeds cross-functional squads directly into your organization: product managers, engineers, designers, and QA working as one unit, iterating fast, and delivering value continuously.',
+    heroId: 'Pengiriman produk digital gagal ketika diperlakukan sebagai proyek — dengan scope tetap, timeline kaku, dan handoff antar tim yang terisolasi. IDEA menanamkan squad lintas fungsi langsung ke dalam organisasi Anda: product manager, engineer, desainer, dan QA bekerja sebagai satu unit, iterasi cepat, dan memberikan nilai secara berkelanjutan.',
+    diffEn: [
+      ['Truly Embedded, Not Just Outsourced', 'Our squads work in your Slack, your Jira, your sprint ceremonies — operating as an extension of your team, not an external vendor.'],
+      ['Full-Stack Squads, Not Just Coders', 'Every squad includes product management, engineering, design, QA, and delivery management — no coordination gaps.'],
+      ['Outcome-Based Contracts', 'We define success by business metrics — feature adoption, conversion rates, system performance — not just lines of code delivered.'],
+      ['12+ Years of Enterprise Delivery', 'Our squad leads have delivered products for BRI, Telkomsel, and Neobank — they know how to navigate enterprise complexity.'],
+    ],
+    diffId: [
+      ['Benar-benar Embedded, Bukan Sekadar Outsourced', 'Squad kami bekerja di Slack, Jira, dan sprint ceremony Anda — beroperasi sebagai ekstensi tim Anda, bukan vendor eksternal.'],
+      ['Squad Full-Stack, Bukan Sekadar Programmer', 'Setiap squad mencakup product management, engineering, desain, QA, dan delivery management — tanpa kesenjangan koordinasi.'],
+      ['Kontrak Berbasis Outcome', 'Kami mendefinisikan kesuksesan berdasarkan metrik bisnis — adopsi fitur, tingkat konversi, performa sistem — bukan sekadar baris kode yang dikirim.'],
+      ['12+ Tahun Delivery Enterprise', 'Squad lead kami telah mengirimkan produk untuk BRI, Telkomsel, dan Neobank — mereka tahu cara menavigasi kompleksitas enterprise.'],
+    ],
+    stepsEn: [
+      ['Squad Design', 'Define squad composition, roles, tools, ceremonies, and success metrics based on your product needs and team culture.'],
+      ['Kickoff Sprint', '2-week kickoff sprint to align on backlog, technical architecture, design system, and ways of working.'],
+      ['Iterative Delivery', '2-week sprints with continuous deployment, stakeholder demos, and retrospectives for ongoing improvement.'],
+      ['Velocity Tracking', 'Weekly velocity reporting, burndown charts, and risk flags — full transparency into delivery progress.'],
+      ['Scale or Transition', 'Flexible squad scaling up or down based on delivery phase, with smooth knowledge transfer when winding down.'],
+    ],
+    stepsId: [
+      ['Desain Squad', 'Tentukan komposisi squad, peran, alat, ceremony, dan metrik sukses berdasarkan kebutuhan produk dan budaya tim Anda.'],
+      ['Sprint Kickoff', 'Sprint kickoff 2 minggu untuk menyelaraskan backlog, arsitektur teknis, design system, dan cara kerja.'],
+      ['Delivery Iteratif', 'Sprint 2 minggu dengan deployment berkelanjutan, demo stakeholder, dan retrospektif untuk peningkatan berkelanjutan.'],
+      ['Pelacakan Velocity', 'Laporan velocity mingguan, burndown chart, dan flag risiko — transparansi penuh ke dalam progres delivery.'],
+      ['Scale atau Transisi', 'Scaling squad yang fleksibel naik atau turun berdasarkan fase delivery, dengan transfer pengetahuan yang mulus.'],
+    ],
+    proofsEn: ['2-week sprint cycles — value delivered fast', 'Full-stack squads: PM + Engineering + Design + QA', 'Outcome-based — measured by business impact'],
+    proofsId: ['Siklus sprint 2 minggu — nilai tersampaikan cepat', 'Squad full-stack: PM + Engineering + Desain + QA', 'Berbasis outcome — diukur dengan dampak bisnis'],
+  },
+  'it-hiring': {
+    taglineEn: 'The Right Tech Talent, Faster Than You Think',
+    taglineId: 'Talenta Teknologi yang Tepat, Lebih Cepat dari yang Anda Bayangkan',
+    heroEn: 'Finding the right IT talent is harder than ever. The best engineers are not on job boards — they are already employed, selectively evaluating opportunities, and expecting more than a salary offer. IDEA\'s Tech Talent Hiring service connects you with pre-vetted IT professionals who are the right fit for your culture, not just your job description.',
+    heroId: 'Menemukan talenta IT yang tepat lebih sulit dari sebelumnya. Engineer terbaik tidak ada di job board — mereka sudah bekerja, mengevaluasi peluang secara selektif, dan mengharapkan lebih dari sekadar tawaran gaji. Layanan Tech Talent Hiring IDEA menghubungkan Anda dengan profesional IT yang telah diverifikasi, yang cocok dengan budaya Anda, bukan sekadar deskripsi pekerjaan.',
+    diffEn: [
+      ['Pre-Vetted Talent Pool', 'Access to our network of 500+ active IT professionals across Indonesia and Southeast Asia — screened for technical skills and cultural fit.'],
+      ['Technical Recruiters, Not Generalists', 'Our recruiters are former engineers and IT professionals who understand the difference between a senior and a principal engineer.'],
+      ['Speed Without Compromise', 'Average time-to-shortlist of 5–7 working days. We move fast because we know who is available and who is not — right now.'],
+      ['Guaranteed Replacement', 'If a placement doesn\'t work out within the guarantee period, we replace at no additional cost. Full stop.'],
+    ],
+    diffId: [
+      ['Talent Pool Pre-Verified', 'Akses ke jaringan 500+ profesional IT aktif di Indonesia dan Asia Tenggara — telah diseleksi untuk keahlian teknis dan kesesuaian budaya.'],
+      ['Rekruter Teknis, Bukan Generalis', 'Rekruter kami adalah mantan engineer dan profesional IT yang memahami perbedaan antara senior dan principal engineer.'],
+      ['Kecepatan Tanpa Kompromi', 'Rata-rata waktu shortlist 5–7 hari kerja. Kami bergerak cepat karena kami tahu siapa yang tersedia saat ini.'],
+      ['Jaminan Penggantian', 'Jika penempatan tidak berhasil dalam periode garansi, kami mengganti tanpa biaya tambahan.'],
+    ],
+    stepsEn: [
+      ['Role Definition', 'Deep-dive briefing on the role, team context, technical requirements, and cultural expectations — beyond the job description.'],
+      ['Talent Strategy', 'Define sourcing channels, assessment criteria, and timeline based on role seniority and market availability.'],
+      ['Candidate Search & Screening', 'Multi-channel sourcing, technical screening, and behavioral interviews — only qualified candidates reach you.'],
+      ['Client Interview', 'Coordinate and facilitate interviews, provide candidate preparation, and gather structured feedback.'],
+      ['Placement & Guarantee', 'Offer negotiation support, onboarding coordination, and guarantee period monitoring.'],
+    ],
+    stepsId: [
+      ['Definisi Peran', 'Briefing mendalam tentang peran, konteks tim, persyaratan teknis, dan ekspektasi budaya — melampaui deskripsi pekerjaan.'],
+      ['Strategi Talenta', 'Tentukan saluran pencarian, kriteria penilaian, dan timeline berdasarkan senioritas peran dan ketersediaan pasar.'],
+      ['Pencarian & Penyaringan Kandidat', 'Sourcing multi-saluran, penyaringan teknis, dan wawancara perilaku — hanya kandidat berkualitas yang mencapai Anda.'],
+      ['Wawancara Klien', 'Koordinasi dan fasilitasi wawancara, persiapan kandidat, dan pengumpulan umpan balik terstruktur.'],
+      ['Penempatan & Garansi', 'Dukungan negosiasi penawaran, koordinasi onboarding, dan pemantauan periode garansi.'],
+    ],
+    proofsEn: ['Avg. 5–7 day time-to-shortlist', '500+ pre-vetted IT professionals in network', 'Replacement guarantee included'],
+    proofsId: ['Rata-rata 5–7 hari time-to-shortlist', '500+ profesional IT pre-verified dalam jaringan', 'Jaminan penggantian sudah termasuk'],
+  },
+};
+
+const s = serviceContent[service.slug] || null;
+const isId = lang === 'id';
+%>
+
+<!-- HERO -->
+<section style="padding:calc(var(--nav-h) + 80px) 0 80px;background:var(--black);border-bottom:1px solid rgba(255,255,255,0.06)">
+  <div class="container">
+    <a href="/services" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-600);margin-bottom:40px;transition:color 0.2s" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--gray-600)'">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <%= isId ? 'Semua Layanan' : 'All Services' %>
+    </a>
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= isId ? 'Layanan' : 'Service' %></div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(36px,6vw,80px);font-weight:800;letter-spacing:-0.04em;color:var(--white);line-height:1.0;margin-bottom:24px;max-width:900px">
+      <%= s ? (isId ? s.taglineId : s.taglineEn) : (isId ? service.titleId : service.titleEn) %>
+    </h1>
+    <% if(s) { %>
+    <p style="font-size:18px;color:var(--gray-500);line-height:1.8;max-width:700px;margin-bottom:48px">
+      <%= isId ? s.heroId : s.heroEn %>
+    </p>
+    <% } else { %>
+    <p style="font-size:18px;color:var(--gray-500);line-height:1.8;max-width:700px;margin-bottom:48px">
+      <%= isId ? service.descId : service.descEn %>
+    </p>
+    <% } %>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="/contact" class="btn btn-primary btn-large"><%= isId ? 'Dapatkan Panggilan Diagnostik Gratis' : 'Get a Free Diagnostic Call' %></a>
+      <a href="/contact" class="btn btn-outline btn-large"><%= isId ? 'Hubungi Kami' : 'Contact Us' %></a>
+    </div>
+  </div>
+</section>
+
+<% if(s) { %>
+
+<!-- WHY IDEA -->
+<section style="padding:100px 0;background:var(--black2);border-bottom:1px solid rgba(255,255,255,0.06)">
+  <div class="container">
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= isId ? 'Mengapa IDEA?' : 'Why IDEA?' %></div>
+    <h2 style="font-family:var(--font-display);font-size:clamp(28px,3.5vw,48px);font-weight:800;letter-spacing:-0.03em;color:var(--white);margin-bottom:60px;line-height:1.1">
+      <%= isId ? 'Yang Membedakan Kami' : 'What Sets Us Apart' %>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,0.06)">
+      <% const diffs = isId ? s.diffId : s.diffEn; %>
+      <% diffs.forEach((d, i) => { %>
+      <div class="reveal" style="background:var(--black2);padding:40px;transition:background 0.3s" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='var(--black2)'">
+        <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--blue);margin-bottom:16px">0<%= i+1 %></div>
+        <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--white);margin-bottom:12px;line-height:1.2"><%= d[0] %></h3>
+        <p style="font-size:14px;color:var(--gray-500);line-height:1.75"><%= d[1] %></p>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section style="padding:100px 0;background:var(--black);border-bottom:1px solid rgba(255,255,255,0.06)">
+  <div class="container">
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= isId ? 'Metodologi Kami' : 'Our Methodology' %></div>
+    <h2 style="font-family:var(--font-display);font-size:clamp(28px,3.5vw,48px);font-weight:800;letter-spacing:-0.03em;color:var(--white);margin-bottom:60px;line-height:1.1">
+      <%= isId ? 'Cara Kami Bekerja' : 'How We Work' %>
+    </h2>
+    <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,0.06)">
+      <% const steps = isId ? s.stepsId : s.stepsEn; %>
+      <% steps.forEach((step, i) => { %>
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:40px;padding:36px 0;border-bottom:1px solid rgba(255,255,255,0.06);align-items:start">
+        <div style="font-family:var(--font-display);font-size:40px;font-weight:800;color:rgba(255,255,255,0.06);line-height:1;letter-spacing:-0.04em">0<%= i+1 %></div>
+        <div>
+          <h4 style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--white);margin-bottom:10px"><%= step[0] %></h4>
+          <p style="font-size:15px;color:var(--gray-500);line-height:1.75;max-width:680px"><%= step[1] %></p>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF POINTS -->
+<section style="padding:80px 0;background:var(--black2);border-bottom:1px solid rgba(255,255,255,0.06)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,0.06)">
+      <% const proofs = isId ? s.proofsId : s.proofsEn; %>
+      <% proofs.forEach(p => { %>
+      <div style="background:var(--black2);padding:36px;display:flex;align-items:flex-start;gap:16px">
+        <span style="color:var(--blue);font-size:20px;flex-shrink:0;margin-top:2px">✓</span>
+        <p style="font-size:15px;font-weight:600;color:var(--white);line-height:1.5"><%= p %></p>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<% } else { %>
+<!-- Fallback for services without rich content -->
+<section style="padding:80px 0;background:var(--black)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.06)">
+      <% const features = isId ? service.featuresId : service.features; %>
+      <% features.forEach(f => { %>
+      <div style="background:var(--black);padding:32px;display:flex;align-items:center;gap:14px">
+        <span style="width:20px;height:1px;background:var(--blue);flex-shrink:0"></span>
+        <span style="font-size:15px;color:var(--gray-300)"><%= f %></span>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- CTA -->
+<section style="padding:100px 0;background:var(--black)">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <h2><%= isId ? 'Tidak Yakin Apakah Ini Layanan yang Tepat?' : 'Not Sure If This Is the Right Service for You?' %></h2>
+      <p><%= isId ? 'Itulah mengapa kami menawarkan panggilan diagnostik gratis 30 menit. Tanpa kewajiban. Hanya kejelasan tentang apakah dan bagaimana kami bisa membantu.' : "That's exactly why we offer a free 30-minute diagnostic call. No obligation. Just clarity on whether and how we can help." %></p>
+      <div class="cta-btns">
+        <a href="/contact" class="btn btn-primary btn-large"><%= isId ? 'Dapatkan Panggilan Diagnostik Gratis' : 'Get a Free Diagnostic Call' %></a>
+        <a href="/services" class="btn btn-outline btn-large"><%= isId ? 'Layanan Lainnya' : 'Other Services' %></a>
+      </div>
+    </div>
+  </div>
+</section>

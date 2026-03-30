@@ -1,0 +1,179 @@
+<div class="adm-page-header">
+  <div>
+    <a href="/admin/blogs" style="font-size:12px;color:var(--adm-muted);display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Blog Posts
+    </a>
+    <h1 class="adm-page-title"><%= isNew ? 'New Blog Post' : 'Edit Blog Post' %></h1>
+    <% if (!isNew && blog) { %>
+    <p class="adm-page-sub"><a href="/blog/<%= blog.slug %>" target="_blank" style="color:var(--adm-blue)">View live ↗</a></p>
+    <% } %>
+  </div>
+  <% if (!isNew && blog) { %>
+  <div style="display:flex;gap:10px">
+    <form action="/admin/blogs/<%= blog._id %>/toggle" method="POST">
+      <button type="submit" class="adm-btn adm-btn-ghost">
+        <%= blog.published ? 'Unpublish' : 'Publish' %>
+      </button>
+    </form>
+    <form action="/admin/blogs/<%= blog._id %>/delete" method="POST" onsubmit="return confirm('Delete permanently?')">
+      <button type="submit" class="adm-btn adm-btn-danger">Delete</button>
+    </form>
+  </div>
+  <% } %>
+</div>
+
+<% if (error) { %>
+<div class="flash flash-error" style="margin-bottom:20px">
+  <%= error %>
+  <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+</div>
+<% } %>
+
+<form action="/admin/blogs/<%= isNew ? 'new' : blog._id + '/edit' %>" method="POST">
+  <div class="adm-grid-blog">
+
+    <!-- Main content -->
+    <div>
+      <!-- Tab switcher -->
+      <div style="display:flex;gap:4px;margin-bottom:20px;background:var(--adm-surface2);padding:4px;border-radius:9px;width:fit-content">
+        <button type="button" class="lang-tab active" data-lang="en" onclick="switchLang('en',this)"
+          style="padding:7px 20px;border-radius:7px;font-size:13px;font-weight:600;border:none;background:var(--adm-surface);color:#fff">
+          🇺🇸 English
+        </button>
+        <button type="button" class="lang-tab" data-lang="id" onclick="switchLang('id',this)"
+          style="padding:7px 20px;border-radius:7px;font-size:13px;font-weight:600;border:none;background:transparent;color:var(--adm-muted)">
+          🇮🇩 Indonesia
+        </button>
+      </div>
+
+      <!-- English fields -->
+      <div id="fields-en">
+        <div class="adm-form-group">
+          <label class="adm-label">Title (English) *</label>
+          <input type="text" name="title" class="adm-input" value="<%= blog ? blog.title || '' : '' %>" required placeholder="Compelling, SEO-optimized title (max 60 chars)">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Excerpt / Meta Description (English) *</label>
+          <textarea name="excerpt" class="adm-textarea" style="min-height:80px" required placeholder="Brief summary shown in blog list and Google results (150–160 chars)"><%= blog ? blog.excerpt || '' : '' %></textarea>
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Content (English) * — HTML supported</label>
+          <textarea name="content" id="content-en" class="adm-textarea tall" required placeholder="<h2>Introduction</h2>\n<p>Your blog content here...</p>"><%= blog ? blog.content || '' : '' %></textarea>
+        </div>
+      </div>
+
+      <!-- Indonesian fields -->
+      <div id="fields-id" style="display:none">
+        <div class="adm-form-group">
+          <label class="adm-label">Judul (Indonesia)</label>
+          <input type="text" name="titleId" class="adm-input" value="<%= blog ? blog.titleId || '' : '' %>" placeholder="Terjemahan judul dalam Bahasa Indonesia">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Excerpt (Indonesia)</label>
+          <textarea name="excerptId" class="adm-textarea" style="min-height:80px" placeholder="Ringkasan dalam Bahasa Indonesia (150–160 karakter)"><%= blog ? blog.excerptId || '' : '' %></textarea>
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Konten (Indonesia) — HTML didukung</label>
+          <textarea name="contentId" id="content-id" class="adm-textarea tall" placeholder="<h2>Pendahuluan</h2>\n<p>Konten blog Anda di sini...</p>"><%= blog ? blog.contentId || '' : '' %></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar settings -->
+    <div>
+      <!-- Publish card -->
+      <div class="adm-card" style="margin-bottom:16px">
+        <div class="adm-card-header"><span class="adm-card-title">Publish</span></div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div class="adm-toggle">
+            <input type="checkbox" id="published" name="published" <%= blog && blog.published ? 'checked' : (!blog ? 'checked' : '') %>>
+            <label for="published">Published (visible on site)</label>
+          </div>
+          <div class="adm-toggle">
+            <input type="checkbox" id="featured" name="featured" <%= blog && blog.featured ? 'checked' : '' %>>
+            <label for="featured">Featured post</label>
+          </div>
+          <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;padding:11px;margin-top:4px">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 7l4 4 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <%= isNew ? 'Publish Post' : 'Save Changes' %>
+          </button>
+        </div>
+      </div>
+
+      <!-- Taxonomy card -->
+      <div class="adm-card" style="margin-bottom:16px">
+        <div class="adm-card-header"><span class="adm-card-title">Taxonomy</span></div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div class="adm-form-group" style="margin:0">
+            <label class="adm-label">Category *</label>
+            <select name="category" class="adm-select" required>
+              <option value="">Select category...</option>
+              <% ['it-consulting','it-outsourcing','it-hiring','cloud-infrastructure','it-security','squad-delivery'].forEach(cat => { %>
+              <option value="<%= cat %>" <%= blog && blog.category===cat ? 'selected' : '' %>><%= cat.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="adm-form-group" style="margin:0">
+            <label class="adm-label">Tags (comma-separated)</label>
+            <input type="text" name="tags" class="adm-input" value="<%= blog && blog.tags ? blog.tags.join(', ') : '' %>" placeholder="cloud, aws, devops, security">
+            <p class="adm-help">Separate tags with commas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEO card -->
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">SEO</span></div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div class="adm-form-group" style="margin:0">
+            <label class="adm-label">Meta Title</label>
+            <input type="text" name="metaTitle" class="adm-input" value="<%= blog ? blog.metaTitle || '' : '' %>" placeholder="SEO title (max 60 chars)" id="metaTitle">
+            <p class="adm-help"><span id="metaTitleCount">0</span>/60 chars</p>
+          </div>
+          <div class="adm-form-group" style="margin:0">
+            <label class="adm-label">Meta Description</label>
+            <textarea name="metaDescription" class="adm-textarea" style="min-height:80px" placeholder="SEO description (max 160 chars)" id="metaDesc"><%= blog ? blog.metaDescription || '' : '' %></textarea>
+            <p class="adm-help"><span id="metaDescCount">0</span>/160 chars</p>
+          </div>
+        </div>
+      </div>
+
+      <% if (!isNew && blog) { %>
+      <div style="margin-top:16px;padding:14px;background:var(--adm-surface2);border-radius:var(--radius);font-size:12px;color:var(--adm-muted)">
+        <div style="margin-bottom:6px">📅 Created: <%= new Date(blog.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) %></div>
+        <div style="margin-bottom:6px">👁️ Views: <%= blog.views %></div>
+        <div>⏱️ Read time: <%= blog.readTime %> min</div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</form>
+
+<script>
+function switchLang(lang, btn) {
+  document.querySelectorAll('.lang-tab').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--adm-muted)';
+  });
+  btn.style.background = 'var(--adm-surface)'; btn.style.color = '#fff';
+  document.getElementById('fields-en').style.display = lang === 'en' ? '' : 'none';
+  document.getElementById('fields-id').style.display = lang === 'id' ? '' : 'none';
+}
+
+// Character counters
+function updateCount(inputId, countId, max) {
+  const el = document.getElementById(inputId);
+  const cnt = document.getElementById(countId);
+  if (!el || !cnt) return;
+  const update = () => { cnt.textContent = el.value.length; cnt.style.color = el.value.length > max ? 'var(--adm-red)' : 'var(--adm-muted)'; };
+  el.addEventListener('input', update); update();
+}
+updateCount('metaTitle', 'metaTitleCount', 60);
+updateCount('metaDesc', 'metaDescCount', 160);
+
+// Auto-fill Meta Title from English title
+document.querySelector('input[name="title"]')?.addEventListener('input', function() {
+  const mt = document.getElementById('metaTitle');
+  if (mt && !mt.value) { mt.value = this.value.substring(0, 60); mt.dispatchEvent(new Event('input')); }
+});
+</script>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'IDEA Admin' %></title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="adminSidebar">
+    <div class="sidebar-brand">
+      <img src="/images/logo.png" alt="IDEA Asia" onerror="this.style.display='none'">
+      <span class="brand-text">IDEA</span>
+      <p>Admin Panel</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="/admin" class="sidebar-link <%= currentPage === 'admin-dashboard' ? 'active' : '' %>"><span class="icon">⊞</span> Dashboard</a>
+      <div class="nav-section-label">Content</div>
+      <a href="/admin/blogs" class="sidebar-link <%= currentPage === 'admin-blogs' ? 'active' : '' %>"><span class="icon">✍</span> Blog Posts</a>
+      <a href="/admin/blogs/new" class="sidebar-link <%= currentPage === 'admin-blog-new' ? 'active' : '' %>"><span class="icon">＋</span> New Post</a>
+      <div class="nav-section-label">Site</div>
+      <a href="/" target="_blank" class="sidebar-link"><span class="icon">↗</span> View Site</a>
+      <a href="/blog" target="_blank" class="sidebar-link"><span class="icon">↗</span> View Blog</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar"><%= (typeof adminUsername !== 'undefined' ? adminUsername : 'A')[0].toUpperCase() %></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name"><%= typeof adminUsername !== 'undefined' ? adminUsername : 'Admin' %></div>
+          <a href="/admin/logout" class="sidebar-logout">Logout →</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-title"><%= typeof title !== 'undefined' ? title.replace(' - IDEA Admin','') : 'Dashboard' %></div>
+      <div class="topbar-actions">
+        <a href="/admin/blogs/new" class="btn-sm primary">+ New Post</a>
+      </div>
+    </header>
+    <main class="admin-content"><%- body %></main>
+  </div>
+</div>
+<script src="/js/admin.js"></script>
+</body>
+</html>

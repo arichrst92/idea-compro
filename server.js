@@ -1,0 +1,124 @@
+require('dotenv').config();
+const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
+const mongoose = require('mongoose');
+const compression = require('compression');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const methodOverride = require('method-override');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Security & Performance
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      imgSrc: ["'self'", "data:", "https:", "https://www.google-analytics.com"],
+      connectSrc: ["'self'", "https://www.google-analytics.com", "https://region1.google-analytics.com"],
+    }
+  }
+}));
+app.use(compression());
+app.use(morgan('combined'));
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+
+// Static files
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: process.env.NODE_ENV === 'production' ? '7d' : '0'
+}));
+
+// Rate limiting
+const contactLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10 });
+app.use('/contact/submit', contactLimiter);
+const adminLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
+app.use('/admin/login', adminLimiter);
+
+// Session (must come before routes)
+const sessionConfig = {
+  secret: process.env.ADMIN_SESSION_SECRET || 'idea-dev-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 8 * 60 * 60 * 1000, // 8 hours
+  },
+};
+// Attach MongoStore after mongoose connects — lazy init below
+app.use((req, res, next) => {
+  if (!sessionConfig.store && mongoose.connection.readyState === 1) {
+    sessionConfig.store = MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/idea_website' });
+  }
+  session(sessionConfig)(req, res, next);
+});
+
+// Template engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
+app.set('layout extractScripts', true);
+app.set('layout extractStyles', true);
+
+// Global locals middleware
+app.use((req, res, next) => {
+  const lang = req.cookies.lang || req.query.lang || 'en';
+  res.locals.lang = ['en', 'id'].includes(lang) ? lang : 'en';
+  res.locals.siteUrl = process.env.SITE_URL || 'https://idea-asia.com';
+  res.locals.siteName = process.env.SITE_NAME || 'IDEA Asia';
+  res.locals.gaId = process.env.GA_MEASUREMENT_ID || '';
+  next();
+});
+
+// Routes
+app.use('/', require('./src/routes/home'));
+app.use('/services', require('./src/routes/services'));
+app.use('/blog', require('./src/routes/blog'));
+app.use('/about', require('./src/routes/about'));
+app.use('/contact', require('./src/routes/contact'));
+app.use('/api', require('./src/routes/api'));
+app.use('/admin', require('./src/routes/admin'));
+
+// 404
+app.use((req, res) => {
+  res.status(404).render('pages/404', { title: '404 - Page Not Found', description: 'Page not found' });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('pages/500', { title: 'Server Error', description: 'Something went wrong' });
+});
+
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/idea_website')
+  .then(() => {
+    console.log('✅ MongoDB connected');
+    app.listen(PORT, () => {
+      console.log(`🚀 IDEA Website running on port ${PORT}`);
+      console.log(`🔐 Admin panel: http://localhost:${PORT}/admin`);
+      if (process.env.BLOG_ENABLED !== 'false') {
+        require('./blog-bot/index');
+        console.log('🤖 Blog bot started');
+      }
+    });
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1);
+  });
+
+module.exports = app;

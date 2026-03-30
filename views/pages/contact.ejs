@@ -1,0 +1,170 @@
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang==='id' ? 'Hubungi Kami' : 'Contact Us' %></div>
+    <h1><% if(lang==='id'){ %>Mulai<br>Percakapan<% } else { %>Start a<br>Conversation<% } %></h1>
+    <p><%= lang==='id' ? 'Kami siap mendengar kebutuhan Anda dan membantu menemukan solusi teknologi yang tepat.' : "We're ready to hear your needs and help find the right technology solution for your business." %></p>
+  </div>
+</section>
+
+<div style="background:var(--black);padding-bottom:120px">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- FORM -->
+      <div>
+        <% if(success) { %>
+        <div class="alert alert-success">
+          <%= lang==='id' ? '✅ Pesan Anda terkirim! Kami akan menghubungi dalam 1–2 hari kerja.' : '✅ Your message has been sent! We will get back to you within 1–2 business days.' %>
+        </div>
+        <% } %>
+        <% if(error) { %>
+        <div class="alert alert-error">
+          <%= lang==='id' ? '❌ Terjadi kesalahan. Silakan coba lagi.' : '❌ Something went wrong. Please try again.' %>
+        </div>
+        <% } %>
+        <p style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-600);margin-bottom:40px"><%= lang==='id' ? 'Kirim Pesan' : 'Send a Message' %></p>
+        <form action="/contact/submit" method="POST" class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name"><%= lang==='id' ? 'Nama Lengkap *' : 'Full Name *' %></label>
+              <input type="text" id="name" name="name" required placeholder="<%= lang==='id' ? 'Nama Anda' : 'Your name' %>">
+            </div>
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required placeholder="name@company.com">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="company"><%= lang==='id' ? 'Perusahaan' : 'Company' %></label>
+              <input type="text" id="company" name="company" placeholder="<%= lang==='id' ? 'Nama perusahaan' : 'Company name' %>">
+            </div>
+            <div class="form-group">
+              <label for="phone"><%= lang==='id' ? 'Nomor Telepon' : 'Phone Number' %></label>
+              <input type="tel" id="phone" name="phone" placeholder="+62 821-1567-8446">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="service"><%= lang==='id' ? 'Layanan yang Diminati' : 'Service of Interest' %></label>
+            <select id="service" name="service">
+              <option value=""><%= lang==='id' ? 'Pilih layanan...' : 'Select a service...' %></option>
+              <option value="software-development">Software Development & Integration</option>
+              <option value="it-outsourcing">IT Outsourcing</option>
+              <option value="it-hiring">Tech Talent Hiring</option>
+              <option value="cloud-infrastructure">Cloud Infrastructure</option>
+              <option value="it-security">IT Security</option>
+              <option value="squad-delivery">Squad Based Delivery</option>
+              <option value="ai-development">AI Development</option>
+              <option value="managed-service">Managed Service</option>
+              <option value="general"><%= lang==='id' ? 'Umum / Lainnya' : 'General / Other' %></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message"><%= lang==='id' ? 'Pesan *' : 'Message *' %></label>
+            <textarea id="message" name="message" required placeholder="<%= lang==='id' ? 'Ceritakan tentang proyek atau kebutuhan Anda...' : 'Tell us about your project or requirements...' %>"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:18px;border-radius:4px">
+            <%= lang==='id' ? 'Kirim Pesan — Kami Respons Dalam 4 Jam' : 'Send Message — We\'ll Respond Within 4 Hours' %>
+          </button>
+        </form>
+        <div style="margin-top:20px;text-align:center">
+          <p style="font-size:12px;color:var(--gray-700);margin-bottom:12px;letter-spacing:0.04em"><%= lang==='id' ? 'ATAU' : 'OR' %></p>
+          <a href="https://wa.me/6282115678446" target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border:1px solid rgba(37,211,102,0.3);border-radius:100px;font-size:13px;font-weight:600;color:#25d166;transition:all 0.3s;background:rgba(37,211,102,0.06)"
+            onmouseover="this.style.background='rgba(37,211,102,0.12)';this.style.borderColor='rgba(37,211,102,0.6)'"
+            onmouseout="this.style.background='rgba(37,211,102,0.06)';this.style.borderColor='rgba(37,211,102,0.3)'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <%= lang==='id' ? 'Chat di WhatsApp Sekarang' : 'Chat on WhatsApp Now' %>
+          </a>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="contact-info">
+        <h3><%= lang==='id' ? 'Informasi Kontak' : 'Contact Information' %></h3>
+        <p><%= lang==='id' ? 'Atau langsung hubungi kami melalui salah satu saluran berikut.' : 'Or reach us directly through one of the following channels.' %></p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <div class="contact-item-icon">📧</div>
+            <div class="contact-item-text">
+              <strong>Email</strong>
+              <span><a href="mailto:info@ide.asia">info@ide.asia</a></span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div class="contact-item-text">
+              <strong><%= lang==='id' ? 'Telepon / WhatsApp' : 'Phone / WhatsApp' %></strong>
+              <span><a href="tel:+6282115678446">+62 821-1567-8446</a></span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🌐</div>
+            <div class="contact-item-text">
+              <strong>Website</strong>
+              <span><a href="https://www.ide.asia" target="_blank">www.ide.asia</a></span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🇮🇩</div>
+            <div class="contact-item-text">
+              <strong>Jakarta (HQ)</strong>
+              <span>Graha Binakarsa 7th Floor, Jl. H.R. Rasuna Said Kav C18, South Jakarta</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🇮🇩</div>
+            <div class="contact-item-text">
+              <strong>Bandung</strong>
+              <span>Jl. Komp. Luxor No.5 Kav. 11, Bandung</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🇻🇳</div>
+            <div class="contact-item-text">
+              <strong>Hanoi, Vietnam</strong>
+              <span>3rd Floor, Tan Hong Ha Complex, 317 Truong Chinh Street, Thanh Xuan District</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🇦🇺</div>
+            <div class="contact-item-text">
+              <strong>Sydney, Australia</strong>
+              <span>67 Sanctuary Drive, Beaumont Hills, NSW 2155</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">⏰</div>
+            <div class="contact-item-text">
+              <strong><%= lang==='id' ? 'Jam Operasional' : 'Business Hours' %></strong>
+              <span><%= lang==='id' ? 'Senin – Jumat, 09.00 – 18.00 WIB' : 'Monday – Friday, 9AM – 6PM WIB' %></span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:32px;padding:28px;background:var(--black2);border:1px solid rgba(255,255,255,0.07)">
+          <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-600);margin-bottom:20px">
+            <% if(lang==='id'){ %>Ini yang Terjadi Setelah Anda Mengirim Pesan<% } else { %>Here's What Happens After You Submit<% } %>
+          </p>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <span style="width:24px;height:24px;border-radius:50%;background:rgba(26,80,232,0.2);border:1px solid rgba(26,80,232,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0">1</span>
+              <p style="font-size:13px;color:var(--gray-500);line-height:1.6"><%= lang==='id' ? 'Kami meninjau pesan Anda dalam <strong style="color:var(--white)">4 jam kerja</strong>.' : 'We review your message within <strong style="color:var(--white)">4 business hours</strong>.' %></p>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <span style="width:24px;height:24px;border-radius:50%;background:rgba(26,80,232,0.2);border:1px solid rgba(26,80,232,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0">2</span>
+              <p style="font-size:13px;color:var(--gray-500);line-height:1.6"><%= lang==='id' ? 'Konsultan senior (bukan sales rep) akan menghubungi Anda.' : 'A senior consultant (not a sales rep) will contact you.' %></p>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <span style="width:24px;height:24px;border-radius:50%;background:rgba(26,80,232,0.2);border:1px solid rgba(26,80,232,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0">3</span>
+              <p style="font-size:13px;color:var(--gray-500);line-height:1.6"><%= lang==='id' ? 'Kami menjadwalkan panggilan 30 menit sesuai waktu Anda.' : 'We schedule a 30-min call at your convenience.' %></p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:20px 24px;background:rgba(26,80,232,0.08);border:1px solid rgba(26,80,232,0.15);border-radius:4px">
+          <p style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:6px;letter-spacing:0.06em;text-transform:uppercase">⚡ <%= lang==='id' ? 'Waktu Respon' : 'Response Time' %></p>
+          <p style="font-size:13px;color:var(--gray-500);line-height:1.6"><% if(lang==='id'){ %>Kami biasanya merespons dalam <strong style="color:var(--white)">1–2 hari kerja</strong>.<% } else { %>We typically respond within <strong style="color:var(--white)">1–2 business days</strong>.<% } %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

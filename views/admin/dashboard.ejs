@@ -1,0 +1,146 @@
+<!-- Stats -->
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Dashboard</h1>
+    <p class="adm-page-sub">Welcome back, <%= adminName %>. Here's what's happening.</p>
+  </div>
+  <div style="display:flex;gap:10px">
+    <form action="/admin/bot/generate" method="POST">
+      <button type="submit" class="adm-btn adm-btn-ghost" onclick="return confirm('Generate a new AI blog post now?')">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1a6.5 6.5 0 1 1 0 13A6.5 6.5 0 0 1 7.5 1z" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 5v3l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Run Blog Bot
+      </button>
+    </form>
+    <a href="/admin/blogs/new" class="adm-btn adm-btn-primary">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 2v11M2 7.5h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      New Post
+    </a>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card blue">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Blog Posts</span>
+      <div class="stat-card-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 5h8M4 8h8M4 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="stat-card-num"><%= stats.totalBlogs %></div>
+    <div class="stat-card-sub"><%= stats.publishedBlogs %> published</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Published</span>
+      <div class="stat-card-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="stat-card-num"><%= stats.publishedBlogs %></div>
+    <div class="stat-card-sub"><%= stats.totalBlogs - stats.publishedBlogs %> drafts</div>
+  </div>
+  <div class="stat-card amber">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Contacts</span>
+      <div class="stat-card-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 3a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V3z" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 4l7 5 7-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="stat-card-num"><%= stats.totalContacts %></div>
+    <div class="stat-card-sub"><%= stats.newContacts %> unread</div>
+  </div>
+  <div class="stat-card purple">
+    <div class="stat-card-header">
+      <span class="stat-card-label">New Leads</span>
+      <div class="stat-card-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1l2 4h4l-3 3 1 4-4-2.5L4 12l1-4L2 5h4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="stat-card-num" style="color:<%= stats.newContacts > 0 ? 'var(--adm-amber)' : 'inherit' %>"><%= stats.newContacts %></div>
+    <div class="stat-card-sub">unread messages</div>
+  </div>
+</div>
+
+<div class="adm-grid-2">
+  <!-- Recent Blogs -->
+  <div class="adm-card">
+    <div class="adm-card-header">
+      <span class="adm-card-title">Recent Blog Posts</span>
+      <a href="/admin/blogs" class="adm-card-action">View all →</a>
+    </div>
+    <table class="adm-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Views</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% recentBlogs.forEach(b => { %>
+        <tr>
+          <td><a href="/admin/blogs/<%= b._id %>/edit" style="max-width:200px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><%= b.title %></a></td>
+          <td><span class="badge badge-blue" style="font-size:10px"><%= b.category.replace(/-/g,' ') %></span></td>
+          <td><span class="badge <%= b.published ? 'badge-green' : 'badge-amber' %>"><%= b.published ? 'Live' : 'Draft' %></span></td>
+          <td style="color:var(--adm-muted)"><%= b.views %></td>
+        </tr>
+        <% }) %>
+        <% if (recentBlogs.length === 0) { %>
+        <tr><td colspan="4" style="text-align:center;color:var(--adm-muted);padding:24px">No blog posts yet. Run the blog bot!</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Recent Contacts -->
+  <div class="adm-card">
+    <div class="adm-card-header">
+      <span class="adm-card-title">Recent Contact Submissions</span>
+      <a href="/admin/contacts" class="adm-card-action">View all →</a>
+    </div>
+    <table class="adm-table">
+      <thead>
+        <tr><th>Name</th><th>Service</th><th>Status</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <% recentContacts.forEach(c => { %>
+        <tr>
+          <td><a href="/admin/contacts/<%= c._id %>"><%= c.name %></a><div style="font-size:11px;color:var(--adm-muted)"><%= c.email %></div></td>
+          <td style="font-size:12px;color:var(--adm-muted)"><%= (c.service||'general').replace(/-/g,' ') %></td>
+          <td>
+            <span class="badge <%= c.status==='new'?'badge-amber':c.status==='read'?'badge-blue':c.status==='replied'?'badge-green':'badge-gray' %>">
+              <%= c.status %>
+            </span>
+          </td>
+          <td style="font-size:11px;color:var(--adm-muted)"><%= new Date(c.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) %></td>
+        </tr>
+        <% }) %>
+        <% if (recentContacts.length === 0) { %>
+        <tr><td colspan="4" style="text-align:center;color:var(--adm-muted);padding:24px">No contact submissions yet.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Category Stats -->
+<div class="adm-card">
+  <div class="adm-card-header">
+    <span class="adm-card-title">Blog Posts by Category</span>
+  </div>
+  <div style="padding:20px">
+    <% const maxCount = categoryStats.length ? Math.max(...categoryStats.map(c=>c.count)) : 1; %>
+    <% categoryStats.forEach(c => { %>
+    <div class="cat-bar">
+      <span class="cat-bar-label"><%= c._id.replace(/-/g,' ') %></span>
+      <div class="cat-bar-track"><div class="cat-bar-fill" style="width:<%= Math.round((c.count/maxCount)*100) %>%"></div></div>
+      <span class="cat-bar-num"><%= c.count %></span>
+      <span style="font-size:11px;color:var(--adm-muted);width:60px;text-align:right"><%= c.views %> views</span>
+    </div>
+    <% }) %>
+    <% if (!categoryStats.length) { %>
+    <p style="color:var(--adm-muted);text-align:center;padding:16px">No data yet.</p>
+    <% } %>
+  </div>
+</div>
