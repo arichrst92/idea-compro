@@ -19,7 +19,7 @@ router.use((req, res, next) => {
 router.get('/login', (req, res) => {
   if (req.session.adminId) return res.redirect('/admin');
   res.render('admin/login', {
-    layout: 'layouts/admin',
+    layout: 'layouts/auth',
     title: 'Admin Login - IDEA Asia',
     description: '',
     currentPage: 'admin',
@@ -83,7 +83,7 @@ router.get('/verify', (req, res) => {
   const p = req.session.otpPhone;
   const masked = p.slice(0, 4) + 'xxxx' + p.slice(-4);
   res.render('admin/verify', {
-    layout: 'layouts/admin',
+    layout: 'layouts/auth',
     title: 'Verify OTP - IDEA Asia',
     description: '',
     currentPage: 'admin',
