@@ -22,9 +22,11 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
-      imgSrc: ["'self'", "data:", "https:", "https://www.google-analytics.com"],
-      connectSrc: ["'self'", "https://www.google-analytics.com", "https://region1.google-analytics.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://unpkg.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:"],
+      connectSrc: ["'self'", "blob:", "https://www.google-analytics.com", "https://region1.google-analytics.com", "https://api.groq.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+      workerSrc: ["'self'", "blob:"],
+      childSrc: ["'self'", "blob:"],
     }
   }
 }));
@@ -37,7 +39,11 @@ app.use(methodOverride('_method'));
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '7d' : '0'
+  maxAge: process.env.NODE_ENV === 'production' ? '7d' : '0',
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.glb')) res.set('Content-Type', 'model/gltf-binary');
+    if (filePath.endsWith('.gltf')) res.set('Content-Type', 'model/gltf+json');
+  }
 }));
 
 // Rate limiting
@@ -45,6 +51,8 @@ const contactLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10 });
 app.use('/contact/submit', contactLimiter);
 const adminLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
 app.use('/admin/login', adminLimiter);
+const agentLimiter = rateLimit({ windowMs: 60 * 1000, max: 20, message: { error: 'Too many requests, please slow down.' } });
+app.use('/agent/chat', agentLimiter);
 
 // Session (must come before routes)
 const sessionConfig = {
@@ -91,6 +99,7 @@ app.use('/about', require('./src/routes/about'));
 app.use('/contact', require('./src/routes/contact'));
 app.use('/api', require('./src/routes/api'));
 app.use('/admin', require('./src/routes/admin'));
+app.use('/agent', require('./src/routes/agent'));
 
 // 404
 app.use((req, res) => {

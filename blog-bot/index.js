@@ -60,7 +60,7 @@ Return ONLY a valid JSON object with NO markdown, NO backticks, NO extra text:
     const resp = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama-3.1-8b-instant',
         max_tokens: 4096,
         temperature: 0.7,
         messages: [{ role: 'user', content: prompt }],

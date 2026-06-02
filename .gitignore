@@ -6,3 +6,4 @@ logs/
 npm-debug.log*
 public/images/og-*.jpg
 "idea-website 2/"
+*.bak

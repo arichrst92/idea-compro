@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="<%= lang === 'id' ? 'id' : 'en' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'IDEA AI' %></title>
+  <meta name="description" content="<%= typeof description !== 'undefined' ? description : '' %>">
+  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'IDEA AI' %>">
+  <meta property="og:description" content="<%= typeof description !== 'undefined' ? description : '' %>">
+  <meta property="og:image" content="<%= siteUrl %><%= typeof ogImage !== 'undefined' ? ogImage : '/images/og-default.jpg' %>">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <% if (gaId) { %>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= gaId %>"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '<%= gaId %>', { anonymize_ip: true });
+  </script>
+  <% } %>
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/agent.css">
+  <%- styles %>
+</head>
+<body class="agent-body">
+  <%- body %>
+  <script src="/js/agent.js"></script>
+  <%- scripts %>
+</body>
+</html>

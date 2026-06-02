@@ -338,3 +338,105 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .blog-detail h1 { color: var(--white) !important; }
 .blog-body { color: rgba(255,255,255,0.8) !important; }
 .blog-body h2, .blog-body h3 { color: var(--white) !important; }
+
+/* =============================================
+   AI AGENT TOGGLE — navbar
+   ============================================= */
+.agent-toggle-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 100px;
+  font-size: 13px; font-weight: 500;
+  color: var(--blue);
+  border: 1.5px solid var(--blue);
+  transition: var(--transition);
+  background: transparent;
+}
+.agent-toggle-btn:hover {
+  color: var(--white);
+  border-color: var(--blue);
+  background: var(--blue);
+}
+.agent-toggle-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .agent-toggle-btn span:last-child { display: none; }
+  .agent-toggle-btn { padding: 6px 10px; }
+  .nav-cta { display: none; }
+}
+
+/* =============================================
+   OFFICES SECTION
+   ============================================= */
+.offices-section {
+  padding: 80px 0;
+  background: var(--gray-100);
+  border-top: 1px solid var(--gray-200);
+}
+.offices-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.offices-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: var(--black);
+  margin-top: 8px;
+}
+.offices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+.office-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  transition: var(--transition);
+}
+.office-card:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+.office-city {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 4px;
+}
+.office-role {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.office-addr {
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.7;
+}
+.offices-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.offices-contact a {
+  font-size: 14px;
+  color: var(--gray-600);
+  transition: color 0.2s;
+}
+.offices-contact a:hover { color: var(--blue); }
+.offices-contact .btn { margin-left: 8px; }
