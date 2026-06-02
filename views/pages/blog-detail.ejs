@@ -1,3 +1,31 @@
+<%
+  // JSON-LD BlogPosting
+  const articleTitle = (lang === 'id' && blog.titleId) ? blog.titleId : blog.title;
+  const articleDesc  = (lang === 'id' && blog.excerptId) ? blog.excerptId : blog.excerpt;
+  const articleUrl   = siteUrl + '/blog/' + blog.slug;
+  const articleImg   = siteUrl + (blog.ogImage || '/images/og-blog.jpg');
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": articleTitle,
+    "description": articleDesc,
+    "image": articleImg,
+    "datePublished": new Date(blog.createdAt).toISOString(),
+    "dateModified": new Date(blog.updatedAt || blog.createdAt).toISOString(),
+    "author": { "@type": "Organization", "name": blog.author || "IDEA Team" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "IDEA — Integrated Digital Ecosystem Asia",
+      "logo": { "@type": "ImageObject", "url": siteUrl + "/images/logo-idea.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": articleUrl },
+    "articleSection": (blog.category || '').replace(/-/g, ' '),
+    "keywords": (blog.tags || []).join(', '),
+    "inLanguage": lang === 'id' ? 'id' : 'en'
+  };
+%>
+<script type="application/ld+json"><%- JSON.stringify(articleJsonLd) %></script>
+
 <div class="blog-detail-wrap">
   <div class="blog-detail">
     <nav class="breadcrumb">

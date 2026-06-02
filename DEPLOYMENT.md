@@ -4,7 +4,7 @@
 - VPS dengan Ubuntu 20.04/22.04 (min. 1 CPU, 1GB RAM, 20GB disk)
 - Domain sudah pointing ke IP VPS (DNS A record)
 - Akses SSH ke VPS
-- Anthropic API Key (untuk blog bot)
+- Groq API Key (untuk blog bot + AI agent — daftar di https://console.groq.com)
 
 ---
 
@@ -104,7 +104,7 @@ nano .env
 PORT=3000
 NODE_ENV=production
 MONGODB_URI=mongodb://localhost:27017/idea_website
-ANTHROPIC_API_KEY=sk-ant-XXXXXXXXXXXXXXXXXX
+GROQ_API_KEY=gsk_XXXXXXXXXXXXXXXXXXXXXXXX
 SITE_URL=https://yourdomain.com
 SITE_NAME=IDEA - Integrated Digital Ecosystem Asia
 CONTACT_EMAIL=info@yourdomain.com
@@ -290,7 +290,8 @@ mongorestore --db idea_website /backup/mongo/TANGGAL/idea_website
 | Problem | Solusi |
 |---------|--------|
 | `502 Bad Gateway` | `pm2 restart idea-website` |
-| Blog bot tidak jalan | Cek `ANTHROPIC_API_KEY` di `.env` |
+| Blog bot tidak jalan | Cek `GROQ_API_KEY` di `.env` |
+| Agent (Carolla) tidak respons | Cek `GROQ_API_KEY` di `.env` |
 | MongoDB connection error | `systemctl restart mongod` |
 | SSL expired | `certbot renew` |
 | Port 3000 tidak bisa diakses | Cek `pm2 status`, pastikan app running |
@@ -352,7 +353,7 @@ idea-website/
 1. **Logo** — Upload file `logo.png` ke `/var/www/idea-website/public/images/logo.png`
 2. **OG Images** — Untuk hasil terbaik, buat OG images 1200×630px menggunakan Figma/Canva dan upload sebagai `.jpg`
 3. **Email** — Tambahkan Nodemailer ke `contact.js` untuk email notifikasi form
-4. **Blog Bot** — Membutuhkan `ANTHROPIC_API_KEY` valid. Bot akan generate 6 post pertama saat startup (satu per service)
+4. **Blog Bot** — Membutuhkan `GROQ_API_KEY` valid. Bot akan generate 6 post pertama saat startup (satu per service). Bot hanya jalan di worker PM2 #0 (cluster mode safe).
 5. **HTTPS** — Wajib untuk OG tags dan SEO. Certbot gratis dan auto-renew
 6. **Backup** — Setup cron job backup MongoDB harian
 

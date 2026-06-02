@@ -91,9 +91,12 @@ app.set('layout extractStyles', true);
 app.use((req, res, next) => {
   const lang = req.cookies.lang || req.query.lang || 'en';
   res.locals.lang = ['en', 'id'].includes(lang) ? lang : 'en';
-  res.locals.siteUrl = process.env.SITE_URL || 'https://idea-asia.com';
+  res.locals.siteUrl = process.env.SITE_URL || 'https://ide.asia';
   res.locals.siteName = process.env.SITE_NAME || 'IDEA Asia';
   res.locals.gaId = process.env.GA_MEASUREMENT_ID || '';
+  res.locals.gscVerification = process.env.GSC_VERIFICATION || '';
+  // Path tanpa query string — untuk canonical + hreflang
+  res.locals.currentPath = req.path;
   next();
 });
 
