@@ -108,30 +108,39 @@ Return ONLY a valid JSON object with NO markdown, NO backticks, NO extra text:
   }
 }
 
-const schedule = process.env.BLOG_CRON_SCHEDULE || '0 */8 * * *';
-cron.schedule(schedule, async () => {
-  console.log('⏰ Cron: generating blog...');
-  await generateBlogPost();
-});
-console.log(`📅 Blog bot scheduled: ${schedule}`);
+// Hanya jalankan cron + seeder di SATU worker PM2 (instance 0).
+// Di cluster mode (instances: 'max'), kalau tidak di-guard, blog akan di-generate
+// berkali-kali tiap cron tick — satu kali per worker.
+const isPrimaryWorker = !process.env.NODE_APP_INSTANCE || process.env.NODE_APP_INSTANCE === '0';
 
-async function initBlogBot() {
-  const BlogModel = getBlogModel();
-  const count = await BlogModel.countDocuments();
-  if (count < 6) {
-    console.log(`📝 Seeding ${6 - count} initial posts...`);
-    for (let i = count; i < 6; i++) {
-      await generateBlogPost();
-      await new Promise(r => setTimeout(r, 2000));
+if (isPrimaryWorker) {
+  const schedule = process.env.BLOG_CRON_SCHEDULE || '0 */8 * * *';
+  cron.schedule(schedule, async () => {
+    console.log('⏰ Cron: generating blog...');
+    await generateBlogPost();
+  });
+  console.log(`📅 Blog bot scheduled (worker 0 only): ${schedule}`);
+
+  async function initBlogBot() {
+    const BlogModel = getBlogModel();
+    const count = await BlogModel.countDocuments();
+    if (count < 6) {
+      console.log(`📝 Seeding ${6 - count} initial posts...`);
+      for (let i = count; i < 6; i++) {
+        await generateBlogPost();
+        await new Promise(r => setTimeout(r, 2000));
+      }
     }
   }
-}
 
-const tryInit = setInterval(() => {
-  if (mongoose.connection.readyState === 1) {
-    clearInterval(tryInit);
-    initBlogBot().catch(console.error);
-  }
-}, 1000);
+  const tryInit = setInterval(() => {
+    if (mongoose.connection.readyState === 1) {
+      clearInterval(tryInit);
+      initBlogBot().catch(console.error);
+    }
+  }, 1000);
+} else {
+  console.log(`📅 Blog bot skipped on worker ${process.env.NODE_APP_INSTANCE}`);
+}
 
 module.exports = { generateBlogPost };

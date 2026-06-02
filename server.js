@@ -15,6 +15,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust Nginx reverse proxy — needed for correct req.ip + express-rate-limit
+// '1' = trust first hop (Nginx on same VPS). See https://expressjs.com/en/guide/behind-proxies.html
+app.set('trust proxy', 1);
+
 // Security & Performance
 app.use(helmet({
   contentSecurityPolicy: {
@@ -54,24 +58,26 @@ app.use('/admin/login', adminLimiter);
 const agentLimiter = rateLimit({ windowMs: 60 * 1000, max: 20, message: { error: 'Too many requests, please slow down.' } });
 app.use('/agent/chat', agentLimiter);
 
-// Session (must come before routes)
-const sessionConfig = {
+// Session — MongoStore dibuat SEKALI di module scope (bukan per-request).
+// Dulu store dibuat di dalam middleware tiap request → MaxListeners leak di PM2 cluster.
+const sessionStore = MongoStore.create({
+  mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/idea_website',
+  ttl: 8 * 60 * 60, // 8 hours, match cookie
+  touchAfter: 24 * 3600, // lazy session update
+});
+sessionStore.on('error', (err) => console.error('MongoStore error:', err.message));
+
+app.use(session({
   secret: process.env.ADMIN_SESSION_SECRET || 'idea-dev-secret-change-in-production',
   resave: false,
   saveUninitialized: false,
+  store: sessionStore,
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     maxAge: 8 * 60 * 60 * 1000, // 8 hours
   },
-};
-// Attach MongoStore after mongoose connects — lazy init below
-app.use((req, res, next) => {
-  if (!sessionConfig.store && mongoose.connection.readyState === 1) {
-    sessionConfig.store = MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/idea_website' });
-  }
-  session(sessionConfig)(req, res, next);
-});
+}));
 
 // Template engine
 app.set('view engine', 'ejs');
