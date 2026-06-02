@@ -1,14 +1,14 @@
 <section class="page-hero">
   <div class="container">
-    <p class="section-eyebrow">Blog</p>
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span>Blog</div>
     <h1 class="section-title"><%= lang === 'id' ? 'Wawasan & Artikel' : 'Insights & Articles' %></h1>
-    <p style="color:var(--gray-600);margin-top:12px;font-size:17px;max-width:560px">
+    <p>
       <%= lang === 'id' ? 'Panduan, tren, dan wawasan seputar IT Consulting, Cloud, Keamanan, dan Transformasi Digital.' : 'Guides, trends and insights on IT Consulting, Cloud, Security and Digital Transformation.' %>
     </p>
   </div>
 </section>
 
-<div style="background:var(--black2);border-bottom:1px solid rgba(255,255,255,0.08)">
+<div class="blog-filters-bar">
   <div class="container">
     <div class="blog-filters">
       <a href="/blog" class="filter-btn <%= !category ? 'active' : '' %>"><%= lang === 'id' ? 'Semua' : 'All' %></a>
@@ -22,11 +22,11 @@
   </div>
 </div>
 
-<div style="background:var(--black);min-height:60vh">
+<div class="blog-list-wrap">
   <div class="container">
     <% if (blogs.length === 0) { %>
-    <div style="text-align:center;padding:80px 0;color:var(--gray-400)">
-      <p style="font-size:18px"><%= lang === 'id' ? 'Belum ada artikel. Bot akan segera menghasilkan konten baru.' : 'No articles yet. The bot will generate new content soon.' %></p>
+    <div class="blog-empty">
+      <p><%= lang === 'id' ? 'Belum ada artikel. Bot akan segera menghasilkan konten baru.' : 'No articles yet. The bot will generate new content soon.' %></p>
     </div>
     <% } else { %>
     <div class="blog-grid">

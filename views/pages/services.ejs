@@ -1,14 +1,14 @@
 <section class="page-hero">
   <div class="container">
-    <p class="section-eyebrow"><%= lang === 'id' ? 'Apa yang Kami Lakukan' : 'What We Do' %></p>
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Apa yang Kami Lakukan' : 'What We Do' %></div>
     <h1 class="section-title"><%= lang === 'id' ? 'Layanan Kami' : 'Our Services' %></h1>
-    <p style="color:var(--gray-600);margin-top:12px;font-size:17px;max-width:600px">
+    <p>
       <%= lang === 'id' ? 'Solusi teknologi enterprise dari konsultasi strategis hingga eksekusi teknis yang terukur.' : 'Enterprise technology solutions from strategic consulting to measurable technical execution.' %>
     </p>
   </div>
 </section>
 
-<div style="background:var(--white)">
+<div class="services-page-wrap">
   <div class="container">
     <div class="services-page-grid">
       <% services.forEach((s, i) => { %>
@@ -30,7 +30,7 @@
             <% } %>
           </svg>
         </div>
-        <div class="service-num" style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--blue);margin-bottom:12px">0<%= i+1 %></div>
+        <div class="service-num">0<%= i+1 %></div>
         <h3 class="service-card-title"><%= lang === 'id' ? s.titleId : s.titleEn %></h3>
         <p><%= lang === 'id' ? s.descId : s.descEn %></p>
         <ul class="service-card-features">
@@ -48,7 +48,7 @@
 </div>
 
 <!-- Bottom CTA -->
-<section class="cta-section" style="padding-top:0">
+<section class="cta-section section-flush-top">
   <div class="container">
     <div class="cta-inner">
       <h2><%= lang === 'id' ? 'Tidak Yakin Layanan Mana yang Tepat?' : "Not Sure Which Service You Need?" %></h2>
