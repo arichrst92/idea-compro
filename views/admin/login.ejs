@@ -8,32 +8,60 @@
         </svg>
       </div>
       <h1>IDEA Admin</h1>
-      <p>Integrated Digital Ecosystem Asia</p>
+      <p>Login dengan WhatsApp OTP</p>
     </div>
 
-    <% if (error === 'invalid') { %>
+    <% if (error === 'invalid_phone') { %>
     <div class="flash flash-error" style="margin-bottom:20px">
-      Invalid username or password.
+      Nomor tidak terdaftar atau format salah.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } else if (error === 'too_many_otp') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      Terlalu banyak permintaan OTP. Tunggu 5 menit.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } else if (error === 'send_failed') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      Gagal mengirim OTP. Cek koneksi Fonnte / coba lagi.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } else if (error === 'otp_expired') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      OTP sudah kadaluarsa. Mulai ulang.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } else if (error === 'locked') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      OTP terkunci (5 kali salah). Request OTP baru.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } else if (error === 'server') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      Server error. Coba lagi.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } %>
+
+    <% if (info === 'logged_out') { %>
+    <div class="flash flash-success" style="margin-bottom:20px">
+      Anda telah logout.
       <button onclick="this.parentElement.remove()" class="flash-close">×</button>
     </div>
     <% } %>
 
     <form action="/admin/login" method="POST">
       <div class="adm-form-group">
-        <label class="adm-label">Username</label>
-        <input type="text" name="username" class="adm-input" placeholder="admin" required autocomplete="username">
-      </div>
-      <div class="adm-form-group">
-        <label class="adm-label">Password</label>
-        <input type="password" name="password" class="adm-input" placeholder="••••••••" required autocomplete="current-password">
+        <label class="adm-label">Nomor WhatsApp Admin</label>
+        <input type="tel" name="phone" class="adm-input" placeholder="08123456789 atau 628123456789" required autocomplete="tel" inputmode="numeric" pattern="[0-9+\s\-]+">
       </div>
       <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;padding:12px">
-        Sign In to Dashboard
+        Kirim OTP ke WhatsApp
       </button>
     </form>
 
     <p style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,0.3)">
-      Protected area. Authorized personnel only.
+      OTP akan dikirim ke WhatsApp Anda dalam beberapa detik. Berlaku 5 menit.
     </p>
   </div>
 </div>

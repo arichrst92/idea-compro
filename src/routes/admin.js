@@ -1,18 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const Admin = require('../models/Admin');
 const Blog = require('../models/Blog');
+const OtpToken = require('../models/OtpToken');
 const { requireAuth } = require('../middleware/auth');
 const sanitizeHtml = require('sanitize-html');
 const { generateBlogPost } = require('../../blog-bot/index');
+const { sendWhatsApp, normalizePhone, generateOtp, otpMessage } = require('../services/fonnte');
 
-// Admin layout — all admin pages use admin layout
+// Admin layout
 router.use((req, res, next) => {
   res.locals.adminLayout = true;
   next();
 });
 
-// ─── LOGIN ───────────────────────────────────────────────────────────
+// ─── LOGIN: STEP 1 — phone input ─────────────────────────────────────
 router.get('/login', (req, res) => {
   if (req.session.adminId) return res.redirect('/admin');
   res.render('admin/login', {
@@ -21,31 +24,126 @@ router.get('/login', (req, res) => {
     description: '',
     currentPage: 'admin',
     error: req.query.error,
+    info: req.query.info,
   });
 });
 
+// ─── LOGIN: REQUEST OTP — kirim kode via WA ──────────────────────────
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const admin = await Admin.findOne({ username: username.toLowerCase() });
-    if (!admin || !(await admin.comparePassword(password))) {
-      return res.redirect('/admin/login?error=invalid');
+    const phone = normalizePhone(req.body.phone);
+    if (!phone) {
+      return res.redirect('/admin/login?error=invalid_phone');
     }
+
+    // Hanya admin terdaftar yang bisa request OTP
+    const admin = await Admin.findOne({ phone });
+    if (!admin) {
+      // Constant-time-ish: tetap delay sebentar untuk menghindari enumeration
+      await new Promise(r => setTimeout(r, 500));
+      return res.redirect('/admin/login?error=invalid_phone');
+    }
+
+    // Throttle: max 3 OTP / phone / 5 menit (TTL window)
+    const recentCount = await OtpToken.countDocuments({ phone });
+    if (recentCount >= 3) {
+      return res.redirect('/admin/login?error=too_many_otp');
+    }
+
+    // Generate & store
+    const code = generateOtp();
+    const hash = await bcrypt.hash(code, 10);
+    await OtpToken.create({ phone, hash });
+
+    // Kirim via Fonnte
+    try {
+      await sendWhatsApp(phone, otpMessage(code, 5));
+    } catch (sendErr) {
+      console.error('Fonnte send failed:', sendErr.message);
+      return res.redirect('/admin/login?error=send_failed');
+    }
+
+    // Simpan phone di session untuk step verify (jangan ekspos di URL)
+    req.session.otpPhone = phone;
+    req.session.otpRequestedAt = Date.now();
+
+    const redirect = req.query.redirect || '/admin';
+    res.redirect('/admin/verify?redirect=' + encodeURIComponent(redirect));
+  } catch (e) {
+    console.error('OTP request error:', e);
+    res.redirect('/admin/login?error=server');
+  }
+});
+
+// ─── LOGIN: STEP 2 — input OTP ───────────────────────────────────────
+router.get('/verify', (req, res) => {
+  if (req.session.adminId) return res.redirect('/admin');
+  if (!req.session.otpPhone) return res.redirect('/admin/login');
+  // Mask phone untuk UI: 628xxxxxx1234
+  const p = req.session.otpPhone;
+  const masked = p.slice(0, 4) + 'xxxx' + p.slice(-4);
+  res.render('admin/verify', {
+    layout: 'layouts/admin',
+    title: 'Verify OTP - IDEA Asia',
+    description: '',
+    currentPage: 'admin',
+    error: req.query.error,
+    maskedPhone: masked,
+  });
+});
+
+router.post('/verify', async (req, res) => {
+  try {
+    const phone = req.session.otpPhone;
+    if (!phone) return res.redirect('/admin/login');
+
+    const code = String(req.body.otp || '').trim();
+    if (!/^\d{6}$/.test(code)) {
+      return res.redirect('/admin/verify?error=invalid_code');
+    }
+
+    // Ambil OTP terbaru untuk phone ini, yang belum used
+    const token = await OtpToken.findOne({ phone, used: false }).sort({ createdAt: -1 });
+    if (!token) {
+      return res.redirect('/admin/login?error=otp_expired');
+    }
+    if (token.attempts >= 5) {
+      return res.redirect('/admin/login?error=locked');
+    }
+
+    const ok = await bcrypt.compare(code, token.hash);
+    if (!ok) {
+      token.attempts += 1;
+      await token.save();
+      return res.redirect('/admin/verify?error=wrong_code');
+    }
+
+    // Sukses — mark used + invalidate semua OTP lama untuk phone ini
+    token.used = true;
+    await token.save();
+    await OtpToken.deleteMany({ phone, _id: { $ne: token._id } });
+
+    const admin = await Admin.findOne({ phone });
+    if (!admin) return res.redirect('/admin/login?error=invalid_phone');
+
     req.session.adminId = admin._id;
     req.session.adminUsername = admin.username;
+    delete req.session.otpPhone;
+    delete req.session.otpRequestedAt;
+
     admin.lastLogin = new Date();
     await admin.save();
+
     const redirect = req.query.redirect || '/admin';
     res.redirect(redirect);
   } catch (e) {
-    console.error(e);
+    console.error('OTP verify error:', e);
     res.redirect('/admin/login?error=server');
   }
 });
 
 router.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/admin/login');
+  req.session.destroy(() => res.redirect('/admin/login?info=logged_out'));
 });
 
 // ─── DASHBOARD ───────────────────────────────────────────────────────

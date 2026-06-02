@@ -1,0 +1,42 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M5 22L12 8L14.5 13L9 22Z" fill="white"/>
+          <path d="M11 22L18 8L20.5 13L15 22Z" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      <h1>Verifikasi OTP</h1>
+      <p>Kode dikirim ke <strong><%= maskedPhone %></strong></p>
+    </div>
+
+    <% if (error === 'wrong_code') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      Kode salah. Coba lagi.
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } else if (error === 'invalid_code') { %>
+    <div class="flash flash-error" style="margin-bottom:20px">
+      Format kode tidak valid (6 digit angka).
+      <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+    </div>
+    <% } %>
+
+    <form action="/admin/verify" method="POST">
+      <div class="adm-form-group">
+        <label class="adm-label">Kode OTP (6 digit)</label>
+        <input type="text" name="otp" class="adm-input" placeholder="000000" required autocomplete="one-time-code"
+               inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6"
+               style="text-align:center;font-size:24px;letter-spacing:8px" autofocus>
+      </div>
+      <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;padding:12px">
+        Verifikasi & Masuk
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,0.3)">
+      Tidak menerima kode? <a href="/admin/login" style="color:rgba(255,255,255,0.6);text-decoration:underline">Mulai ulang</a>
+    </p>
+  </div>
+</div>

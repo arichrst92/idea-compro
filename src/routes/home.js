@@ -8,14 +8,14 @@ router.get('/', async (req, res) => {
     const recentBlogs = await Blog.find({ published: true })
       .sort({ createdAt: -1 }).limit(3).select('title titleId slug excerpt excerptId category createdAt readTime');
     res.render('pages/home', {
-      title: 'IDEAsia - PT Solusi Inovasi Bangsa - Integrated Digital Ecosystem Asia',
+      title: 'Integrated Digital Ecosystem Asia',
       description: 'Enterprise IT Consulting, Outsourcing, Cloud Infrastructure, IT Security, and Squad-Based Delivery across Southeast Asia.',
       ogImage: '/images/og-home.jpg',
       recentBlogs,
       currentPage: 'home'
     });
   } catch (e) {
-    res.render('pages/home', { title: 'IDEAsia - PT Solusi Inovasi Bangsa', description: '', ogImage: '/images/og-home.jpg', recentBlogs: [], currentPage: 'home' });
+    res.render('pages/home', { title: 'Integrated Digital Ecosystem Asia', description: '', ogImage: '/images/og-home.jpg', recentBlogs: [], currentPage: 'home' });
   }
 });
 
