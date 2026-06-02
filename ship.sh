@@ -39,7 +39,8 @@ set -e
 cd "$VPS_DIR"
 git pull origin $BRANCH
 npm install --production
-pm2 reload idea-website
+# --update-env wajib: tanpa ini, var baru di .env tidak terbaca process Node
+pm2 reload idea-website --update-env
 pm2 logs idea-website --lines 10 --nostream
 EOF
 
