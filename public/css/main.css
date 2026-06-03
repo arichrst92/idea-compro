@@ -334,7 +334,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .why-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .why-card { background: var(--white); padding: 28px; border-radius: var(--radius-lg); border: 1px solid var(--border); transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
 .why-card:hover { border-color: var(--blue-200); transform: translateY(-2px); box-shadow: var(--shadow); }
-.why-card-icon { font-size: 22px; margin-bottom: 14px; }
+.why-card-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--blue-50);
+  color: var(--blue);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.why-card:hover .why-card-icon { background: var(--blue); color: var(--white); border-color: var(--blue); }
 .why-card h4 { font-family: var(--font-display); font-size: 16px; font-weight: var(--weight-semibold); margin-bottom: 8px; color: var(--ink); }
 .why-card p { font-size: 13px; color: var(--text-2); line-height: 1.55; }
 
