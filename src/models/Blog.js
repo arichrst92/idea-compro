@@ -17,7 +17,7 @@ const blogSchema = new mongoose.Schema({
   tags: [String],
   metaTitle: String,
   metaDescription: String,
-  ogImage: { type: String, default: '/images/og-blog.png' },
+  ogImage: { type: String, default: '/images/og-blog.jpg' },
   author: { type: String, default: 'IDEA Team' },
   featured: { type: Boolean, default: false },
   published: { type: Boolean, default: true },

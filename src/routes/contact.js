@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
   res.render('pages/contact', {
     title: 'Contact Us - IDEAsia - PT Solusi Inovasi Bangsa',
     description: 'Get in touch with IDEAsia - PT Solusi Inovasi Bangsa for IT consulting, outsourcing, cloud infrastructure, and enterprise technology solutions.',
-    ogImage: '/images/og-contact.png',
+    ogImage: '/images/og-contact.jpg',
     currentPage: 'contact',
     success: req.query.success,
     error: req.query.error

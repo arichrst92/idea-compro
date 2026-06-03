@@ -3,7 +3,7 @@
   const articleTitle = (lang === 'id' && blog.titleId) ? blog.titleId : blog.title;
   const articleDesc  = (lang === 'id' && blog.excerptId) ? blog.excerptId : blog.excerpt;
   const articleUrl   = siteUrl + '/blog/' + blog.slug;
-  const articleImg   = siteUrl + (blog.ogImage || '/images/og-blog.png');
+  const articleImg   = siteUrl + (blog.ogImage || '/images/og-blog.jpg');
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",

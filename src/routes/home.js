@@ -10,12 +10,12 @@ router.get('/', async (req, res) => {
     res.render('pages/home', {
       title: 'Integrated Digital Ecosystem Asia',
       description: 'Enterprise IT Consulting, Outsourcing, Cloud Infrastructure, IT Security, and Squad-Based Delivery across Southeast Asia.',
-      ogImage: '/images/og-home.png',
+      ogImage: '/images/og-home.jpg',
       recentBlogs,
       currentPage: 'home'
     });
   } catch (e) {
-    res.render('pages/home', { title: 'Integrated Digital Ecosystem Asia', description: '', ogImage: '/images/og-home.png', recentBlogs: [], currentPage: 'home' });
+    res.render('pages/home', { title: 'Integrated Digital Ecosystem Asia', description: '', ogImage: '/images/og-home.jpg', recentBlogs: [], currentPage: 'home' });
   }
 });
 

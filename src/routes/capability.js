@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
   res.render('pages/capability', {
     title,
     description,
-    ogImage: '/images/og-capability.png',
+    ogImage: '/images/og-capability.jpg',
     currentPage: 'capability',
     jsonLd: capabilityJsonLd,
   });
