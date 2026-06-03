@@ -438,6 +438,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .blog-body ul, .blog-body ol { padding-left: 22px; margin-bottom: 20px; color: var(--gray-700); }
 .blog-body li { margin-bottom: 8px; }
 .blog-body strong { font-weight: var(--weight-semibold); color: var(--ink); }
+/* Indonesian content from blog bot sometimes wraps everything in <b>/<strong>.
+   Reset emphasis so ID body reads the same as EN. Real heading weight comes
+   from h2/h3 styling, so this only flattens spurious bold inline. */
+.blog-body.content-id b,
+.blog-body.content-id strong { font-weight: inherit; color: inherit; }
 .blog-body a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
 .blog-body blockquote { border-left: 3px solid var(--blue); padding-left: 20px; margin: 28px 0; color: var(--text-2); font-style: italic; }
 .blog-body code { background: var(--gray-100); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; color: var(--ink); }

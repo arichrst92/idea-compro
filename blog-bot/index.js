@@ -50,8 +50,8 @@ Return ONLY a valid JSON object with NO markdown, NO backticks, NO extra text:
   "titleId": "Indonesian translation of title",
   "excerpt": "Meta description 150-160 chars",
   "excerptId": "Indonesian translation of excerpt",
-  "content": "Full HTML blog post min 800 words using h2 h3 p ul li tags",
-  "contentId": "Full Indonesian HTML translation same structure",
+  "content": "Full HTML blog post min 800 words. Use ONLY these tags: h2, h3, p, ul, ol, li. Do NOT wrap content in <b> or <strong>. Use <strong> sparingly for one or two key terms per paragraph only.",
+  "contentId": "Full Indonesian HTML translation matching same structure and same <strong> usage discipline as English.",
   "tags": ["tag1","tag2","tag3","tag4"],
   "metaTitle": "SEO meta title max 60 chars",
   "metaDescription": "SEO meta description max 160 chars"
