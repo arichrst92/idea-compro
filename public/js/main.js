@@ -171,16 +171,16 @@
       if (n.y < 0 || n.y > H) n.vy *= -1;
     });
 
-    // Lines between nearby nodes
+    // Lines between nearby nodes — light blue tint, visible on white bg
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const dx = nodes[i].x - nodes[j].x;
         const dy = nodes[i].y - nodes[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < maxDist) {
-          const alpha = (1 - dist / maxDist) * 0.5;
+          const alpha = (1 - dist / maxDist) * 0.35;
           ctx.beginPath();
-          ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+          ctx.strokeStyle = 'rgba(26, 80, 232,' + alpha + ')';
           ctx.lineWidth = 0.6;
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -189,30 +189,35 @@
       }
     }
 
-    // Nodes
-    nodes.forEach(n => {
+    // Nodes — mostly dark ink with occasional blue accent, visible on white
+    nodes.forEach((n, idx) => {
       const p = Math.sin(n.pulse) * 0.5 + 0.5;
+      const isBlueNode = idx % 6 === 0; // ~17% blue accent nodes
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.r + p, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,255,255,' + (0.6 + p * 0.4) + ')';
+      ctx.fillStyle = isBlueNode
+        ? 'rgba(26, 80, 232,' + (0.6 + p * 0.35) + ')'
+        : 'rgba(10, 15, 28,' + (0.5 + p * 0.35) + ')';
       ctx.fill();
       if (n.r > 1.2) {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r * 4 + p * 3, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255,255,255,' + (0.06 + p * 0.08) + ')';
+        ctx.strokeStyle = isBlueNode
+          ? 'rgba(26, 80, 232,' + (0.08 + p * 0.08) + ')'
+          : 'rgba(10, 15, 28,' + (0.06 + p * 0.06) + ')';
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
     });
 
-    // Scan lines
+    // Subtle scan lines in blue — adds movement without being noisy
     const t = Date.now() * 0.0005;
     [0.7, 1.3, 1.9].forEach((speed, i) => {
       const y = (t * 60 * speed) % (H + 20) - 10;
       const g = ctx.createLinearGradient(0, 0, W, 0);
       g.addColorStop(0, 'rgba(26,80,232,0)');
-      g.addColorStop(0.3 + i * 0.1, 'rgba(255,255,255,0.05)');
-      g.addColorStop(0.7 - i * 0.1, 'rgba(255,255,255,0.08)');
+      g.addColorStop(0.3 + i * 0.1, 'rgba(26,80,232,0.08)');
+      g.addColorStop(0.7 - i * 0.1, 'rgba(26,80,232,0.12)');
       g.addColorStop(1, 'rgba(26,80,232,0)');
       ctx.fillStyle = g;
       ctx.fillRect(0, y, W, 1.5);

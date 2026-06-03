@@ -20,7 +20,7 @@ Company facts:
 - Certified: ISO 9001:2015 & ISO 27001:2013
 - Legal: PT Solusi Inovasi Bangsa, AHU-AH.01.09-0249721
 - Clients: Bank Jakarta, BRI, UOB, Accenture, Telkomsel, Pertamina, SIG, and 20+ enterprise clients
-- Website: ide.asia | Email: info@ide.asia | WhatsApp: +62 821-1567-8446
+- Website: ide.asia | Email: info@ide.asia | WhatsApp: (+62) 818-0580-7807
 - Values: P.R.I.D.E — Professionalism, Reliability, Innovation, Diversity, Excellence
 
 Guidelines:
