@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/admin.css?v=2">
+  <link rel="stylesheet" href="/css/admin.css?v=3">
 </head>
 <body>
 <div class="admin-layout">
@@ -23,15 +23,17 @@
       <div class="nav-section-label">Content</div>
       <a href="/admin/blogs" class="sidebar-link <%= currentPage === 'admin-blogs' ? 'active' : '' %>"><span class="icon">✍</span> Blog Posts</a>
       <a href="/admin/blogs/new" class="sidebar-link <%= currentPage === 'admin-blog-new' ? 'active' : '' %>"><span class="icon">＋</span> New Post</a>
+      <div class="nav-section-label">Leads</div>
+      <a href="/admin/contacts" class="sidebar-link <%= currentPage === 'admin-contacts' ? 'active' : '' %>"><span class="icon">✉</span> Contacts</a>
       <div class="nav-section-label">Site</div>
       <a href="/" target="_blank" class="sidebar-link"><span class="icon">↗</span> View Site</a>
       <a href="/blog" target="_blank" class="sidebar-link"><span class="icon">↗</span> View Blog</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-avatar"><%= (typeof adminUsername !== 'undefined' ? adminUsername : 'A')[0].toUpperCase() %></div>
+        <div class="sidebar-avatar"><%= (typeof adminName !== 'undefined' && adminName ? adminName : 'A')[0].toUpperCase() %></div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name"><%= typeof adminUsername !== 'undefined' ? adminUsername : 'Admin' %></div>
+          <div class="sidebar-user-name"><%= typeof adminName !== 'undefined' && adminName ? adminName : 'Admin' %></div>
           <a href="/admin/logout" class="sidebar-logout">Logout →</a>
         </div>
       </div>
