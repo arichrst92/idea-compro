@@ -211,6 +211,38 @@ RIGHT-SIDE VISUAL CONCEPT = A minimal abstract avatar — single circle in
 #1A50E8 suggesting voice / interaction. Very minimal, NOT a face.
 ```
 
+### 13. `og-capability.jpg`
+
+```text
+VARIANT = capability
+EYEBROW TAG TEXT = CAPABILITY · STACK & TALENT
+HEADLINE TEXT = Every Stack. Every Role.
+RIGHT-SIDE VISUAL CONCEPT = A minimal "tech mosaic" — a 6×4 grid of tiny
+abstract logo silhouettes (small squares ~22px each, line-art only) in
+#0A0F1C, arranged on a faint #F8F9FB grid. About 3-4 of the squares are
+filled solid #1A50E8 (electric blue) instead of outline, creating a
+diagonal accent pattern across the grid. The squares should suggest tech
+logos without being any specific brand — abstract shapes only (circles,
+hexagons, simple polygons inside the squares). Very modern, like a
+capability matrix at Vercel or Stripe.
+```
+
+Untuk yang ingin alternative composition (variant B), bisa pakai prompt ini:
+
+```text
+VARIANT = capability (alt composition)
+EYEBROW TAG TEXT = CAPABILITY · STACK & TALENT
+HEADLINE TEXT = Every Stack. Every Role.
+ALTERNATIVE LAYOUT = Instead of right-side visual, span the visual across
+the full width as a faint background: 5 horizontal layered "stack" bands
+across the image, each 100px tall, separated by thin #E5E7EB lines. Each
+band has tiny dot markers in #1A50E8 at varying intervals, suggesting
+"items in a stack". The headline + eyebrow + IDEA wordmark sit on top of
+this layered background, anchored to the LEFT in a vertical column with
+clean Inter typography. Bottom 5% of image: a thin horizontal blue gradient
+line in #1A50E8 → transparent.
+```
+
 ---
 
 ## After generating
