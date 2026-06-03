@@ -22,6 +22,7 @@ router.get('/sitemap.xml', async (req, res) => {
     { path: '/services/squad-delivery',            priority: '0.8', changefreq: 'monthly' },
     { path: '/about',                              priority: '0.7', changefreq: 'monthly' },
     { path: '/contact',                            priority: '0.7', changefreq: 'monthly' },
+    { path: '/capability',                         priority: '0.9', changefreq: 'monthly' },
     { path: '/blog',                               priority: '0.8', changefreq: 'daily'   },
   ];
   // Blog list pagination

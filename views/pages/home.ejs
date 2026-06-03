@@ -238,9 +238,9 @@
 <!-- STATS -->
 <section class="stats-strip">
   <div class="container">
-    <div class="stats-grid">
+    <div class="stats-grid stats-grid-5">
       <div class="stat-item reveal">
-        <div class="stat-num" data-count="20" data-suffix="+">0+</div>
+        <div class="stat-num" data-count="100" data-suffix="+">0+</div>
         <div class="stat-label"><%= lang === 'id' ? 'Klien Enterprise' : 'Enterprise Clients' %></div>
       </div>
       <div class="stat-item reveal reveal-delay-1">
@@ -249,7 +249,11 @@
       </div>
       <div class="stat-item reveal reveal-delay-2">
         <div class="stat-num" data-count="5" data-suffix="">0</div>
-        <div class="stat-label"><%= lang === 'id' ? 'Negara Cakupan' : 'Countries Covered' %></div>
+        <div class="stat-label"><%= lang === 'id' ? 'Perwakilan Negara' : 'Country Representatives' %></div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-num" data-count="20" data-suffix="+">0+</div>
+        <div class="stat-label"><%= lang === 'id' ? 'Cakupan Klien Global' : 'Worldwide Client Coverage' %></div>
       </div>
       <div class="stat-item reveal reveal-delay-3">
         <div class="stat-num" data-count="6" data-suffix="">0</div>
@@ -297,6 +301,60 @@
           </div>
           <h4><%= lang === 'id' ? 'Security First' : 'Security First' %></h4>
           <p><%= lang === 'id' ? 'Keamanan tertanam di setiap lapisan solusi yang kami bangun.' : 'Security embedded in every layer of every solution we build.' %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITY HIGHLIGHT -->
+<section class="capability-highlight">
+  <div class="container">
+    <div class="capability-highlight-grid">
+      <div class="reveal">
+        <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Kapabilitas' : 'Capability' %></div>
+        <h2 class="section-title"><% if(lang==='id'){ %>Stack & Talenta<br><span class="section-title-muted">untuk Setiap Bentuk Pertumbuhan</span><% } else { %>The Stack & Talent<br><span class="section-title-muted">for Every Growth Shape</span><% } %></h2>
+        <p style="font-size:16px;color:var(--text-2);line-height:1.6;margin-top:20px;margin-bottom:28px">
+          <%= lang === 'id'
+            ? 'Dari React sampai Kubernetes sampai SIEM. Dari frontend engineer sampai SOC analyst. Daftar lengkap teknologi yang kami operasikan dan peran yang kami isi.'
+            : 'From React to Kubernetes to SIEM. From frontend engineers to SOC analysts. The full inventory of technologies we operate and roles we deliver.' %>
+        </p>
+        <a href="/capability" class="btn btn-primary"><%= lang === 'id' ? 'Jelajahi Kapabilitas' : 'Explore Capability' %> →</a>
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <div class="capability-highlight-stats">
+          <div class="capability-stat">
+            <div class="capability-stat-num">40+</div>
+            <div class="capability-stat-label"><%= lang === 'id' ? 'Teknologi development & data' : 'Development & data technologies' %></div>
+          </div>
+          <div class="capability-stat">
+            <div class="capability-stat-num">25+</div>
+            <div class="capability-stat-label"><%= lang === 'id' ? 'Tools infrastruktur & cloud' : 'Infrastructure & cloud tools' %></div>
+          </div>
+          <div class="capability-stat">
+            <div class="capability-stat-num">20+</div>
+            <div class="capability-stat-label"><%= lang === 'id' ? 'Stack & framework keamanan' : 'Security stacks & frameworks' %></div>
+          </div>
+          <div class="capability-stat">
+            <div class="capability-stat-num">25+</div>
+            <div class="capability-stat-label"><%= lang === 'id' ? 'Peran IT siap di-outsource' : 'IT roles ready to outsource' %></div>
+          </div>
+        </div>
+
+        <div class="capability-logos">
+          <img src="https://cdn.simpleicons.org/react/0A0F1C"             alt="React" loading="lazy">
+          <img src="https://cdn.simpleicons.org/nextdotjs/0A0F1C"         alt="Next.js" loading="lazy">
+          <img src="https://cdn.simpleicons.org/nodedotjs/0A0F1C"         alt="Node.js" loading="lazy">
+          <img src="https://cdn.simpleicons.org/python/0A0F1C"            alt="Python" loading="lazy">
+          <img src="https://cdn.simpleicons.org/go/0A0F1C"                alt="Go" loading="lazy">
+          <img src="https://cdn.simpleicons.org/amazonwebservices/0A0F1C" alt="AWS" loading="lazy">
+          <img src="https://cdn.simpleicons.org/googlecloud/0A0F1C"       alt="Google Cloud" loading="lazy">
+          <img src="https://cdn.simpleicons.org/microsoftazure/0A0F1C"    alt="Azure" loading="lazy">
+          <img src="https://cdn.simpleicons.org/kubernetes/0A0F1C"        alt="Kubernetes" loading="lazy">
+          <img src="https://cdn.simpleicons.org/docker/0A0F1C"            alt="Docker" loading="lazy">
+          <img src="https://cdn.simpleicons.org/terraform/0A0F1C"         alt="Terraform" loading="lazy">
+          <img src="https://cdn.simpleicons.org/grafana/0A0F1C"           alt="Grafana" loading="lazy">
         </div>
       </div>
     </div>

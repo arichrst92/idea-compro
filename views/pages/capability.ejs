@@ -1,0 +1,435 @@
+<%
+// ──────────────────────────────────────────────────────────────────
+// Capability data — single source of truth
+// Logos: simpleicons.org CDN, monochrome (ink color #0A0F1C).
+// Format: { name, slug }   — slug must match simpleicons.org slug
+// ──────────────────────────────────────────────────────────────────
+const techStack = {
+  development: {
+    icon: 'code',
+    titleEn: 'Development',
+    titleId: 'Pengembangan',
+    descEn: 'Modern stacks across web, mobile, and AI for products that scale.',
+    descId: 'Stack modern untuk web, mobile, dan AI yang siap scale.',
+    groups: [
+      {
+        labelEn: 'Frontend & Web',
+        labelId: 'Frontend & Web',
+        items: [
+          { name: 'React',        slug: 'react' },
+          { name: 'Next.js',      slug: 'nextdotjs' },
+          { name: 'Vue.js',       slug: 'vuedotjs' },
+          { name: 'Angular',      slug: 'angular' },
+          { name: 'Svelte',       slug: 'svelte' },
+          { name: 'TypeScript',   slug: 'typescript' },
+          { name: 'Tailwind CSS', slug: 'tailwindcss' },
+          { name: 'Astro',        slug: 'astro' },
+        ],
+      },
+      {
+        labelEn: 'Backend & Services',
+        labelId: 'Backend & Layanan',
+        items: [
+          { name: 'Node.js',      slug: 'nodedotjs' },
+          { name: 'Python',       slug: 'python' },
+          { name: 'Go',           slug: 'go' },
+          { name: 'Java',         slug: 'openjdk' },
+          { name: 'Spring',       slug: 'spring' },
+          { name: '.NET',         slug: 'dotnet' },
+          { name: 'PHP',          slug: 'php' },
+          { name: 'Laravel',      slug: 'laravel' },
+          { name: 'Ruby on Rails', slug: 'rubyonrails' },
+          { name: 'NestJS',       slug: 'nestjs' },
+          { name: 'FastAPI',      slug: 'fastapi' },
+          { name: 'GraphQL',      slug: 'graphql' },
+        ],
+      },
+      {
+        labelEn: 'Mobile',
+        labelId: 'Mobile',
+        items: [
+          { name: 'React Native', slug: 'react' },
+          { name: 'Flutter',      slug: 'flutter' },
+          { name: 'Swift',        slug: 'swift' },
+          { name: 'Kotlin',       slug: 'kotlin' },
+          { name: 'Expo',         slug: 'expo' },
+        ],
+      },
+      {
+        labelEn: 'AI & Data',
+        labelId: 'AI & Data',
+        items: [
+          { name: 'TensorFlow',   slug: 'tensorflow' },
+          { name: 'PyTorch',      slug: 'pytorch' },
+          { name: 'OpenAI',       slug: 'openai' },
+          { name: 'Anthropic',    slug: 'anthropic' },
+          { name: 'LangChain',    slug: 'langchain' },
+          { name: 'Pandas',       slug: 'pandas' },
+          { name: 'NumPy',        slug: 'numpy' },
+          { name: 'Hugging Face', slug: 'huggingface' },
+        ],
+      },
+      {
+        labelEn: 'Databases',
+        labelId: 'Database',
+        items: [
+          { name: 'PostgreSQL',   slug: 'postgresql' },
+          { name: 'MySQL',        slug: 'mysql' },
+          { name: 'MongoDB',      slug: 'mongodb' },
+          { name: 'Redis',        slug: 'redis' },
+          { name: 'Elasticsearch', slug: 'elasticsearch' },
+          { name: 'Apache Kafka', slug: 'apachekafka' },
+          { name: 'Snowflake',    slug: 'snowflake' },
+          { name: 'ClickHouse',   slug: 'clickhouse' },
+        ],
+      },
+    ],
+  },
+  infrastructure: {
+    icon: 'cloud',
+    titleEn: 'Infrastructure',
+    titleId: 'Infrastruktur',
+    descEn: 'Cloud-native foundations engineered for uptime, cost efficiency, and scale.',
+    descId: 'Fondasi cloud-native untuk uptime, efisiensi biaya, dan skala.',
+    groups: [
+      {
+        labelEn: 'Cloud Providers',
+        labelId: 'Penyedia Cloud',
+        items: [
+          { name: 'AWS',          slug: 'amazonwebservices' },
+          { name: 'Google Cloud', slug: 'googlecloud' },
+          { name: 'Microsoft Azure', slug: 'microsoftazure' },
+          { name: 'Cloudflare',   slug: 'cloudflare' },
+          { name: 'DigitalOcean', slug: 'digitalocean' },
+          { name: 'Vercel',       slug: 'vercel' },
+          { name: 'Alibaba Cloud', slug: 'alibabacloud' },
+        ],
+      },
+      {
+        labelEn: 'Containers & Orchestration',
+        labelId: 'Container & Orchestration',
+        items: [
+          { name: 'Docker',       slug: 'docker' },
+          { name: 'Kubernetes',   slug: 'kubernetes' },
+          { name: 'Helm',         slug: 'helm' },
+          { name: 'Podman',       slug: 'podman' },
+          { name: 'Argo CD',      slug: 'argo' },
+        ],
+      },
+      {
+        labelEn: 'CI/CD & Automation',
+        labelId: 'CI/CD & Otomatisasi',
+        items: [
+          { name: 'GitHub Actions', slug: 'githubactions' },
+          { name: 'GitLab CI',    slug: 'gitlab' },
+          { name: 'Jenkins',      slug: 'jenkins' },
+          { name: 'CircleCI',     slug: 'circleci' },
+          { name: 'ArgoCD',       slug: 'argo' },
+        ],
+      },
+      {
+        labelEn: 'Infrastructure as Code',
+        labelId: 'Infrastructure as Code',
+        items: [
+          { name: 'Terraform',    slug: 'terraform' },
+          { name: 'Pulumi',       slug: 'pulumi' },
+          { name: 'Ansible',      slug: 'ansible' },
+          { name: 'AWS CDK',      slug: 'amazonwebservices' },
+        ],
+      },
+      {
+        labelEn: 'Observability',
+        labelId: 'Observability',
+        items: [
+          { name: 'Datadog',      slug: 'datadog' },
+          { name: 'Grafana',      slug: 'grafana' },
+          { name: 'Prometheus',   slug: 'prometheus' },
+          { name: 'New Relic',    slug: 'newrelic' },
+          { name: 'Sentry',       slug: 'sentry' },
+          { name: 'Elastic Stack', slug: 'elastic' },
+          { name: 'OpenTelemetry', slug: 'opentelemetry' },
+        ],
+      },
+    ],
+  },
+  security: {
+    icon: 'shield',
+    titleEn: 'Security',
+    titleId: 'Keamanan',
+    descEn: 'Defense-in-depth from identity to runtime to compliance.',
+    descId: 'Pertahanan berlapis dari identitas hingga runtime dan kepatuhan.',
+    groups: [
+      {
+        labelEn: 'Identity & Access',
+        labelId: 'Identitas & Akses',
+        items: [
+          { name: 'Auth0',        slug: 'auth0' },
+          { name: 'Okta',         slug: 'okta' },
+          { name: 'Keycloak',     slug: 'keycloak' },
+          { name: 'AWS IAM',      slug: 'amazoniam' },
+          { name: 'Cognito',      slug: 'amazoncognito' },
+        ],
+      },
+      {
+        labelEn: 'Network & Edge',
+        labelId: 'Network & Edge',
+        items: [
+          { name: 'Cloudflare',   slug: 'cloudflare' },
+          { name: 'WireGuard',    slug: 'wireguard' },
+          { name: 'Tailscale',    slug: 'tailscale' },
+          { name: 'Zscaler',      slug: 'zscaler' },
+        ],
+      },
+      {
+        labelEn: 'Application Security',
+        labelId: 'Keamanan Aplikasi',
+        items: [
+          { name: 'SonarQube',    slug: 'sonarqube' },
+          { name: 'Snyk',         slug: 'snyk' },
+          { name: 'OWASP',        slug: 'owasp' },
+          { name: 'Burp Suite',   slug: 'burpsuite' },
+          { name: 'Veracode',     slug: 'veracode' },
+        ],
+      },
+      {
+        labelEn: 'SIEM & SOC',
+        labelId: 'SIEM & SOC',
+        items: [
+          { name: 'Splunk',       slug: 'splunk' },
+          { name: 'Wazuh',        slug: 'wazuh' },
+          { name: 'Elastic Security', slug: 'elastic' },
+          { name: 'Sumo Logic',   slug: 'sumologic' },
+        ],
+      },
+      {
+        labelEn: 'Compliance Frameworks',
+        labelId: 'Framework Kepatuhan',
+        // Compliance items use plain text badges (no logo)
+        items: [
+          { name: 'ISO 27001:2013', slug: null },
+          { name: 'ISO 9001:2015',  slug: null },
+          { name: 'SOC 2 Type II',  slug: null },
+          { name: 'PCI DSS',        slug: null },
+          { name: 'OJK / BI',       slug: null },
+          { name: 'UU PDP',         slug: null },
+          { name: 'NIST CSF',       slug: null },
+        ],
+      },
+    ],
+  },
+};
+
+// ──────────────────────────────────────────────────────────────────
+// IT Outsource Roles & Job Descriptions
+// ──────────────────────────────────────────────────────────────────
+const roleCategories = [
+  {
+    titleEn: 'Engineering',
+    titleId: 'Engineering',
+    roles: [
+      { titleEn: 'Frontend Engineer', titleId: 'Frontend Engineer',
+        descEn: 'Builds responsive, accessible user interfaces with React/Vue/Angular. Owns design-system implementation, performance optimization, and cross-browser quality.',
+        descId: 'Membangun antarmuka yang responsif dan accessible dengan React/Vue/Angular. Mengelola implementasi design system, optimasi performa, dan kualitas lintas browser.' },
+      { titleEn: 'Backend Engineer', titleId: 'Backend Engineer',
+        descEn: 'Designs APIs, databases, and core services. Owns scalability, data modeling, and service reliability across Node.js, Python, Go, or Java stacks.',
+        descId: 'Merancang API, database, dan core service. Mengelola skalabilitas, pemodelan data, dan keandalan service di stack Node.js, Python, Go, atau Java.' },
+      { titleEn: 'Full-Stack Engineer', titleId: 'Full-Stack Engineer',
+        descEn: 'Delivers vertical slices end-to-end. Equally comfortable in frontend frameworks and backend services, ideal for fast-moving product squads.',
+        descId: 'Mengirimkan vertical slice end-to-end. Sama nyaman di framework frontend maupun backend service, ideal untuk squad produk yang bergerak cepat.' },
+      { titleEn: 'Mobile Engineer', titleId: 'Mobile Engineer',
+        descEn: 'Ships native or cross-platform apps (iOS/Android/React Native/Flutter) with deep knowledge of platform conventions, store policies, and offline patterns.',
+        descId: 'Merilis aplikasi native atau cross-platform (iOS/Android/React Native/Flutter) dengan pemahaman mendalam konvensi platform, kebijakan store, dan pola offline.' },
+      { titleEn: 'Tech Lead / Staff Engineer', titleId: 'Tech Lead / Staff Engineer',
+        descEn: 'Sets technical direction for a squad. Owns architecture decisions, code review quality, mentoring, and unblocking the team.',
+        descId: 'Menentukan arah teknis squad. Mengelola keputusan arsitektur, kualitas review code, mentoring, dan unblocking tim.' },
+    ],
+  },
+  {
+    titleEn: 'DevOps, SRE & Cloud',
+    titleId: 'DevOps, SRE & Cloud',
+    roles: [
+      { titleEn: 'DevOps Engineer', titleId: 'DevOps Engineer',
+        descEn: 'Builds CI/CD pipelines, manages cloud infrastructure as code, owns deployment automation and developer experience tooling.',
+        descId: 'Membangun pipeline CI/CD, mengelola infrastruktur cloud sebagai code, deployment automation, dan tooling developer experience.' },
+      { titleEn: 'Site Reliability Engineer (SRE)', titleId: 'Site Reliability Engineer (SRE)',
+        descEn: 'Defines SLOs, runs incident response, owns observability and capacity planning. Brings reliability engineering rigor to production systems.',
+        descId: 'Mendefinisikan SLO, menjalankan incident response, mengelola observability dan capacity planning. Membawa disiplin reliability engineering ke sistem produksi.' },
+      { titleEn: 'Cloud Architect', titleId: 'Cloud Architect',
+        descEn: 'Designs target-state cloud architecture across AWS/GCP/Azure. Optimizes for cost, security, performance, and regulatory requirements.',
+        descId: 'Merancang arsitektur cloud target-state di AWS/GCP/Azure. Optimasi untuk biaya, keamanan, performa, dan kebutuhan regulasi.' },
+      { titleEn: 'Platform Engineer', titleId: 'Platform Engineer',
+        descEn: 'Builds internal developer platforms — golden paths, paved roads, self-service tooling — that let product teams ship faster safely.',
+        descId: 'Membangun internal developer platform — golden path, paved road, self-service tooling — agar tim produk bisa ship lebih cepat dengan aman.' },
+    ],
+  },
+  {
+    titleEn: 'Security',
+    titleId: 'Keamanan',
+    roles: [
+      { titleEn: 'Security Engineer', titleId: 'Security Engineer',
+        descEn: 'Hardens infrastructure and applications. Designs IAM models, runs threat modeling, integrates SAST/DAST/SCA into the SDLC.',
+        descId: 'Mengeraskan infrastruktur dan aplikasi. Merancang model IAM, threat modeling, integrasi SAST/DAST/SCA ke dalam SDLC.' },
+      { titleEn: 'DevSecOps Engineer', titleId: 'DevSecOps Engineer',
+        descEn: 'Shifts security left into developer workflows. Owns security automation in CI/CD, supply chain integrity, secret management.',
+        descId: 'Memindahkan keamanan ke kiri di workflow developer. Mengelola otomatisasi keamanan di CI/CD, integritas supply chain, manajemen secret.' },
+      { titleEn: 'Penetration Tester (Ethical Hacker)', titleId: 'Penetration Tester (Ethical Hacker)',
+        descEn: 'Conducts black-box and grey-box pentests. CEH/OSCP-certified. Delivers prioritized risk reports with reproducible proof-of-concept.',
+        descId: 'Melakukan pentest black-box dan grey-box. Bersertifikat CEH/OSCP. Mengirimkan laporan risiko terprioritisasi dengan PoC yang reproducible.' },
+      { titleEn: 'SOC Analyst (L1 / L2 / L3)', titleId: 'SOC Analyst (L1 / L2 / L3)',
+        descEn: '24/7 monitoring of SIEM events, triages incidents, escalates per runbook, performs threat hunting and forensic analysis.',
+        descId: 'Pemantauan SIEM 24/7, triase insiden, eskalasi sesuai runbook, threat hunting dan analisis forensik.' },
+    ],
+  },
+  {
+    titleEn: 'Data, ML & AI',
+    titleId: 'Data, ML & AI',
+    roles: [
+      { titleEn: 'Data Engineer', titleId: 'Data Engineer',
+        descEn: 'Builds ELT/ETL pipelines, owns data warehouse modeling (Snowflake/BigQuery/Databricks), ensures data quality and lineage.',
+        descId: 'Membangun pipeline ELT/ETL, mengelola pemodelan data warehouse (Snowflake/BigQuery/Databricks), memastikan kualitas dan lineage data.' },
+      { titleEn: 'Data Scientist', titleId: 'Data Scientist',
+        descEn: 'Translates business problems into statistical models. Owns feature engineering, A/B testing, and decision-support analytics.',
+        descId: 'Menerjemahkan masalah bisnis menjadi model statistik. Mengelola feature engineering, A/B testing, dan analitik pendukung keputusan.' },
+      { titleEn: 'ML Engineer', titleId: 'ML Engineer',
+        descEn: 'Productionizes ML models. Owns training pipelines, model serving, drift monitoring, and MLOps tooling (MLflow, Vertex AI, SageMaker).',
+        descId: 'Memproduksi model ML. Mengelola training pipeline, model serving, monitoring drift, dan tooling MLOps (MLflow, Vertex AI, SageMaker).' },
+      { titleEn: 'AI / LLM Engineer', titleId: 'AI / LLM Engineer',
+        descEn: 'Builds AI-native products using OpenAI, Anthropic, or open-weight models. Owns prompt engineering, RAG architecture, agent orchestration, evals.',
+        descId: 'Membangun produk berbasis AI menggunakan OpenAI, Anthropic, atau model open-weight. Mengelola prompt engineering, arsitektur RAG, orkestrasi agent, evals.' },
+    ],
+  },
+  {
+    titleEn: 'Quality Engineering',
+    titleId: 'Quality Engineering',
+    roles: [
+      { titleEn: 'QA Engineer (Manual)', titleId: 'QA Engineer (Manual)',
+        descEn: 'Designs test cases from product specs, executes exploratory and regression testing, owns bug-tracking discipline and release readiness.',
+        descId: 'Merancang test case dari spek produk, menjalankan exploratory dan regression testing, mengelola disiplin bug-tracking dan release readiness.' },
+      { titleEn: 'QA Automation Engineer', titleId: 'QA Automation Engineer',
+        descEn: 'Builds and maintains test suites with Playwright/Cypress/Selenium/Appium. Owns coverage strategy and integration with CI gates.',
+        descId: 'Membangun dan memelihara test suite dengan Playwright/Cypress/Selenium/Appium. Mengelola strategi coverage dan integrasi gate CI.' },
+      { titleEn: 'Performance Engineer', titleId: 'Performance Engineer',
+        descEn: 'Designs load tests (k6, JMeter), identifies bottlenecks, owns SLA validation under stress conditions.',
+        descId: 'Merancang load test (k6, JMeter), mengidentifikasi bottleneck, mengelola validasi SLA di kondisi stress.' },
+    ],
+  },
+  {
+    titleEn: 'Product, Design & Delivery',
+    titleId: 'Produk, Desain & Delivery',
+    roles: [
+      { titleEn: 'Product Manager', titleId: 'Product Manager',
+        descEn: 'Owns product strategy, roadmap, and prioritization. Bridges business stakeholders, engineering, and design to ship outcomes.',
+        descId: 'Mengelola strategi produk, roadmap, dan prioritisasi. Menjembatani stakeholder bisnis, engineering, dan desain untuk mengirim outcome.' },
+      { titleEn: 'UI / UX Designer', titleId: 'UI / UX Designer',
+        descEn: 'Owns design system, user research, interaction design, and visual polish. Delivers production-ready Figma files and prototypes.',
+        descId: 'Mengelola design system, user research, interaction design, dan poles visual. Mengirim file Figma siap-produksi dan prototype.' },
+      { titleEn: 'Business Analyst', titleId: 'Business Analyst',
+        descEn: 'Captures requirements, maps processes (BPMN), bridges domain experts and engineers, owns user-acceptance criteria.',
+        descId: 'Menangkap requirement, memetakan proses (BPMN), menjembatani domain expert dan engineer, mengelola kriteria user acceptance.' },
+      { titleEn: 'Delivery Manager / Scrum Master', titleId: 'Delivery Manager / Scrum Master',
+        descEn: 'Runs sprint ceremonies, owns velocity and risk reporting, removes blockers. Keeps the squad shipping predictably.',
+        descId: 'Menjalankan sprint ceremony, mengelola velocity dan pelaporan risiko, menghilangkan blocker. Menjaga squad ship secara prediktif.' },
+    ],
+  },
+];
+
+const isId = lang === 'id';
+%>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= isId ? 'Kapabilitas' : 'Capability' %></div>
+    <h1><%= isId ? 'Stack & Talenta yang Kami Bawa ke Setiap Engagement' : 'The Stack & Talent We Bring to Every Engagement' %></h1>
+    <p><%= isId ? 'Daftar lengkap teknologi yang kami operasikan di seluruh praktik development, infrastructure, dan security — plus seluruh peran IT yang dapat di-outsource melalui kami.' : 'A complete inventory of the technologies we operate across development, infrastructure, and security — plus every IT role we deliver as outsourced talent.' %></p>
+  </div>
+</section>
+
+<!-- TECH STACK SECTION -->
+<section class="section">
+  <div class="container">
+
+    <% Object.entries(techStack).forEach(([key, pillar], idx) => { %>
+    <div class="capability-pillar reveal">
+      <div class="capability-pillar-head">
+        <div class="capability-pillar-num">0<%= idx + 1 %></div>
+        <div>
+          <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= isId ? pillar.titleId : pillar.titleEn %></div>
+          <h2 class="capability-pillar-title"><%= isId ? pillar.titleId : pillar.titleEn %></h2>
+          <p class="capability-pillar-desc"><%= isId ? pillar.descId : pillar.descEn %></p>
+        </div>
+      </div>
+
+      <div class="capability-groups">
+        <% pillar.groups.forEach(group => { %>
+        <div class="capability-group">
+          <h3 class="capability-group-label"><%= isId ? group.labelId : group.labelEn %></h3>
+          <div class="tech-grid">
+            <% group.items.forEach(item => { %>
+            <div class="tech-chip" title="<%= item.name %>">
+              <% if (item.slug) { %>
+              <img class="tech-chip-logo"
+                   src="https://cdn.simpleicons.org/<%= item.slug %>/0A0F1C"
+                   alt="<%= item.name %>"
+                   loading="lazy"
+                   width="22" height="22">
+              <% } else { %>
+              <span class="tech-chip-badge">✓</span>
+              <% } %>
+              <span class="tech-chip-label"><%= item.name %></span>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+
+  </div>
+</section>
+
+<!-- ROLES SECTION -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-head-center reveal">
+      <div class="section-eyebrow section-eyebrow-center"><span class="section-eyebrow-dot"></span><%= isId ? 'Talenta yang Kami Sediakan' : 'Talent We Provide' %></div>
+      <h2 class="section-title"><%= isId ? 'Setiap Peran IT yang Bisa Anda Outsource' : 'Every IT Role You Can Outsource' %></h2>
+      <p class="section-lede"><%= isId ? 'Tim pre-vetted di seluruh disiplin engineering, infrastructure, security, data, dan delivery — siap embed di squad Anda dalam 5–7 hari.' : 'Pre-vetted talent across engineering, infrastructure, security, data, and delivery — ready to embed in your squad within 5–7 days.' %></p>
+    </div>
+
+    <div class="roles-stack">
+      <% roleCategories.forEach((cat, ci) => { %>
+      <div class="role-category reveal">
+        <div class="role-category-head">
+          <div class="role-category-num">0<%= ci + 1 %></div>
+          <h3 class="role-category-title"><%= isId ? cat.titleId : cat.titleEn %></h3>
+        </div>
+        <div class="role-grid">
+          <% cat.roles.forEach(role => { %>
+          <article class="role-card">
+            <h4 class="role-card-title"><%= isId ? role.titleId : role.titleEn %></h4>
+            <p class="role-card-desc"><%= isId ? role.descId : role.descEn %></p>
+          </article>
+          <% }) %>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <h2><%= isId ? 'Butuh Tim yang Sudah Tahu Stack Anda?' : 'Need a Team That Already Knows Your Stack?' %></h2>
+      <p><%= isId ? 'Kirim role yang Anda butuhkan — kami shortlist dalam 5–7 hari kerja dari talent pool internal yang sudah pre-vetted.' : 'Send us the role you need — we shortlist within 5–7 business days from our pre-vetted internal pool.' %></p>
+      <div class="cta-btns">
+        <a href="/contact" class="btn btn-primary btn-large"><%= isId ? 'Diskusikan Kebutuhan' : 'Discuss Your Needs' %></a>
+        <a href="/services/it-hiring" class="btn btn-outline btn-large"><%= isId ? 'Layanan Hiring' : 'Hiring Service' %></a>
+      </div>
+    </div>
+  </div>
+</section>
