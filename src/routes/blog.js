@@ -16,14 +16,14 @@ router.get('/', async (req, res) => {
     res.render('pages/blog', { currentPage: 'blog',
       title: 'Blog - IDEAsia - PT Solusi Inovasi Bangsa',
       description: 'Insights, guides and trends in IT Consulting, Cloud, Security and Digital Transformation.',
-      ogImage: '/images/og-blog.jpg',
+      ogImage: '/images/og-blog.png',
       blogs, page, limit, total, category,
       totalPages: Math.ceil(total / limit),
       currentPage: 'blog'
     });
   } catch (e) {
     res.render('pages/blog', { currentPage: 'blog',
-      title: 'Blog - IDEAsia - PT Solusi Inovasi Bangsa', description: '', ogImage: '/images/og-blog.jpg',
+      title: 'Blog - IDEAsia - PT Solusi Inovasi Bangsa', description: '', ogImage: '/images/og-blog.png',
       blogs: [], page: 1, limit: 9, total: 0, category: '', totalPages: 1, currentPage: 'blog'
     });
   }
@@ -41,7 +41,7 @@ router.get('/:slug', async (req, res) => {
       currentPage: 'blog',
       title: blog.metaTitle || blog.title,
       description: blog.metaDescription || blog.excerpt,
-      ogImage: blog.ogImage || '/images/og-blog.jpg',
+      ogImage: blog.ogImage || '/images/og-blog.png',
       blog, related,
       currentPage: 'blog'
     });

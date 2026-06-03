@@ -54,7 +54,7 @@ router.get('/', (req, res) => {
   res.render('pages/agent', {
     title: 'IDEA AI Consultant — ide.asia',
     description: 'Chat with IDEA AI — your intelligent digital consultant. Get instant answers about IT consulting, outsourcing, cloud, and enterprise tech solutions.',
-    ogImage: '/images/og-agent.jpg',
+    ogImage: '/images/og-agent.png',
     currentPage: 'agent',
     layout: 'layouts/agent'
   });

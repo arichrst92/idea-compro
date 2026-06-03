@@ -69,7 +69,7 @@ router.get('/', (req, res) => {
   res.render('pages/services', {
     title: 'Our Services - IDEAsia - PT Solusi Inovasi Bangsa',
     description: 'IT Consulting, Outsourcing, Hiring, Cloud Infrastructure, Security and Squad-Based Delivery services.',
-    ogImage: '/images/og-services.jpg',
+    ogImage: '/images/og-services.png',
     services: SERVICES_DATA,
     currentPage: 'services'
   });
@@ -81,7 +81,7 @@ router.get('/:slug', (req, res) => {
   res.render('pages/service-detail', {
     title: `${service.titleEn} - IDEAsia - PT Solusi Inovasi Bangsa`,
     description: service.descEn,
-    ogImage: `/images/og-${service.slug}.jpg`,
+    ogImage: `/images/og-${service.slug}.png`,
     service,
     currentPage: 'services'
   });
