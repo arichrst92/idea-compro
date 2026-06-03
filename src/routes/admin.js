@@ -131,13 +131,14 @@ router.post('/verify', async (req, res) => {
     delete req.session.otpPhone;
     delete req.session.otpRequestedAt;
 
-    admin.lastLogin = new Date();
-    await admin.save();
+    // updateOne (bukan save) untuk skip schema validation yang mungkin gagal
+    // pada dokumen lama yang field-nya tidak lengkap (mis. password required).
+    await Admin.updateOne({ _id: admin._id }, { $set: { lastLogin: new Date() } });
 
     const redirect = req.query.redirect || '/admin';
     res.redirect(redirect);
   } catch (e) {
-    console.error('OTP verify error:', e);
+    console.error('OTP verify error:', e.stack || e);
     res.redirect('/admin/login?error=server');
   }
 });
@@ -147,23 +148,28 @@ router.get('/logout', (req, res) => {
 });
 
 // ─── DASHBOARD ───────────────────────────────────────────────────────
-router.get('/', requireAuth, async (req, res) => {
-  const [total, published, categories] = await Promise.all([
-    Blog.countDocuments(),
-    Blog.countDocuments({ published: true }),
-    Blog.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }]),
-  ]);
-  const recentBlogs = await Blog.find().sort({ createdAt: -1 }).limit(10)
-    .select('title slug category published createdAt views readTime');
-  res.render('admin/dashboard', {
-    layout: 'layouts/admin',
-    title: 'Dashboard - IDEA Admin',
-    description: '',
-    currentPage: 'admin',
-    stats: { total, published, draft: total - published, categories },
-    recentBlogs,
-    adminUsername: req.session.adminUsername,
-  });
+router.get('/', requireAuth, async (req, res, next) => {
+  try {
+    const [total, published, categories] = await Promise.all([
+      Blog.countDocuments(),
+      Blog.countDocuments({ published: true }),
+      Blog.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }]),
+    ]);
+    const recentBlogs = await Blog.find().sort({ createdAt: -1 }).limit(10)
+      .select('title slug category published createdAt views readTime');
+    res.render('admin/dashboard', {
+      layout: 'layouts/admin',
+      title: 'Dashboard - IDEA Admin',
+      description: '',
+      currentPage: 'admin-dashboard',
+      stats: { total, published, draft: total - published, categories: categories || [] },
+      recentBlogs: recentBlogs || [],
+      adminUsername: req.session.adminUsername || 'Admin',
+    });
+  } catch (err) {
+    console.error('Dashboard error:', err.stack || err);
+    next(err);
+  }
 });
 
 // ─── BLOG LIST ───────────────────────────────────────────────────────
