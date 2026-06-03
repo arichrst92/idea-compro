@@ -143,10 +143,17 @@ router.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/admin/login?info=logged_out'));
 });
 
+// Helper: ambil common locals untuk semua admin pages
+function adminLocals(req) {
+  return {
+    adminName:     req.session.adminName || req.session.adminUsername || 'Admin',
+    adminUsername: req.session.adminUsername || 'Admin',
+  };
+}
+
 // Provide global vars untuk SEMUA halaman ber-auth (sidebar pakai ini)
 router.use(requireAuth, (req, res, next) => {
-  res.locals.adminName = req.session.adminName || req.session.adminUsername || 'Admin';
-  res.locals.adminUsername = req.session.adminUsername || '';
+  Object.assign(res.locals, adminLocals(req));
   next();
 });
 
@@ -168,6 +175,7 @@ router.get('/', async (req, res, next) => {
       ]),
     ]);
     res.render('admin/dashboard', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: 'Dashboard - IDEA Admin',
       description: '',
@@ -205,6 +213,7 @@ router.get('/blogs', async (req, res, next) => {
     ]);
 
     res.render('admin/blogs', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: 'Blog Posts - IDEA Admin',
       description: '',
@@ -221,6 +230,7 @@ router.get('/blogs', async (req, res, next) => {
 
 router.get('/blogs/new', (req, res) => {
   res.render('admin/blog-form', {
+    ...adminLocals(req),
     layout: 'layouts/admin',
     title: 'New Blog Post - IDEA Admin',
     description: '',
@@ -252,6 +262,7 @@ router.post('/blogs/new', async (req, res) => {
     res.redirect('/admin/blogs?success=created');
   } catch (e) {
     res.render('admin/blog-form', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: 'New Blog Post - IDEA Admin',
       description: '',
@@ -266,6 +277,7 @@ router.get('/blogs/:id/edit', async (req, res, next) => {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.redirect('/admin/blogs?error=not_found');
     res.render('admin/blog-form', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: 'Edit Blog - IDEA Admin',
       description: '',
@@ -297,6 +309,7 @@ router.post('/blogs/:id/edit', async (req, res, next) => {
   } catch (e) {
     const blog = await Blog.findById(req.params.id);
     res.render('admin/blog-form', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: 'Edit Blog - IDEA Admin',
       description: '',
@@ -357,6 +370,7 @@ router.get('/contacts', async (req, res, next) => {
       Contact.countDocuments(filter),
     ]);
     res.render('admin/contacts', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: 'Contacts - IDEA Admin',
       description: '',
@@ -378,6 +392,7 @@ router.get('/contacts/:id', async (req, res, next) => {
       await contact.save();
     }
     res.render('admin/contact-detail', {
+      ...adminLocals(req),
       layout: 'layouts/admin',
       title: `Contact from ${contact.name} - IDEA Admin`,
       description: '',

@@ -2,7 +2,7 @@
 <div class="adm-page-header">
   <div>
     <h1 class="adm-page-title">Dashboard</h1>
-    <p class="adm-page-sub">Welcome back, <%= adminName %>. Here's what's happening.</p>
+    <p class="adm-page-sub">Welcome back, <%= typeof adminName !== 'undefined' && adminName ? adminName : 'Admin' %>. Here's what's happening.</p>
   </div>
   <div style="display:flex;gap:10px">
     <form action="/admin/bot/generate" method="POST">
