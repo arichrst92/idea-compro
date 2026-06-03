@@ -138,6 +138,33 @@
 // =============================================
 // HERO CANVAS - Network Animation
 // =============================================
+// Tech logo fallback — when simpleicons CDN 404s (brand-removed),
+// swap img for a monogram badge built from data-fallback or alt text.
+// =============================================
+(function techLogoFallback() {
+  document.querySelectorAll('.tech-chip-logo, .capability-logos img').forEach(img => {
+    img.addEventListener('error', function handleErr() {
+      const chip = this.closest('.tech-chip');
+      const monogram = this.dataset.fallback
+        || (this.alt || '').replace(/[^A-Za-z0-9]/g, '').substring(0, 2).toUpperCase()
+        || '✓';
+      if (chip) {
+        const badge = document.createElement('span');
+        badge.className = 'tech-chip-badge';
+        badge.textContent = monogram;
+        this.replaceWith(badge);
+      } else {
+        // Home highlight logos — replace with simple text badge
+        const badge = document.createElement('span');
+        badge.className = 'capability-logo-fallback';
+        badge.textContent = monogram;
+        this.replaceWith(badge);
+      }
+    }, { once: true });
+  });
+})();
+
+// =============================================
 (function initHeroCanvas() {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;

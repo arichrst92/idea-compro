@@ -61,9 +61,11 @@ const techStack = {
         items: [
           { name: 'TensorFlow',   slug: 'tensorflow' },
           { name: 'PyTorch',      slug: 'pytorch' },
-          { name: 'OpenAI',       slug: 'openai' },
-          { name: 'Anthropic',    slug: 'anthropic' },
-          { name: 'LangChain',    slug: 'langchain' },
+          // simple-icons removed several AI brand logos (OpenAI/Anthropic/LangChain) —
+          // null slug renders as a clean monogram badge instead.
+          { name: 'OpenAI',       slug: null },
+          { name: 'Anthropic',    slug: null },
+          { name: 'LangChain',    slug: null },
           { name: 'Pandas',       slug: 'pandas' },
           { name: 'NumPy',        slug: 'numpy' },
           { name: 'Hugging Face', slug: 'huggingface' },
@@ -96,13 +98,15 @@ const techStack = {
         labelEn: 'Cloud Providers',
         labelId: 'Penyedia Cloud',
         items: [
-          { name: 'AWS',          slug: 'amazonwebservices' },
-          { name: 'Google Cloud', slug: 'googlecloud' },
-          { name: 'Microsoft Azure', slug: 'microsoftazure' },
-          { name: 'Cloudflare',   slug: 'cloudflare' },
-          { name: 'DigitalOcean', slug: 'digitalocean' },
-          { name: 'Vercel',       slug: 'vercel' },
-          { name: 'Alibaba Cloud', slug: 'alibabacloud' },
+          // AWS, Azure, GCP — simple-icons removed these due to brand restrictions.
+          // Render as monogram badge instead.
+          { name: 'AWS',             slug: null },
+          { name: 'Google Cloud',    slug: null },
+          { name: 'Microsoft Azure', slug: null },
+          { name: 'Cloudflare',      slug: 'cloudflare' },
+          { name: 'DigitalOcean',    slug: 'digitalocean' },
+          { name: 'Vercel',          slug: 'vercel' },
+          { name: 'Alibaba Cloud',   slug: 'alibabacloud' },
         ],
       },
       {
@@ -131,10 +135,10 @@ const techStack = {
         labelEn: 'Infrastructure as Code',
         labelId: 'Infrastructure as Code',
         items: [
-          { name: 'Terraform',    slug: 'terraform' },
-          { name: 'Pulumi',       slug: 'pulumi' },
-          { name: 'Ansible',      slug: 'ansible' },
-          { name: 'AWS CDK',      slug: 'amazonwebservices' },
+          { name: 'Terraform', slug: 'terraform' },
+          { name: 'Pulumi',    slug: 'pulumi' },
+          { name: 'Ansible',   slug: 'ansible' },
+          { name: 'AWS CDK',   slug: null },
         ],
       },
       {
@@ -163,42 +167,42 @@ const techStack = {
         labelEn: 'Identity & Access',
         labelId: 'Identitas & Akses',
         items: [
-          { name: 'Auth0',        slug: 'auth0' },
-          { name: 'Okta',         slug: 'okta' },
-          { name: 'Keycloak',     slug: 'keycloak' },
-          { name: 'AWS IAM',      slug: 'amazoniam' },
-          { name: 'Cognito',      slug: 'amazoncognito' },
+          { name: 'Auth0',    slug: 'auth0' },
+          { name: 'Okta',     slug: 'okta' },
+          { name: 'Keycloak', slug: 'keycloak' },
+          { name: 'AWS IAM',  slug: null },
+          { name: 'Cognito',  slug: null },
         ],
       },
       {
         labelEn: 'Network & Edge',
         labelId: 'Network & Edge',
         items: [
-          { name: 'Cloudflare',   slug: 'cloudflare' },
-          { name: 'WireGuard',    slug: 'wireguard' },
-          { name: 'Tailscale',    slug: 'tailscale' },
-          { name: 'Zscaler',      slug: 'zscaler' },
+          { name: 'Cloudflare', slug: 'cloudflare' },
+          { name: 'WireGuard',  slug: 'wireguard' },
+          { name: 'Tailscale',  slug: 'tailscale' },
+          { name: 'Zscaler',    slug: null },
         ],
       },
       {
         labelEn: 'Application Security',
         labelId: 'Keamanan Aplikasi',
         items: [
-          { name: 'SonarQube',    slug: 'sonarqube' },
-          { name: 'Snyk',         slug: 'snyk' },
-          { name: 'OWASP',        slug: 'owasp' },
-          { name: 'Burp Suite',   slug: 'burpsuite' },
-          { name: 'Veracode',     slug: 'veracode' },
+          { name: 'SonarQube',  slug: null },
+          { name: 'Snyk',       slug: 'snyk' },
+          { name: 'OWASP',      slug: 'owasp' },
+          { name: 'Burp Suite', slug: null },
+          { name: 'Veracode',   slug: null },
         ],
       },
       {
         labelEn: 'SIEM & SOC',
         labelId: 'SIEM & SOC',
         items: [
-          { name: 'Splunk',       slug: 'splunk' },
-          { name: 'Wazuh',        slug: 'wazuh' },
+          { name: 'Splunk',           slug: null },
+          { name: 'Wazuh',            slug: null },
           { name: 'Elastic Security', slug: 'elastic' },
-          { name: 'Sumo Logic',   slug: 'sumologic' },
+          { name: 'Sumo Logic',       slug: null },
         ],
       },
       {
@@ -366,16 +370,20 @@ const isId = lang === 'id';
         <div class="capability-group">
           <h3 class="capability-group-label"><%= isId ? group.labelId : group.labelEn %></h3>
           <div class="tech-grid">
-            <% group.items.forEach(item => { %>
+            <% group.items.forEach(item => {
+                 // Derive a 2-letter monogram from name as fallback when no logo
+                 const initials = (item.name.match(/\b[A-Za-z0-9]/g) || []).slice(0, 2).join('').toUpperCase() || '✓';
+            %>
             <div class="tech-chip" title="<%= item.name %>">
               <% if (item.slug) { %>
               <img class="tech-chip-logo"
                    src="https://cdn.simpleicons.org/<%= item.slug %>/0A0F1C"
-                   alt="<%= item.name %>"
+                   alt=""
                    loading="lazy"
-                   width="22" height="22">
+                   width="22" height="22"
+                   data-fallback="<%= initials %>">
               <% } else { %>
-              <span class="tech-chip-badge">✓</span>
+              <span class="tech-chip-badge"><%= initials %></span>
               <% } %>
               <span class="tech-chip-label"><%= item.name %></span>
             </div>
