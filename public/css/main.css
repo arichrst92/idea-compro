@@ -234,7 +234,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-sub { font-size: 14px; color: var(--text-3); margin-top: 12px; max-width: 420px; line-height: 1.6; }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .hero-scroll { display: none; }
-#heroCanvas { opacity: 0.7 !important; mix-blend-mode: multiply; }
+/* legacy id selector — class .hero-canvas now handles styling */
 
 /* ─── Ticker ───────────────────────────────────────────────────── */
 .ticker {
@@ -398,14 +398,28 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* ─── Page hero (interior pages) ───────────────────────────────── */
 .page-hero {
+  position: relative;
+  overflow: hidden;
   padding: calc(var(--nav-h) + 96px) 0 80px;
   background:
     radial-gradient(ellipse 800px 400px at 80% 0%, var(--blue-50), transparent 70%),
     var(--white);
   border-bottom: 1px solid var(--border);
 }
+.page-hero > .container { position: relative; z-index: 1; }
 .page-hero h1 { font-family: var(--font-display); font-size: clamp(40px, 5vw, 64px); font-weight: var(--weight-display); letter-spacing: -0.03em; color: var(--ink); margin-top: 16px; line-height: 1.05; }
 .page-hero p { font-size: 17px; color: var(--text-2); max-width: 600px; margin-top: 18px; line-height: 1.55; }
+
+/* Canvas — shared across all hero containers (.hero, .page-hero, .about-hero, .service-detail-hero) */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.7;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* ─── Blog list & filters ──────────────────────────────────────── */
 .blog-filters-bar { background: var(--bg-soft); border-bottom: 1px solid var(--border); }
@@ -482,12 +496,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* ─── Service detail page ──────────────────────────────────────── */
 .service-detail-hero {
+  position: relative;
+  overflow: hidden;
   padding: calc(var(--nav-h) + 80px) 0 80px;
   background:
     radial-gradient(ellipse 1000px 500px at 80% 0%, var(--blue-50), transparent 60%),
     var(--white);
   border-bottom: 1px solid var(--border);
 }
+.service-detail-hero > .container { position: relative; z-index: 1; }
 .service-back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: var(--weight-semibold); color: var(--text-2); margin-bottom: 32px; transition: color var(--transition); }
 .service-back-link:hover { color: var(--blue); }
 .service-detail-title { font-family: var(--font-display); font-size: clamp(36px, 6vw, 72px); font-weight: var(--weight-display); letter-spacing: -0.035em; color: var(--ink); line-height: 1.0; margin-bottom: 24px; max-width: 900px; }
@@ -517,11 +534,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* ─── About page ───────────────────────────────────────────────── */
 .about-hero {
+  position: relative;
+  overflow: hidden;
   padding: calc(var(--nav-h) + 96px) 0 96px;
   background:
     radial-gradient(ellipse 1000px 500px at 70% 30%, var(--blue-50), transparent 60%),
     var(--white);
 }
+.about-hero > .container { position: relative; z-index: 1; }
 .about-hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 .about-hero h1 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px); font-weight: var(--weight-display); letter-spacing: -0.035em; color: var(--ink); line-height: 1.0; margin-bottom: 24px; }
 .about-hero p { font-size: 17px; color: var(--text-2); line-height: 1.6; margin-bottom: 32px; }
