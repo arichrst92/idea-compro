@@ -212,9 +212,16 @@
             }
           });
 
-          // Animation mixer
+          // Animation mixer + auto-play first clip (idling pose)
           if (gltf.animations && gltf.animations.length) {
             mixer = new THREE.AnimationMixer(model);
+            const clip = gltf.animations[0];
+            const action = mixer.clipAction(clip);
+            action.setLoop(THREE.LoopRepeat, Infinity);
+            action.play();
+            console.log(`Avatar animation: "${clip.name}" (${clip.duration.toFixed(1)}s, ${gltf.animations.length} clip total)`);
+          } else {
+            console.log('Avatar has no animation clips');
           }
 
           resolve();
