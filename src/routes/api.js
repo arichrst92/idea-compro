@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
+const { getAllSlugs: getProductSlugs } = require('../data/ibm-products');
 
 router.get('/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
@@ -36,6 +37,10 @@ async function buildSitemap() {
   ];
   for (let p = 2; p <= totalBlogPages; p++) {
     staticPages.push({ path: `/blog?page=${p}`, priority: '0.5', changefreq: 'weekly' });
+  }
+  // Product detail pages
+  for (const slug of getProductSlugs()) {
+    staticPages.push({ path: `/products/${slug}`, priority: '0.7', changefreq: 'monthly' });
   }
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>

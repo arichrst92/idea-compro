@@ -361,6 +361,67 @@
   </div>
 </section>
 
+<!-- IBM PRODUCTS HIGHLIGHT -->
+<section class="products-highlight">
+  <div class="container">
+    <div class="products-highlight-grid">
+      <div class="reveal">
+        <div class="ph-eyebrow-row">
+          <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Produk' : 'Products' %></div>
+          <span class="ibm-partner-pill">IBM Certified Partner</span>
+        </div>
+        <h2 class="ph-headline">
+          <% if(lang==='id'){ %>Stack IBM,<br><span style="color:var(--text-2)">Dikirim Lengkap.</span><% } else { %>The IBM Stack,<br><span style="color:var(--text-2)">Delivered.</span><% } %>
+        </h2>
+        <p class="ph-lead">
+          <%= lang === 'id'
+            ? '30+ produk IBM — dari watsonx sampai mainframe Z — yang kami sourcing, deploy, integrasikan, dan support untuk perbankan, asuransi, telko, dan pemerintahan.'
+            : '30+ IBM products — from watsonx to Z mainframes — that we source, deploy, integrate, and support for banking, insurance, telco, and government.' %>
+        </p>
+        <div class="ph-cta-row">
+          <a href="/products" class="btn btn-primary"><%= lang === 'id' ? 'Lihat Katalog Produk' : 'Explore IBM Products' %> →</a>
+          <a href="/contact?service=it-consulting" class="btn btn-outline"><%= lang === 'id' ? 'Konsultasi Lisensi' : 'License Consultation' %></a>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <div class="ph-cards">
+          <a href="/products/watsonx-ai" class="ph-card">
+            <div class="ph-card-top"><span class="ph-card-cat"><%= lang === 'id' ? 'AI' : 'AI' %></span></div>
+            <div class="ph-card-name">watsonx.ai</div>
+            <div class="ph-card-use"><%= lang === 'id' ? 'Studio foundation model enterprise' : 'Enterprise foundation model studio' %></div>
+          </a>
+          <a href="/products/ibm-cloud" class="ph-card">
+            <div class="ph-card-top"><span class="ph-card-cat">Cloud</span></div>
+            <div class="ph-card-name">IBM Cloud</div>
+            <div class="ph-card-use"><%= lang === 'id' ? 'Cloud untuk workload teregulasi' : 'Cloud for regulated workloads' %></div>
+          </a>
+          <a href="/products/db2" class="ph-card">
+            <div class="ph-card-top"><span class="ph-card-cat">Data</span></div>
+            <div class="ph-card-name">IBM Db2</div>
+            <div class="ph-card-use"><%= lang === 'id' ? 'Database core mission-critical' : 'Mission-critical core database' %></div>
+          </a>
+          <a href="/products/qradar-siem" class="ph-card">
+            <div class="ph-card-top"><span class="ph-card-cat"><%= lang === 'id' ? 'Keamanan' : 'Security' %></span></div>
+            <div class="ph-card-name">QRadar SIEM</div>
+            <div class="ph-card-use"><%= lang === 'id' ? 'AI SIEM untuk SOC 24/7' : 'AI SIEM for 24/7 SOC' %></div>
+          </a>
+          <a href="/products/instana" class="ph-card">
+            <div class="ph-card-top"><span class="ph-card-cat"><%= lang === 'id' ? 'Automasi' : 'Automation' %></span></div>
+            <div class="ph-card-name">Instana</div>
+            <div class="ph-card-use"><%= lang === 'id' ? 'Observability real-time' : 'Real-time observability' %></div>
+          </a>
+          <a href="/products/ibm-z" class="ph-card">
+            <div class="ph-card-top"><span class="ph-card-cat"><%= lang === 'id' ? 'Mainframe' : 'Mainframe' %></span></div>
+            <div class="ph-card-name">IBM Z</div>
+            <div class="ph-card-use"><%= lang === 'id' ? 'Sistem inti transaksi global' : 'The world\'s transaction backbone' %></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- RECENT BLOG -->
 <% if (recentBlogs && recentBlogs.length > 0) { %>
 <section class="blog-preview-section">

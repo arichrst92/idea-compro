@@ -243,6 +243,42 @@ clean Inter typography. Bottom 5% of image: a thin horizontal blue gradient
 line in #1A50E8 → transparent.
 ```
 
+### 14. `og-products.jpg`
+
+```text
+VARIANT = products
+EYEBROW TAG TEXT = PRODUCTS · IBM CERTIFIED PARTNER
+HEADLINE TEXT = The IBM Stack, Delivered.
+RIGHT-SIDE VISUAL CONCEPT = A clean "product catalog" composition — a 4×3
+mosaic of small geometric tiles (each ~88px square, 12px gap, rounded
+corners ~10px) on a #FFFFFF background. Each tile contains a single
+abstract line-art glyph in #0A0F1C (1.6px stroke) — generic tech symbols
+only: circle, hexagon, layered rectangles, parallel lines, dots-in-grid,
+chevron, vertical bars, concentric squares. About 3 tiles (positioned
+diagonally) are filled solid #1A50E8 with white glyphs instead of outline,
+creating a subtle accent path across the grid. Each tile has a thin
+#E5E7EB border. Avoid any real brand logos — abstract shapes only. The
+overall feel: a clean enterprise product catalog, like Stripe Products or
+Linear Features page.
+```
+
+Untuk yang ingin alternative composition (variant B), bisa pakai prompt ini:
+
+```text
+VARIANT = products (alt composition)
+EYEBROW TAG TEXT = PRODUCTS · IBM CERTIFIED PARTNER
+HEADLINE TEXT = The IBM Stack, Delivered.
+ALTERNATIVE LAYOUT = Instead of a tile mosaic, render the right half as 8
+horizontal "product rows" stacked vertically. Each row is a clean white
+card with a 1px #E5E7EB border, rounded ~10px, 56px tall, containing on
+the left a tiny abstract glyph icon (24px, #1A50E8 outline), then a thin
+horizontal "product name" placeholder bar (180px × 8px, #0A0F1C, rounded),
+and below it a thinner "description" bar (240px × 5px, #6B7280, rounded).
+Rows have 10px vertical gap. The headline + eyebrow + IDEA wordmark sit
+LEFT-anchored. The composition reads like a fast scan through an IBM
+product catalog row by row.
+```
+
 ---
 
 ## After generating

@@ -1,123 +1,16 @@
 <%
 // ──────────────────────────────────────────────────────────────────
-// IBM Product Catalog — curated from ibm.com/products
-// Each category lists IBM products IDEA Asia can implement & support
+// IBM Product Catalog — data sourced from src/data/ibm-products.js
+// `categories` & `products` are injected by src/routes/products.js
 // ──────────────────────────────────────────────────────────────────
-const categories = [
-  {
-    id: 'ai',
-    titleEn: 'AI & watsonx',
-    titleId: 'AI & watsonx',
-    descEn: 'Enterprise AI platform — build, deploy, and govern foundation models with the watsonx stack.',
-    descId: 'Platform AI enterprise — bangun, deploy, dan governance foundation model dengan stack watsonx.',
-    products: [
-      { name: 'watsonx.ai',            useEn: 'Foundation model studio for AI builders',          useId: 'Studio foundation model untuk AI builder',          url: 'https://www.ibm.com/products/watsonx-ai' },
-      { name: 'watsonx.data',          useEn: 'Open data lakehouse for AI workloads',             useId: 'Data lakehouse terbuka untuk beban kerja AI',       url: 'https://www.ibm.com/products/watsonx-data' },
-      { name: 'watsonx.governance',    useEn: 'AI governance, risk, and compliance',              useId: 'Governance, risiko, dan kepatuhan AI',              url: 'https://www.ibm.com/products/watsonx-governance' },
-      { name: 'watsonx Assistant',     useEn: 'Conversational AI for customer service',           useId: 'AI percakapan untuk layanan pelanggan',             url: 'https://www.ibm.com/products/watsonx-assistant' },
-      { name: 'watsonx Orchestrate',   useEn: 'AI agent that automates business tasks',           useId: 'Agent AI yang mengotomatisasi tugas bisnis',        url: 'https://www.ibm.com/products/watsonx-orchestrate' },
-      { name: 'watsonx Code Assistant',useEn: 'AI pair-programmer for enterprise code',           useId: 'Pair programmer AI untuk kode enterprise',          url: 'https://www.ibm.com/products/watsonx-code-assistant' },
-    ],
-  },
-  {
-    id: 'cloud',
-    titleEn: 'Cloud Platform',
-    titleId: 'Platform Cloud',
-    descEn: 'Hybrid multi-cloud foundations engineered for regulated industries and mission-critical workloads.',
-    descId: 'Fondasi hybrid multi-cloud untuk industri teregulasi dan workload mission-critical.',
-    products: [
-      { name: 'IBM Cloud',                       useEn: 'Public cloud for AI, data & regulated workloads', useId: 'Public cloud untuk AI, data & workload teregulasi', url: 'https://www.ibm.com/cloud' },
-      { name: 'Red Hat OpenShift on IBM Cloud',  useEn: 'Managed Kubernetes with Red Hat',                 useId: 'Kubernetes terkelola dengan Red Hat',                url: 'https://www.ibm.com/products/openshift' },
-      { name: 'IBM Cloud Paks',                  useEn: 'Modular Kubernetes app suites',                   useId: 'Suite aplikasi Kubernetes modular',                 url: 'https://www.ibm.com/cloud-paks' },
-      { name: 'VMware on IBM Cloud',             useEn: 'Lift-and-shift VMware to cloud',                  useId: 'Lift-and-shift VMware ke cloud',                    url: 'https://www.ibm.com/products/vmware-solutions' },
-      { name: 'IBM Cloud Satellite',             useEn: 'IBM Cloud services anywhere — edge to on-prem',   useId: 'Layanan IBM Cloud di mana saja — edge ke on-prem',  url: 'https://www.ibm.com/products/cloud-satellite' },
-    ],
-  },
-  {
-    id: 'data',
-    titleEn: 'Data & Analytics',
-    titleId: 'Data & Analitik',
-    descEn: 'Trusted data platforms, warehousing, and analytics from data prep through self-service BI.',
-    descId: 'Platform data tepercaya, warehousing, dan analitik dari data prep hingga BI self-service.',
-    products: [
-      { name: 'IBM Db2',                useEn: 'Enterprise database — OLTP & analytics',      useId: 'Database enterprise — OLTP & analitik',           url: 'https://www.ibm.com/products/db2' },
-      { name: 'Cognos Analytics',       useEn: 'AI-powered business intelligence',            useId: 'Business intelligence powered by AI',             url: 'https://www.ibm.com/products/cognos-analytics' },
-      { name: 'SPSS Statistics',        useEn: 'Statistical analysis for researchers',        useId: 'Analisis statistik untuk peneliti',               url: 'https://www.ibm.com/products/spss-statistics' },
-      { name: 'Cloud Pak for Data',     useEn: 'Unified data & AI platform',                  useId: 'Platform data & AI terpadu',                       url: 'https://www.ibm.com/products/cloud-pak-for-data' },
-      { name: 'Netezza Performance Server', useEn: 'Massively parallel data warehouse',        useId: 'Data warehouse paralel masif',                    url: 'https://www.ibm.com/products/netezza' },
-    ],
-  },
-  {
-    id: 'automation',
-    titleEn: 'Automation',
-    titleId: 'Automasi',
-    descEn: 'Operate at scale with observability, FinOps, intelligent orchestration, and process automation.',
-    descId: 'Operasikan dalam skala besar dengan observability, FinOps, orkestrasi cerdas, dan process automation.',
-    products: [
-      { name: 'Cloud Pak for Business Automation', useEn: 'Workflow & content automation suite',           useId: 'Suite automasi workflow & konten',                  url: 'https://www.ibm.com/products/cloud-pak-for-business-automation' },
-      { name: 'Instana',                            useEn: 'Real-time APM & observability',                 useId: 'APM & observability real-time',                     url: 'https://www.ibm.com/products/instana' },
-      { name: 'Turbonomic',                         useEn: 'AI-driven app resource management',             useId: 'Manajemen sumber daya aplikasi berbasis AI',        url: 'https://www.ibm.com/products/turbonomic' },
-      { name: 'Apptio',                             useEn: 'FinOps & technology business management',       useId: 'FinOps & manajemen bisnis teknologi',               url: 'https://www.ibm.com/products/apptio' },
-      { name: 'HCL Workload Automation',            useEn: 'Enterprise job scheduling & orchestration',     useId: 'Penjadwalan job & orkestrasi enterprise',           url: 'https://www.ibm.com/products/workload-automation' },
-    ],
-  },
-  {
-    id: 'security',
-    titleEn: 'Security',
-    titleId: 'Keamanan',
-    descEn: 'Defense-in-depth from identity, data protection, threat detection, to mobile security.',
-    descId: 'Pertahanan berlapis dari identitas, perlindungan data, deteksi ancaman, hingga keamanan mobile.',
-    products: [
-      { name: 'QRadar SIEM',  useEn: 'Security info & event management',                  useId: 'Manajemen security info & event',                     url: 'https://www.ibm.com/products/qradar-siem' },
-      { name: 'Guardium',     useEn: 'Data security & compliance for databases',           useId: 'Keamanan data & kepatuhan untuk database',            url: 'https://www.ibm.com/products/guardium-data-security' },
-      { name: 'IBM Verify',   useEn: 'Identity & access management (IAM)',                 useId: 'Manajemen identitas & akses (IAM)',                  url: 'https://www.ibm.com/products/verify-identity' },
-      { name: 'MaaS360',      useEn: 'Mobile device management (MDM/UEM)',                 useId: 'Manajemen perangkat mobile (MDM/UEM)',               url: 'https://www.ibm.com/products/maas360' },
-      { name: 'Trusteer',     useEn: 'Fraud protection for digital channels',              useId: 'Perlindungan fraud untuk channel digital',           url: 'https://www.ibm.com/products/trusteer' },
-      { name: 'X-Force',      useEn: 'Threat intelligence & incident response',            useId: 'Threat intelligence & respons insiden',              url: 'https://www.ibm.com/services/x-force' },
-    ],
-  },
-  {
-    id: 'integration',
-    titleEn: 'Integration',
-    titleId: 'Integrasi',
-    descEn: 'API gateways, messaging, and integration patterns that wire your enterprise together.',
-    descId: 'API gateway, messaging, dan pola integrasi yang menyambungkan enterprise Anda.',
-    products: [
-      { name: 'API Connect',         useEn: 'Full API lifecycle management',           useId: 'Manajemen lifecycle API menyeluruh',           url: 'https://www.ibm.com/products/api-connect' },
-      { name: 'IBM MQ',              useEn: 'Enterprise messaging middleware',         useId: 'Middleware messaging enterprise',              url: 'https://www.ibm.com/products/mq' },
-      { name: 'App Connect',         useEn: 'Low-code app & data integration',         useId: 'Integrasi app & data low-code',                url: 'https://www.ibm.com/products/app-connect' },
-      { name: 'DataPower Gateway',   useEn: 'Multi-protocol security gateway',         useId: 'Gateway keamanan multi-protokol',              url: 'https://www.ibm.com/products/datapower-gateway' },
-    ],
-  },
-  {
-    id: 'storage',
-    titleEn: 'Storage',
-    titleId: 'Storage',
-    descEn: 'High-performance, resilient enterprise storage — from flash arrays to cyber-resilient backup.',
-    descId: 'Storage enterprise performa tinggi & tangguh — dari flash array hingga backup cyber-resilient.',
-    products: [
-      { name: 'FlashSystem',       useEn: 'NVMe flash storage arrays',              useId: 'Array storage flash NVMe',                     url: 'https://www.ibm.com/products/flashsystem' },
-      { name: 'Storage Scale',     useEn: 'Software-defined parallel file system',  useId: 'File system paralel software-defined',          url: 'https://www.ibm.com/products/storage-scale' },
-      { name: 'Storage Defender',  useEn: 'Cyber resilience for storage',            useId: 'Cyber resilience untuk storage',                url: 'https://www.ibm.com/products/storage-defender' },
-      { name: 'Storage Fusion',    useEn: 'Data services for hybrid cloud',          useId: 'Layanan data untuk hybrid cloud',               url: 'https://www.ibm.com/products/storage-fusion' },
-    ],
-  },
-  {
-    id: 'infra',
-    titleEn: 'Servers & Mainframes',
-    titleId: 'Server & Mainframe',
-    descEn: 'Mission-critical compute platforms — IBM Power, Z, and LinuxONE for transaction-heavy workloads.',
-    descId: 'Platform compute mission-critical — IBM Power, Z, dan LinuxONE untuk workload transaksi tinggi.',
-    products: [
-      { name: 'IBM Power',     useEn: 'Power-based servers for AI & critical workloads', useId: 'Server Power untuk AI & workload kritis',          url: 'https://www.ibm.com/it-infrastructure/power' },
-      { name: 'IBM Z',         useEn: 'Mainframe systems for the modern enterprise',     useId: 'Sistem mainframe untuk enterprise modern',         url: 'https://www.ibm.com/it-infrastructure/z' },
-      { name: 'LinuxONE',      useEn: 'Linux-only mainframe — security & scale',          useId: 'Mainframe Linux-only — keamanan & skala',          url: 'https://www.ibm.com/it-infrastructure/linuxone' },
-    ],
-  },
-];
-
 const isId = lang === 'id';
-const totalProducts = categories.reduce((sum, c) => sum + c.products.length, 0);
+const totalProducts = products.length;
+
+// Group products by category for rendering
+const grouped = categories.map(cat => ({
+  ...cat,
+  items: products.filter(p => p.categoryId === cat.id),
+}));
 %>
 
 <!-- HERO -->
@@ -154,7 +47,7 @@ const totalProducts = categories.reduce((sum, c) => sum + c.products.length, 0);
 <section class="products-wrap">
   <div class="container">
 
-    <% categories.forEach((cat, ci) => { %>
+    <% grouped.forEach((cat, ci) => { %>
     <section class="product-category" data-cat="<%= cat.id %>">
       <div class="product-category-head">
         <div class="product-category-num">0<%= ci + 1 %></div>
@@ -165,8 +58,9 @@ const totalProducts = categories.reduce((sum, c) => sum + c.products.length, 0);
       </div>
 
       <div class="product-grid">
-        <% cat.products.forEach(p => { %>
+        <% cat.items.forEach(p => { %>
         <article class="product-card">
+          <a href="/products/<%= p.slug %>" class="product-card-titlelink" aria-label="<%= p.name %>"></a>
           <div class="product-card-top">
             <img class="product-card-vendor" src="https://cdn.simpleicons.org/ibm/0A0F1C" alt="IBM" loading="lazy" data-fallback="IBM" width="22" height="22">
             <span class="product-card-cat-tag"><%= isId ? cat.titleId : cat.titleEn %></span>
@@ -174,9 +68,9 @@ const totalProducts = categories.reduce((sum, c) => sum + c.products.length, 0);
           <h3 class="product-card-name"><%= p.name %></h3>
           <p class="product-card-use"><%= isId ? p.useId : p.useEn %></p>
           <div class="product-card-footer">
-            <a href="<%= p.url %>" target="_blank" rel="noopener" class="product-card-link">
-              <%= isId ? 'Lihat di IBM' : 'View on IBM' %>
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h5v5M10 3l-6 6"/></svg>
+            <a href="/products/<%= p.slug %>" class="product-card-link">
+              <%= isId ? 'Pelajari' : 'Learn more' %>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h7M7 3.5l3 3-3 3"/></svg>
             </a>
             <a href="/contact?service=it-consulting&msg=<%= encodeURIComponent((isId ? 'Saya tertarik dengan ' : 'I am interested in ') + p.name) %>" class="product-card-cta">
               <%= isId ? 'Diskusikan' : 'Discuss' %>
