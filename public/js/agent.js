@@ -232,45 +232,12 @@
             }
           });
 
-          // Animation mixer + auto-play first clip with root motion filtered
+          // Animation DISABLED — Renderpeople clip distorts mesh.
+          // Keep model in rest pose (T-pose or initial). Static avatar = clean look.
           if (gltf.animations && gltf.animations.length) {
-            mixer = new THREE.AnimationMixer(model);
-            const originalClip = gltf.animations[0];
-
-            // Find root bone name (first bone we encounter)
-            let rootBoneName = null;
-            model.traverse((n) => {
-              if (n.isBone && !rootBoneName) rootBoneName = n.name;
-            });
-            console.log(`[avatar] root bone: ${rootBoneName}`);
-
-            // Filter out ALL position tracks (only keep rotation/quaternion) →
-            // bones rotate in place, no translation = stable in-frame animation
-            const safeTracks = originalClip.tracks.filter(track => {
-              const isPosition = /\.position$/.test(track.name);
-              if (isPosition) {
-                // Allow position on bones NEAR feet (e.g. arms swing OK)? Simpler: drop ALL.
-                return false;
-              }
-              return true;
-            });
-            const droppedCount = originalClip.tracks.length - safeTracks.length;
-            console.log(`[avatar] dropped ${droppedCount} position tracks, kept ${safeTracks.length} rotation tracks`);
-
-            const filteredClip = new THREE.AnimationClip(
-              originalClip.name + '_no_translation',
-              originalClip.duration,
-              safeTracks
-            );
-
-            const action = mixer.clipAction(filteredClip);
-            action.setLoop(THREE.LoopRepeat, Infinity);
-            action.timeScale = 0.5; // slow down for subtle idle
-            action.play();
-            console.log(`Avatar animation: "${originalClip.name}" (${originalClip.duration.toFixed(1)}s, played at 0.5× speed, root motion stripped)`);
-          } else {
-            console.log('Avatar has no animation clips');
+            console.log(`[avatar] animation found ("${gltf.animations[0].name}") but disabled by config`);
           }
+          // mixer stays null → update loop skips animation tick
 
           resolve();
         },
