@@ -291,7 +291,7 @@ mongorestore --db idea_website /backup/mongo/TANGGAL/idea_website
 |---------|--------|
 | `502 Bad Gateway` | `pm2 restart idea-website` |
 | Blog bot tidak jalan | Cek `GROQ_API_KEY` di `.env` |
-| Agent (Carolla) tidak respons | Cek `GROQ_API_KEY` di `.env` |
+| Agent (Jarvis) tidak respons | Cek `GROQ_API_KEY` di `.env` |
 | MongoDB connection error | `systemctl restart mongod` |
 | SSL expired | `certbot renew` |
 | Port 3000 tidak bisa diakses | Cek `pm2 status`, pastikan app running |

@@ -282,7 +282,7 @@
     if (speechEl) speechEl.classList.remove('visible');
   }
 
-  // ── BROWSER TTS (Carolla response speak via Speech Synthesis) ──
+  // ── BROWSER TTS (Jarvis response speak via Speech Synthesis) ──
   // SpeechSynthesis doesn't expose audio stream, so we simulate audio
   // amplitude oscillation while utterance is active → particles still react.
   let synthPulseTimer = 0;
@@ -391,25 +391,20 @@
         if (loader) loader.classList.add('hidden');
 
         const welcome = lang === 'id'
-          ? '<p>Halo! Saya <strong>Carolla</strong> 👋</p><p>Selamat datang di website kami. Saya akan membantu kamu — katakan apa yang bisa saya bantu.</p>'
-          : '<p>Hello! I\'m <strong>Carolla</strong> 👋</p><p>Welcome. I\'m your digital consultant today — how can I help you?</p>';
+          ? '<p>Halo! Saya <strong>Jarvis</strong> 👋</p><p>Selamat datang di website kami. Saya akan membantu kamu — katakan apa yang bisa saya bantu.</p>'
+          : '<p>Hello! I\'m <strong>Jarvis</strong> 👋</p><p>Welcome. I\'m your digital consultant today — how can I help you?</p>';
         showSpeech(welcome);
 
-        // Welcome audio — analyser must attach BEFORE play() so it's in the audio graph
+        // Welcome voice — pre-recorded mp3s still say "Carolla" so we skip them
+        // and use Browser TTS (which we control text-wise) for the "Jarvis" intro.
         const fromInternal = document.referrer && document.referrer.includes(window.location.hostname);
         if (!fromInternal) {
-          const audioFile = lang === 'id' ? '/audio/welcome_id.mp3' : '/audio/welcome_en.mp3';
-          const welcomeAudio = new Audio(audioFile);
-          welcomeAudio.volume = 1.0;
-          // Attach analyser first, then attempt play
-          attachTTSAnalyser(welcomeAudio);
-          welcomeAudio.play().catch(() => {
-            // autoplay blocked — fall back to browser TTS on first user gesture
-            const fallback = lang === 'id'
-              ? 'Selamat datang. Saya Carolla, asisten digital Anda hari ini.'
-              : 'Welcome. I am Carolla, your digital consultant today.';
-            speak(fallback);
-          });
+          const introText = lang === 'id'
+            ? 'Halo! Saya Jarvis, asisten digital Anda dari IDEA Asia. Selamat datang. Katakan apa yang bisa saya bantu hari ini.'
+            : 'Hello! I am Jarvis, your digital consultant from IDEA Asia. Welcome. Tell me how I can help you today.';
+          // Browser TTS doesn't expose an audio stream, but speak() simulates
+          // amplitude oscillation so particles react during the intro.
+          speak(introText);
         }
       }, 300);
     }, 600);
