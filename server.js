@@ -58,8 +58,38 @@ const otpRequestLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 6, message:
 app.use('/admin/login', otpRequestLimiter);
 const otpVerifyLimiter  = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
 app.use('/admin/verify', otpVerifyLimiter);
-const agentLimiter = rateLimit({ windowMs: 60 * 1000, max: 20, message: { error: 'Too many requests, please slow down.' } });
-app.use('/agent/chat', agentLimiter);
+// Agent chat — generous 60 req/min per IP. Session middleware runs
+// later in this file so we can't key per-session here without
+// reordering. Cookie-based key (set lazily below) gives per-browser
+// isolation so multiple users on shared NAT don't share the limit.
+const agentLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    // Per-browser cookie + IP — guards against NAT collisions
+    var rid = req.cookies && req.cookies.rid;
+    if (!rid) {
+      // Won't survive the request unless we set it; do so below.
+      rid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      req.__newRid = rid;
+    }
+    var ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || '';
+    return rid + '::' + ip;
+  },
+  message: { error: 'Too many requests, please slow down.' },
+});
+app.use('/agent/chat', (req, res, next) => {
+  agentLimiter(req, res, () => {
+    // Persist the rate-limit identifier as a long-lived cookie so
+    // subsequent requests are counted against the same bucket.
+    if (req.__newRid) {
+      res.cookie('rid', req.__newRid, { maxAge: 365*24*60*60*1000, httpOnly: false, sameSite: 'lax' });
+    }
+    next();
+  });
+});
 
 // Session — MongoStore dibuat SEKALI di module scope (bukan per-request).
 // Dulu store dibuat di dalam middleware tiap request → MaxListeners leak di PM2 cluster.
