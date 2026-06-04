@@ -455,6 +455,7 @@
       .replace(/(^|[\s(])IT(?=[\s.,;:!?)/-]|$)/g, '$1Information Technology');
   }
 
+
   function speak(text) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -727,9 +728,9 @@
         hideTapHint();
         try {
           if (isMobile) {
-            // Mobile: use locked voice (cached once) so subsequent
-            // messages don't switch voices. speak() must fire SYNCHRONOUSLY
-            // from this gesture for iOS to actually emit audio.
+            // Mobile: speak() must fire SYNCHRONOUSLY from this gesture
+            // for iOS to actually emit audio. Use locked voice (cached
+            // once) so subsequent messages don't switch voices.
             window.speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(expandAcronymsForTTS(text));
             const targetLang = lang === 'id' ? 'id-ID' : 'en-US';
@@ -752,7 +753,6 @@
             window.speechSynthesis.speak(u);
             console.log('[agent] mobile speak() called, queued=', window.speechSynthesis.speaking || window.speechSynthesis.pending);
           } else {
-            // Desktop: full Jarvis voice with male tuning
             speak(text);
           }
         } catch (e) {
