@@ -1,0 +1,107 @@
+# IDE Asia — PT Solusi Inovasi Bangsa
+
+> Enterprise IT consulting, outsourcing, cloud, and security firm based in Jakarta, Indonesia. Official IBM Certified Partner. ISO 9001:2015 + ISO 27001:2013 certified. Serving banking, telecommunications, insurance, manufacturing, and government across Southeast Asia.
+
+IDE Asia (legal entity: PT Solusi Inovasi Bangsa, registered AHU-AH.01.09-0249721) is an Indonesian enterprise IT services company founded in 2013. Headquartered in Jakarta with offices in Bandung, Hanoi (Vietnam), and Sydney (Australia). The company delivers end-to-end Information Technology solutions across six service lines and is an authorized reseller and implementation partner for the IBM software and infrastructure portfolio.
+
+## Services
+
+- [IT Consulting](https://ide.asia/services/it-consulting): Strategic technology advisory — digital transformation roadmaps, IT architecture review, vendor selection, IT governance frameworks. 6–8 week typical engagement, ~35% misalignment reduction.
+- [IT Outsourcing](https://ide.asia/services/it-outsourcing): End-to-end managed IT services — helpdesk, infrastructure management, application management, SLA-driven operations. ~30% cost reduction vs in-house, 99.5% uptime SLA.
+- [IT Hiring](https://ide.asia/services/it-hiring): Tech talent sourcing and staff augmentation — 500+ pre-vetted candidates, 5–7 day shortlist, contract or permanent placement.
+- [Cloud Infrastructure](https://ide.asia/services/cloud-infrastructure): Migration and management on AWS, Azure, GCP, and IBM Cloud — multi-cloud architecture, DevOps & CI/CD, Kubernetes, FinOps cost optimization. ~40% cost reduction, zero-downtime migration.
+- [IT Security](https://ide.asia/services/it-security): Cybersecurity — security audit, penetration testing, SOC & SIEM, Zero Trust, ISO 27001 + OJK/BI compliance. CEH and OSCP certified engineers.
+- [Squad Based Delivery](https://ide.asia/services/squad-delivery): Dedicated agile squads embedded in client organizations — product engineering, design & UX, quality engineering. 2-week sprints, full-stack teams.
+
+## IBM Product Catalog (IDE Asia is an official IBM Partner)
+
+- [IBM Product Catalog](https://ide.asia/products): 30+ IBM products IDE Asia implements, integrates, and supports across 8 categories.
+
+### AI & watsonx
+
+- [watsonx.ai](https://ide.asia/products/watsonx-ai): Enterprise foundation model studio — train, validate, tune, deploy LLMs. Supports IBM Granite, Llama, Mistral.
+- [watsonx.data](https://ide.asia/products/watsonx-data): Open lakehouse on Apache Iceberg + Presto + Spark for AI workloads.
+- [watsonx.governance](https://ide.asia/products/watsonx-governance): AI governance, risk, compliance — EU AI Act, NIST AI RMF, ISO 42001 readiness.
+- [watsonx Assistant](https://ide.asia/products/watsonx-assistant): Conversational AI with RAG for customer service.
+- [watsonx Orchestrate](https://ide.asia/products/watsonx-orchestrate): AI agent platform that automates business tasks across 100+ apps.
+- [watsonx Code Assistant](https://ide.asia/products/watsonx-code-assistant): AI pair-programmer for Java, COBOL, Ansible. Mainframe modernization.
+
+### Cloud Platform
+
+- [IBM Cloud](https://ide.asia/products/ibm-cloud): Public cloud for AI and regulated workloads — financial services validated, Singapore region.
+- [Red Hat OpenShift on IBM Cloud](https://ide.asia/products/openshift-on-ibm-cloud): Fully-managed Kubernetes platform.
+- [IBM Cloud Paks](https://ide.asia/products/cloud-paks): Modular OpenShift application suites.
+- [VMware on IBM Cloud](https://ide.asia/products/vmware-on-ibm-cloud): Lift-and-shift VMware migration.
+- [IBM Cloud Satellite](https://ide.asia/products/cloud-satellite): Distributed cloud — IBM Cloud services on any infrastructure.
+
+### Data & Analytics
+
+- [IBM Db2](https://ide.asia/products/db2): Enterprise database for OLTP and analytics. Core banking workload trusted.
+- [Cognos Analytics](https://ide.asia/products/cognos-analytics): AI-assisted business intelligence with NLQ.
+- [SPSS Statistics](https://ide.asia/products/spss-statistics): Statistical analysis for research.
+- [Cloud Pak for Data](https://ide.asia/products/cloud-pak-for-data): Unified data fabric platform.
+- [Netezza Performance Server](https://ide.asia/products/netezza): Petabyte-scale MPP data warehouse.
+
+### Automation
+
+- [Cloud Pak for Business Automation](https://ide.asia/products/cloud-pak-for-business-automation): Workflow + content + RPA + decision automation.
+- [Instana](https://ide.asia/products/instana): Real-time APM and full-stack observability with 1-second granularity.
+- [Turbonomic](https://ide.asia/products/turbonomic): AI-driven application resource management and FinOps.
+- [Apptio](https://ide.asia/products/apptio): Technology Business Management and FinOps platform.
+- [HCL Workload Automation](https://ide.asia/products/hcl-workload-automation): Enterprise job scheduling.
+
+### Security
+
+- [QRadar SIEM](https://ide.asia/products/qradar-siem): AI-powered SIEM with MITRE ATT&CK mapping.
+- [Guardium](https://ide.asia/products/guardium): Database activity monitoring and data security.
+- [IBM Verify](https://ide.asia/products/ibm-verify): Modern IAM — SSO, MFA, adaptive access.
+- [MaaS360](https://ide.asia/products/maas360): Unified endpoint management (MDM/UEM).
+- [Trusteer](https://ide.asia/products/trusteer): Behavioral fraud detection for digital banking.
+- [X-Force](https://ide.asia/products/x-force): Threat intelligence and incident response services.
+
+### Integration
+
+- [API Connect](https://ide.asia/products/api-connect): Full API lifecycle management. Open banking ready.
+- [IBM MQ](https://ide.asia/products/ibm-mq): Enterprise messaging middleware — once-and-only-once delivery.
+- [App Connect](https://ide.asia/products/app-connect): Low-code iPaaS with 200+ connectors.
+- [DataPower Gateway](https://ide.asia/products/datapower-gateway): Hardware-grade multi-protocol security gateway.
+
+### Storage
+
+- [FlashSystem](https://ide.asia/products/flashsystem): NVMe enterprise storage with cyber resilience.
+- [Storage Scale](https://ide.asia/products/storage-scale): Software-defined parallel file system for HPC/AI.
+- [Storage Defender](https://ide.asia/products/storage-defender): Cyber resilience and ransomware recovery.
+- [Storage Fusion](https://ide.asia/products/storage-fusion): Container-native data services for OpenShift.
+
+### Servers & Mainframes
+
+- [IBM Power](https://ide.asia/products/ibm-power): Power10 servers for SAP HANA, AIX, and AI inference.
+- [IBM Z](https://ide.asia/products/ibm-z): z16 mainframe — 70% of global financial transactions.
+- [LinuxONE](https://ide.asia/products/linuxone): Mainframe-class Linux server with confidential computing.
+
+## Company
+
+- [About IDE Asia](https://ide.asia/about): Company history, leadership, offices, certifications.
+- [Capability](https://ide.asia/capability): Full technology stack and engineering roles IDE Asia operates.
+- [Blog](https://ide.asia/blog): Articles on IT trends, IBM products, enterprise architecture, security, AI.
+- [Contact](https://ide.asia/contact): Get in touch — info@ide.asia, WhatsApp (+62) 818-0580-7807.
+
+## Key Facts
+
+- **Founded**: 2013 (first project), incorporated 2019.
+- **Legal entity**: PT Solusi Inovasi Bangsa.
+- **Registration**: AHU-AH.01.09-0249721.
+- **Certifications**: ISO 9001:2015 (Quality Management), ISO 27001:2013 (Information Security Management).
+- **Partnerships**: IBM Certified Partner, Deloitte Independent Contractor.
+- **Headquarters**: Graha Binakarsa 7th Floor, Jl. H.R. Rasuna Said Kav C-18, South Jakarta 12940, Indonesia.
+- **Other offices**: Bandung (Indonesia), Hanoi (Vietnam), Sydney (Australia).
+- **Coverage**: Southeast Asia, with worldwide client engagements.
+- **Clients**: Bank Jakarta, BRI, UOB, Accenture, Telkomsel, Pertamina, SIG, and 20+ other enterprise clients across banking, telecommunications, manufacturing, and government.
+- **Email**: info@ide.asia
+- **Phone / WhatsApp**: +62 818-0580-7807
+- **Website**: https://ide.asia
+
+## Optional
+
+- [Sitemap (XML)](https://ide.asia/sitemap.xml): Full URL index.
+- [Detailed knowledge base](https://ide.asia/llms-full.txt): Long-form content for retrieval.

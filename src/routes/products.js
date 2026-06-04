@@ -51,26 +51,54 @@ router.get('/:slug', (req, res, next) => {
     : `${productName} — Implemented by IDEA Asia`;
   const description = isId ? product.descLongId : product.descLongEn;
 
-  // JSON-LD: Product schema
-  const jsonLd = `<script type="application/ld+json">
-${JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'Product',
-  name: productName,
-  description: isId ? product.descLongId : product.descLongEn,
-  brand: { '@type': 'Brand', name: 'IBM' },
-  category: isId ? category.titleId : category.titleEn,
-  url: (process.env.SITE_URL || 'https://ide.asia') + '/products/' + product.slug,
-  offers: {
-    '@type': 'Offer',
-    seller: {
-      '@type': 'Organization',
-      name: 'PT Solusi Inovasi Bangsa (IDEA Asia)',
-    },
-    availability: 'https://schema.org/InStock',
-  },
-}, null, 2)}
-</script>`;
+  // JSON-LD: Product + BreadcrumbList + FAQ for AEO snippet capture
+  const siteUrl = process.env.SITE_URL || 'https://ide.asia';
+  const productUrl = `${siteUrl}/products/${product.slug}`;
+  const faqs = [
+    [`What is ${product.name}?`, product.descLongEn],
+    [`How does IDE Asia implement ${product.name}?`, `As an IBM Certified Partner, IDE Asia delivers ${product.name} implementations including architecture design, deployment, integration with existing systems, managed services, and internal team training. Typical implementation timeline: ${product.timeline}.`],
+    [`What is the pricing model for ${product.name}?`, `${product.name} licensing model: ${product.tier}. Specific pricing depends on workload, region, and contract terms — contact IDE Asia at https://ide.asia/contact for an enterprise quote.`],
+  ];
+
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Product',
+        '@id': `${productUrl}#product`,
+        name: productName,
+        description: isId ? product.descLongId : product.descLongEn,
+        brand: { '@type': 'Brand', name: 'IBM' },
+        category: isId ? category.titleId : category.titleEn,
+        url: productUrl,
+        offers: {
+          '@type': 'Offer',
+          seller: { '@id': `${siteUrl}#organization` },
+          availability: 'https://schema.org/InStock',
+          priceCurrency: 'USD',
+          priceSpecification: { '@type': 'PriceSpecification', valueAddedTaxIncluded: false },
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home',     item: siteUrl + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Products', item: siteUrl + '/products' },
+          { '@type': 'ListItem', position: 3, name: isId ? category.titleId : category.titleEn, item: `${siteUrl}/products?cat=${category.id}` },
+          { '@type': 'ListItem', position: 4, name: productName, item: productUrl },
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${productUrl}#faq`,
+        mainEntity: faqs.map(([q, a]) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      },
+    ],
+  })}</script>`;
 
   res.render('pages/product-detail', {
     title,

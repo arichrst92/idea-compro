@@ -99,16 +99,69 @@ router.get('/sitemap.xml', async (req, res, next) => {
   }
 });
 
-// Robots.txt
+// Robots.txt — explicitly allow AI search crawlers so IDE Asia content
+// can be indexed by ChatGPT, Perplexity, Claude, Gemini, etc.
 router.get('/robots.txt', (req, res) => {
   const baseUrl = process.env.SITE_URL || 'https://ide.asia';
   res.type('text/plain');
   res.header('Cache-Control', 'public, max-age=86400');
-  res.send(`User-agent: *
+  res.send(`# IDE Asia robots.txt
+# https://ide.asia
+
+User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /agent/chat
+
+# AI / LLM crawlers — explicitly allowed for AI search discoverability
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
 
 Sitemap: ${baseUrl}/sitemap.xml
 `);
