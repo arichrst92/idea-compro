@@ -118,10 +118,10 @@
     scene.background = null;
     // fog removed
 
-    // Camera — far back for debug visibility
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 5000);
-    camera.position.set(0, 3, 20);
-    camera.lookAt(0, 1, 0);
+    // Camera — bust shot at human eye level
+    camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 1.55, 2.8);
+    camera.lookAt(0, 1.45, 0);
 
     // Lighting
     const ambient = new THREE.AmbientLight(0x8899bb, 0.4);
@@ -192,65 +192,35 @@
             if (node.isMesh) { node.visible = true; node.frustumCulled = false; }
           });
 
-          // ── Inspect the actual world-space bounding box AFTER glTF's natural transforms ──
-          // (glTF Y-up conversion was already applied by Blender via export_yup=True)
-          model.updateMatrixWorld(true);
-          const naturalBox = new THREE.Box3().setFromObject(model);
-          const naturalSize = naturalBox.getSize(new THREE.Vector3());
-          const naturalCenter = naturalBox.getCenter(new THREE.Vector3());
-          console.log('[avatar] natural world size:', naturalSize.x.toFixed(3), naturalSize.y.toFixed(3), naturalSize.z.toFixed(3));
-          console.log('[avatar] natural world center:', naturalCenter.x.toFixed(3), naturalCenter.y.toFixed(3), naturalCenter.z.toFixed(3));
+          // ── Geometry-local height detection (Box3 unreliable for SkinnedMesh) ──
+          let geomLocalSize = new THREE.Vector3();
+          model.traverse((node) => {
+            if (node.isMesh && node.geometry?.boundingBox === null) node.geometry.computeBoundingBox();
+            if (node.isMesh && !geomLocalSize.lengthSq() && node.geometry?.boundingBox) {
+              node.geometry.boundingBox.getSize(geomLocalSize);
+            }
+          });
+          console.log('[avatar] geometry-local size:', geomLocalSize.x.toFixed(2), geomLocalSize.y.toFixed(2), geomLocalSize.z.toFixed(2));
 
-          // Find tallest dimension AFTER natural transform (so we honor glTF's choice of "up")
-          const tallest = Math.max(naturalSize.x, naturalSize.y, naturalSize.z, 0.001);
-          const targetH = 1.7;
-          const scale = targetH / tallest;
-          model.scale.setScalar(scale);
-          console.log(`[avatar] applied scale: ${scale.toFixed(3)} (tallest natural axis → 1.7m target)`);
+          // Determine which geometry-local axis is height
+          let upAxis = 'y';
+          if (geomLocalSize.z > geomLocalSize.x && geomLocalSize.z > geomLocalSize.y) upAxis = 'z';
+          else if (geomLocalSize.x > geomLocalSize.y && geomLocalSize.x > geomLocalSize.z) upAxis = 'x';
 
-          // Re-measure after scale
-          model.updateMatrixWorld(true);
-          const box = new THREE.Box3().setFromObject(model);
-          const size = box.getSize(new THREE.Vector3());
-          const center = box.getCenter(new THREE.Vector3());
-          console.log(`[avatar] scaled world size: ${size.x.toFixed(2)}×${size.y.toFixed(2)}×${size.z.toFixed(2)} m`);
-
-          // Determine which world axis IS height after scale (largest world dim)
-          let worldUpAxis = 'y';
-          if (size.z > size.x && size.z > size.y) worldUpAxis = 'z';
-          else if (size.x > size.y && size.x > size.z) worldUpAxis = 'x';
-
-          // If world up-axis is NOT Y, rotate model to make it Y
-          if (worldUpAxis === 'z') {
+          // Convert geometry up-axis → world Y-up
+          if (upAxis === 'z') {
             model.rotation.x = -Math.PI / 2;
-            console.log('[avatar] rotating: Z-up → Y-up');
-          } else if (worldUpAxis === 'x') {
+            console.log('[avatar] rotation: Z-up → Y-up');
+          } else if (upAxis === 'x') {
             model.rotation.z = Math.PI / 2;
-            console.log('[avatar] rotating: X-up → Y-up');
+            console.log('[avatar] rotation: X-up → Y-up');
           }
 
-          // Final position: center horizontally, feet at y=0
-          model.updateMatrixWorld(true);
-          const finalBox = new THREE.Box3().setFromObject(model);
-          const finalSize = finalBox.getSize(new THREE.Vector3());
-          const finalCenter = finalBox.getCenter(new THREE.Vector3());
-          model.position.set(-finalCenter.x, -finalBox.min.y, -finalCenter.z);
-          console.log(`[avatar] final world size: ${finalSize.x.toFixed(2)}×${finalSize.y.toFixed(2)}×${finalSize.z.toFixed(2)} m`);
-          console.log(`[avatar] final position: ${model.position.x.toFixed(2)}, ${model.position.y.toFixed(2)}, ${model.position.z.toFixed(2)}`);
+          // Place model so feet are roughly at y=0 (origin already at feet after apply_transform)
+          model.position.set(0, 0, 0);
 
           scene.add(model);
-
-          // ── DEBUG HELPERS — remove these once positioning is confirmed ──
-          // AxesHelper at origin: red=X, green=Y, blue=Z. 3-meter long.
-          const axes = new THREE.AxesHelper(3);
-          scene.add(axes);
-          // GridHelper at y=0: 20×20 meter floor grid
-          const grid = new THREE.GridHelper(20, 20, 0x888888, 0xcccccc);
-          scene.add(grid);
-          // BoxHelper around the model itself (yellow)
-          const boxHelper = new THREE.BoxHelper(model, 0xffff00);
-          scene.add(boxHelper);
-          console.log('[avatar] DEBUG: AxesHelper + GridHelper + BoxHelper added (camera 20m back). Remove when correctly framed.');
+          console.log('[avatar] scene.add complete. Camera at (0, 1.55, 2.8) looking at (0, 1.45, 0)');
 
           // Build morph target index
           model.traverse((node) => {
