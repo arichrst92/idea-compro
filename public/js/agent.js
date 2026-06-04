@@ -428,9 +428,23 @@
     return langMatch[0] || voices[0] || null;
   }
 
+  // Expand common acronyms so TTS pronounces them correctly.
+  // "IT" gets read as the pronoun "it" — replace with full words.
+  // Brand names (watsonx.ai, QRadar, IBM Z) stay intact.
+  function expandAcronymsForTTS(text) {
+    if (!text) return '';
+    return text
+      // " IT " / "IT." / "IT," / start-of-sentence "IT" → Information Technology
+      .replace(/(^|[\s(])IT(?=[\s.,;:!?)/-]|$)/g, '$1Information Technology')
+      // IDE Asia must be spelled out as letters, not "eedee"
+      // (commas force TTS to insert micro-pauses → reads letter-by-letter)
+      .replace(/\bIDE Asia\b/g, 'I, D, E, Asia');
+  }
+
   function speak(text) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
+    text = expandAcronymsForTTS(text);
     const u = new SpeechSynthesisUtterance(text);
     const targetLang = lang === 'id' ? 'id-ID' : 'en-US';
     u.lang = targetLang;
