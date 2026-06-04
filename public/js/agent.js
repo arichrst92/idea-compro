@@ -118,10 +118,10 @@
     scene.background = null;
     // fog removed
 
-    // Camera — bust shot at human eye level
-    camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 1.55, 2.8);
-    camera.lookAt(0, 1.45, 0);
+    // Camera — tighter portrait bust shot
+    camera = new THREE.PerspectiveCamera(22, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 1.60, 2.0);
+    camera.lookAt(0, 1.55, 0);
 
     // Lighting
     const ambient = new THREE.AmbientLight(0x8899bb, 0.4);
@@ -219,8 +219,40 @@
           // Place model so feet are roughly at y=0 (origin already at feet after apply_transform)
           model.position.set(0, 0, 0);
 
+          // ── Pose arms down (Renderpeople Sophia ships in T/A-pose) ──
+          // Log all bones for inspection, then try to rotate upper-arm bones so arms hang.
+          const boneNames = [];
+          model.traverse((node) => {
+            if (node.isBone) boneNames.push(node.name);
+          });
+          console.log('[avatar] bones found:', boneNames.length);
+          console.log('[avatar] sample bone names:', boneNames.slice(0, 20).join(', '));
+
+          // Find arm bones via name pattern matching common Renderpeople conventions
+          model.traverse((node) => {
+            if (!node.isBone) return;
+            const n = node.name.toLowerCase();
+
+            // Upper arm / shoulder area — rotate so arm hangs ~vertical
+            const isUpperArm = /(upper[_-]?arm|^l_arm$|^r_arm$|leftarm|rightarm|^arm_l|^arm_r|shoulder)/.test(n);
+            if (!isUpperArm) return;
+
+            const isLeft  = /(^l[_-]|left|^arm_l)/.test(n);
+            const isRight = /(^r[_-]|right|^arm_r)/.test(n);
+
+            // Rotate around Z axis ~75° to pull arm from horizontal toward vertical
+            // Sign depends on left/right (mirror)
+            if (isLeft) {
+              node.rotation.z += 1.3;  // ~75° clockwise from chest POV
+              console.log(`[avatar] rotated LEFT arm: ${node.name}`);
+            } else if (isRight) {
+              node.rotation.z -= 1.3;
+              console.log(`[avatar] rotated RIGHT arm: ${node.name}`);
+            }
+          });
+
           scene.add(model);
-          console.log('[avatar] scene.add complete. Camera at (0, 1.55, 2.8) looking at (0, 1.45, 0)');
+          console.log('[avatar] scene.add complete. Camera tight portrait at (0, 1.60, 2.0)');
 
           // Build morph target index
           model.traverse((node) => {
