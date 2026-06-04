@@ -187,32 +187,72 @@
         (gltf) => {
           model = gltf.scene;
 
-          // ── Measure original model ──
+          // ── Walk hierarchy: log every mesh + force visible + disable frustum culling ──
+          let meshCount = 0;
+          model.traverse((node) => {
+            if (node.isMesh) {
+              meshCount++;
+              node.visible = true;
+              node.frustumCulled = false;
+              const geom = node.geometry;
+              // Compute geometry bounding box if not already
+              if (geom && !geom.boundingBox) geom.computeBoundingBox();
+              const localSize = geom?.boundingBox?.getSize(new THREE.Vector3()) || new THREE.Vector3();
+              console.log(`[avatar] mesh #${meshCount} "${node.name}" — verts: ${geom?.attributes?.position?.count || 0}, localSize: ${localSize.x.toFixed(2)}×${localSize.y.toFixed(2)}×${localSize.z.toFixed(2)}, worldScale: ${node.getWorldScale(new THREE.Vector3()).x.toFixed(4)}`);
+            }
+            if (node.isSkinnedMesh) {
+              // SkinnedMesh: bounding box derived from skeleton — disable culling forever
+              node.frustumCulled = false;
+            }
+          });
+          console.log(`[avatar] total meshes: ${meshCount}`);
+
+          // ── Compute bounds (Box3 may return tiny for SkinnedMesh; fallback to first mesh local size scaled) ──
           const rawBox = new THREE.Box3().setFromObject(model);
           const rawSize = rawBox.getSize(new THREE.Vector3());
-          const rawCenter = rawBox.getCenter(new THREE.Vector3());
-          console.log('[avatar] raw size (xyz):', rawSize.x.toFixed(2), rawSize.y.toFixed(2), rawSize.z.toFixed(2));
-          console.log('[avatar] raw center:', rawCenter.x.toFixed(2), rawCenter.y.toFixed(2), rawCenter.z.toFixed(2));
+          console.log('[avatar] world Box3 size:', rawSize.x.toFixed(3), rawSize.y.toFixed(3), rawSize.z.toFixed(3));
 
-          // ── Scale to ~1.7m tall ──
-          // Use max(y, x, z) so very tall OR very wide models are sized correctly
-          const tallestDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
+          // If Box3 is tiny (skinned mesh without skeleton pose applied), fallback:
+          // use first SkinnedMesh's geometry local bounding box × accumulated scale
+          let needFallback = rawSize.y < 0.5;
+          if (needFallback) {
+            console.warn('[avatar] world Box3 too small — using geometry-local bounds for sizing');
+            let bestSize = new THREE.Vector3();
+            model.traverse((node) => {
+              if (node.isMesh && node.geometry?.boundingBox) {
+                const s = node.geometry.boundingBox.getSize(new THREE.Vector3());
+                const ws = node.getWorldScale(new THREE.Vector3());
+                s.multiply(ws);
+                if (s.length() > bestSize.length()) bestSize = s;
+              }
+            });
+            console.log('[avatar] fallback size:', bestSize.x.toFixed(2), bestSize.y.toFixed(2), bestSize.z.toFixed(2));
+            rawSize.copy(bestSize);
+          }
+
+          // ── Scale to ~1.7m tall using whichever dim is largest ──
+          const tallestDim = Math.max(rawSize.x, rawSize.y, rawSize.z, 0.001);
           const targetH = 1.7;
           const scale = targetH / tallestDim;
           model.scale.setScalar(scale);
 
-          // ── Re-measure after scale, then position so feet at y=0 ──
-          const box = new THREE.Box3().setFromObject(model);
-          const center = box.getCenter(new THREE.Vector3());
-          model.position.set(-center.x, -box.min.y, -center.z);
+          // ── Re-measure & center ──
+          // For skinned meshes, Box3.setFromObject might still be unreliable.
+          // Position model so its origin is at world origin and feet roughly at y=0.
+          model.position.set(0, 0, 0);
+          const finalBox = new THREE.Box3().setFromObject(model);
+          if (finalBox.getSize(new THREE.Vector3()).y > 0.5) {
+            const c = finalBox.getCenter(new THREE.Vector3());
+            model.position.set(-c.x, -finalBox.min.y, -c.z);
+          }
 
-          // ── Try facing camera. Renderpeople models often face +Z (away). ──
-          // If user sees back of model, change to 0. If side, try Math.PI/2 or -Math.PI/2.
+          // ── Rotation. Renderpeople models often face +Z (away from camera). ──
+          // Try PI first; if user sees back, change to 0; if sideways, ±PI/2.
           model.rotation.y = Math.PI;
 
           scene.add(model);
-          console.log('[avatar] scaled to', scale.toFixed(3), '— final height:', (box.max.y - box.min.y).toFixed(2), 'm');
-          console.log('[avatar] facing direction: rotation.y = Math.PI (back-to-camera by default). Edit agent.js if wrong.');
+          console.log(`[avatar] applied scale: ${scale.toFixed(3)}, position: ${model.position.x.toFixed(2)},${model.position.y.toFixed(2)},${model.position.z.toFixed(2)}`);
+          console.log('[avatar] If invisible: try setting camera.position closer OR check that mesh material is not transparent');
 
           // Build morph target index
           model.traverse((node) => {
