@@ -617,3 +617,62 @@
   .alp-card { padding: 32px 24px; border-radius: 16px; }
   .alp-title { font-size: 19px; }
 }
+
+/* Step 2 — voice picker inside language modal */
+.alp-title-voice { font-size: 20px; }
+.alp-optional { font-weight: 400; color: var(--agent-gray-500); font-size: 14px; }
+.alp-voice-field { margin: 16px 0 22px; text-align: left; }
+.alp-voice-label {
+  display: block;
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  font-weight: 600; color: var(--agent-gray-500); margin-bottom: 8px;
+}
+.alp-voice-select {
+  width: 100%;
+  padding: 12px 38px 12px 14px;
+  background: var(--agent-white);
+  border: 1.5px solid var(--agent-border);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--agent-ink);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%236B7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6l4 4 4-4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.alp-voice-select:focus {
+  outline: none;
+  border-color: var(--agent-blue);
+  box-shadow: 0 0 0 4px rgba(26,80,232,0.08);
+}
+.alp-voice-actions { display: flex; flex-direction: column; gap: 8px; }
+.alp-btn-primary {
+  display: block; width: 100%;
+  padding: 14px 18px;
+  background: var(--agent-ink);
+  color: var(--agent-white);
+  border: 1.5px solid var(--agent-ink);
+  border-radius: 12px;
+  font-size: 14.5px; font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+}
+.alp-btn-primary:hover { background: #1A1F2E; }
+.alp-btn-primary:active { transform: scale(0.99); }
+.alp-btn-secondary {
+  display: block; width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: var(--agent-gray-500);
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.18s;
+}
+.alp-btn-secondary:hover { color: var(--agent-ink); }

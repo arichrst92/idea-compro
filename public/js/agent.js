@@ -371,25 +371,22 @@
   // amplitude oscillation while utterance is active → particles still react.
   // Voice selection prefers a male voice for the Jarvis persona.
 
-  // Male voice name hints (case-insensitive). Includes localized male names
-  // for Indonesian voices on Android/Chrome and macOS/iOS.
-  const MALE_VOICE_HINTS = [
-    'male','man',
-    // English
-    'david','daniel','alex','fred','thomas','aaron','arthur','oliver',
-    'mark','michael','george','james','rishi','reed','ralph','rocko',
-    'eddy','grandpa','gordon','jamie','tom','john','jacob','ryan',
-    // Indonesian
-    'ardi','andika','reza','rian','agus','budi','wahyu','damayanto',
-    // Generic
-    'baritone','bass'
+  // Recommended voice name hints, in priority order, per language.
+  // First match wins. Mirrored to language-picker UI so "Recommended" tag
+  // there matches what pickJarvisVoice would auto-select.
+  const EN_RECOMMENDED = [
+    'Daniel',                  // iOS/Mac en-GB male — Jarvis Iron Man tone
+    'Microsoft Mark',          // Windows en-US male
+    'Google UK English Male',  // Android
+    'Microsoft David',         // Windows en-US male
+    'Alex',                    // Mac en-US premium
+    'Google US English',       // Android fallback
   ];
-  const FEMALE_VOICE_HINTS = [
-    'female','woman',
-    'samantha','victoria','karen','moira','tessa','fiona','amelie',
-    'siri female','susan','allison','ava','zoe','google.*female',
-    // Indonesian
-    'damayanti','siti','ayu','dewi'
+  const ID_RECOMMENDED = [
+    'Microsoft Andika',        // Windows id-ID MALE (best native male)
+    'Google bahasa Indonesia', // Android — gender depends on device
+    'Damayanti',               // iOS/Mac id-ID female (accepted — native pronunciation)
+    'Microsoft Gadis',         // Windows id-ID female
   ];
 
   function pickJarvisVoice(targetLang) {
@@ -398,34 +395,43 @@
     if (!voices.length) return null;
 
     const langPrefix = targetLang.toLowerCase().split('-')[0]; // 'en' / 'id'
-    const langMatch  = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
-    const pool = langMatch.length ? langMatch : voices;
 
-    function isMale(v) {
-      const n = (v.name || '').toLowerCase();
-      // Reject obvious female names first
-      if (FEMALE_VOICE_HINTS.some(h => n.includes(h))) return false;
-      return MALE_VOICE_HINTS.some(h => n.includes(h));
-    }
-    function isLikelyFemale(v) {
-      const n = (v.name || '').toLowerCase();
-      return FEMALE_VOICE_HINTS.some(h => n.includes(h));
+    // 0. User-explicit choice from the language-picker dropdown
+    let storedName = null;
+    try { storedName = localStorage.getItem('jarvisVoice_' + langPrefix); } catch (e) {}
+    if (storedName) {
+      const stored = voices.find(v => v.name === storedName);
+      if (stored) {
+        console.log('[agent] using user-picked voice:', stored.name);
+        return stored;
+      }
     }
 
-    // 1. Exact lang match + explicitly male name
-    let pick = pool.find(isMale);
-    if (pick) return pick;
+    // 1. Recommended chain, restricted to the target language
+    const langMatch = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
+    if (!langMatch.length) {
+      // No voice for this language at all — return null so browser uses its default
+      return null;
+    }
 
-    // 2. Exact lang match + not explicitly female (could be neutral)
-    pick = pool.find(v => !isLikelyFemale(v));
-    if (pick) return pick;
+    const recList = (langPrefix === 'id') ? ID_RECOMMENDED : EN_RECOMMENDED;
+    for (const wanted of recList) {
+      const hit = langMatch.find(v => (v.name || '').includes(wanted));
+      if (hit) return hit;
+    }
 
-    // 3. Any male voice (cross-lang fallback)
-    pick = voices.find(isMale);
-    if (pick) return pick;
+    // 2. Any voice matching the target language (last resort — keeps native pronunciation)
+    return langMatch[0];
+  }
 
-    // 4. Any matching-lang voice
-    return langMatch[0] || voices[0] || null;
+  // Used by speak() to decide pitch/rate
+  function isLikelyFemaleVoice(v) {
+    if (!v) return false;
+    const n = (v.name || '').toLowerCase();
+    const FEMALE = ['damayanti', 'gadis', 'samantha', 'victoria', 'karen', 'moira',
+                    'tessa', 'fiona', 'amelie', 'allison', 'ava', 'zoe', 'susan',
+                    'female', 'siti', 'ayu', 'dewi'];
+    return FEMALE.some(h => n.includes(h));
   }
 
   // CACHED voice — picked ONCE on first speak and locked for the session.
@@ -480,8 +486,14 @@
       // values and falls back to the system voice, which breaks our lock.
       u.rate  = 1;
       u.pitch = 1;
+    } else if (isLikelyFemaleVoice(v)) {
+      // Female voice (e.g. Damayanti for ID, or any female English fallback):
+      // keep natural pitch/rate. Lowering pitch on a female voice makes it
+      // sound artificial / "demonic", not consultant-like.
+      u.rate  = 1;
+      u.pitch = 1;
     } else {
-      // Desktop: lower pitch + slightly slower rate → masculine tone
+      // Male voice on desktop: lower pitch + slightly slower → consultant tone
       u.rate  = 0.95;
       u.pitch = 0.85;
     }
