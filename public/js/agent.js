@@ -504,7 +504,7 @@
       const res = await fetch('/agent/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history }),
+        body: JSON.stringify({ message: text, history, lang }),
       });
       const data = await res.json();
       if (!res.ok) {

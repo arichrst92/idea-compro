@@ -54,7 +54,7 @@ How to use the IBM catalog:
 - Never quote a price — pricing always depends on workload, region, and licensing model. Direct pricing questions to /contact with service "it-consulting".
 
 Guidelines:
-- Answer in the same language the user writes in (Indonesian or English)
+- The session language is set externally — a separate system message will tell you which language to use. Stick to it strictly.
 - Keep responses concise and structured — use bullet points when listing multiple items
 - For pricing or detailed proposals, always recommend scheduling a consultation at /contact
 - If asked about topics unrelated to IT/technology/IDEA Asia, politely redirect
@@ -156,6 +156,19 @@ router.post('/chat', async (req, res) => {
       return res.status(500).json({ error: 'AI service not configured' });
     }
 
+    // Lock response language to what user picked at the start of the
+    // session. Priority: explicit body.lang > cookie > query > 'en'.
+    // The system prompt + a system-level "stay in language X" reminder
+    // injected after every user turn keep Jarvis consistent.
+    const rawLang = (req.body && req.body.lang) || req.cookies.lang || req.query.lang || res.locals.lang || 'en';
+    const lang = ['en', 'id'].includes(rawLang) ? rawLang : 'en';
+    const langName = lang === 'id' ? 'Bahasa Indonesia' : 'English';
+    const langLockEn = `LANGUAGE LOCK — VERY IMPORTANT:
+The user has selected ${langName} as their session language. You MUST respond ONLY in ${langName} for the entire conversation, REGARDLESS of what language the user types in (even if they write in English/Indonesian/mixed). Never switch languages mid-conversation. Translate product names and IBM-specific terms only when natural — keep brand names (e.g. "watsonx.ai", "QRadar SIEM", "IBM Z") in their original form.`;
+    const langLockId = `KUNCI BAHASA — SANGAT PENTING:
+User memilih ${langName} sebagai bahasa sesi. Anda WAJIB merespons HANYA dalam ${langName} sepanjang percakapan, TIDAK PEDULI dalam bahasa apa user mengetik (meskipun mereka menulis dalam Bahasa Inggris/Indonesia/campur). Jangan pernah ganti bahasa di tengah percakapan. Terjemahkan istilah produk IBM hanya bila terdengar natural — pertahankan nama brand (mis. "watsonx.ai", "QRadar SIEM", "IBM Z") apa adanya.`;
+    const languageLock = lang === 'id' ? langLockId : langLockEn;
+
     // Build messages array with history (max 10 turns to keep context manageable)
     const messages = [];
     if (Array.isArray(history)) {
@@ -174,10 +187,13 @@ router.post('/chat', async (req, res) => {
         model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
+          // Place language lock AFTER the base prompt and AFTER history,
+          // right before the user's latest turn — last instructions win.
+          { role: 'system', content: languageLock },
           ...messages
         ],
         max_tokens: 600,
-        temperature: 0.7,
+        temperature: 0.5, // slightly lower for more deterministic language adherence
         stream: false
       },
       {
