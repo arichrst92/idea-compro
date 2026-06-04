@@ -426,16 +426,28 @@
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang === 'id' ? 'id-ID' : 'en-US';
+    const targetLang = lang === 'id' ? 'id-ID' : 'en-US';
+    u.lang = targetLang;
     // Lower pitch + slightly slower rate → more masculine, more "consultant" timbre
     u.rate   = 0.95;
     u.pitch  = 0.85;
     u.volume = 1;
 
-    const v = pickJarvisVoice(u.lang);
+    const v = pickJarvisVoice(targetLang);
     if (v) {
       u.voice = v;
-      console.log('[agent] using voice:', v.name, v.lang);
+      // CRITICAL: Chrome will SILENTLY IGNORE u.voice if v.lang doesn't
+      // match u.lang and fall back to the default voice for u.lang
+      // (which on macOS is "Damayanti" — female — for id-ID).
+      // We force u.lang to match the picked voice so the male voice is
+      // actually used. Trade-off: if we pick Daniel (en-GB) for an
+      // Indonesian user (no native male voice exists), the text will be
+      // pronounced with an English accent — but at least it's MALE.
+      u.lang = v.lang;
+      const langMismatch = v.lang.toLowerCase().split('-')[0] !== targetLang.toLowerCase().split('-')[0];
+      console.log('[agent] using voice:', v.name, v.lang, langMismatch ? '(cross-lang male fallback)' : '');
+    } else {
+      console.warn('[agent] no voice picked — using browser default for', targetLang);
     }
 
     let speaking = false;
