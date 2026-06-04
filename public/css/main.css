@@ -1060,6 +1060,32 @@ img.product-card-vendor.failed {
   .ph-cards { grid-template-columns: 1fr; }
 }
 
+/* ─── Landing pages (high-intent SEO targets) ─────────────────────── */
+.landing-hero { padding-bottom: 56px; }
+.landing-subhead { font-size: 17px; color: var(--text-2); line-height: 1.55; max-width: 720px; margin-top: 22px; margin-bottom: 32px; }
+.landing-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.landing-body { padding: var(--space-section) 0; background: var(--bg-soft); border-top: 1px solid var(--border); }
+.landing-content { max-width: 780px; margin: 0 auto; }
+.landing-lead { font-size: 18px; color: var(--text-1); line-height: 1.7; margin-bottom: 32px; }
+.landing-h2 { font-family: var(--font-display); font-size: clamp(24px, 3vw, 30px); font-weight: var(--weight-display); letter-spacing: -0.02em; color: var(--ink); margin: 40px 0 18px; line-height: 1.2; }
+.landing-content .landing-h2:first-child { margin-top: 0; }
+.landing-p { font-size: 15.5px; color: var(--text-1); line-height: 1.7; margin-bottom: 20px; }
+.landing-bullets { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 10px; }
+.landing-bullets li { display: flex; gap: 12px; align-items: flex-start; padding: 14px 18px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14.5px; color: var(--ink); line-height: 1.6; }
+.landing-bullets .lb-check { flex-shrink: 0; color: var(--blue); margin-top: 2px; }
+.landing-bullets strong { color: var(--ink); font-weight: var(--weight-semibold); }
+
+.landing-faq { padding: var(--space-section) 0; background: var(--bg); }
+.landing-faq-list { max-width: 780px; margin: 28px auto 0; display: grid; gap: 8px; }
+.landing-faq-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.landing-faq-item summary { list-style: none; cursor: pointer; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14.5px; font-weight: var(--weight-semibold); color: var(--ink); transition: background var(--transition); }
+.landing-faq-item summary::-webkit-details-marker { display: none; }
+.landing-faq-item summary:hover { background: var(--bg-soft); }
+.landing-faq-item summary svg { flex-shrink: 0; color: var(--text-3); transition: transform 0.2s ease; }
+.landing-faq-item[open] summary svg { transform: rotate(180deg); }
+.landing-faq-answer { padding: 0 18px 18px; font-size: 14px; color: var(--text-1); line-height: 1.65; border-top: 1px solid var(--border-2); padding-top: 14px; margin-top: 0; }
+
 /* ─── Contact ──────────────────────────────────────────────────── */
 .contact-wrap { background: var(--bg); padding-bottom: 96px; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; padding: 64px 0 0; align-items: start; }

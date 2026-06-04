@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const { getAllSlugs: getProductSlugs } = require('../data/ibm-products');
+const { LANDINGS } = require('./landing');
 
 router.get('/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
@@ -41,6 +42,10 @@ async function buildSitemap() {
   // Product detail pages
   for (const slug of getProductSlugs()) {
     staticPages.push({ path: `/products/${slug}`, priority: '0.7', changefreq: 'monthly' });
+  }
+  // Landing pages (high-intent SEO targets)
+  for (const l of LANDINGS) {
+    staticPages.push({ path: `/landing/${l.slug}`, priority: '0.85', changefreq: 'monthly' });
   }
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
