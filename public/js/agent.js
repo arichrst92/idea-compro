@@ -169,8 +169,13 @@
   let ttsAnalysers = []; // for currently-playing TTS audio elements
 
   function ensureAudioCtx() {
-    if (audioCtx) return audioCtx;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Aggressively resume — autoplay policy suspends context until user gesture
+    if (audioCtx.state === 'suspended' && audioCtx.resume) {
+      audioCtx.resume().catch(() => {});
+    }
     return audioCtx;
   }
 
@@ -179,9 +184,10 @@
     const source = ac.createMediaStreamSource(stream);
     micAnalyser = ac.createAnalyser();
     micAnalyser.fftSize = 256;
-    micAnalyser.smoothingTimeConstant = 0.65;
+    micAnalyser.smoothingTimeConstant = 0.55;
     source.connect(micAnalyser);
     micData = new Uint8Array(micAnalyser.frequencyBinCount);
+    console.log('[agent] mic analyser attached, polling…');
     pollMicAudio();
   }
 
@@ -191,44 +197,44 @@
     let sum = 0;
     for (let i = 0; i < micData.length; i++) sum += micData[i];
     const avg = (sum / micData.length) / 255; // 0..1
-    audioLevel = Math.max(audioLevel, avg * 1.3);
+    audioLevel = Math.max(audioLevel, avg * 2.2);
     requestAnimationFrame(pollMicAudio);
   }
 
+  // IMPORTANT: must be called BEFORE audioEl.play() so that the analyser
+  // is part of the audio routing graph from the start.
   function attachTTSAnalyser(audioEl) {
     try {
       const ac = ensureAudioCtx();
-      // resume context if suspended (autoplay policy)
-      if (ac.state === 'suspended') ac.resume();
+      // Mark element so we don't try to attach twice (causes "already connected" error)
+      if (audioEl._idea_analyser_attached) return;
+      audioEl._idea_analyser_attached = true;
+
       const source = ac.createMediaElementSource(audioEl);
       const an = ac.createAnalyser();
       an.fftSize = 256;
-      an.smoothingTimeConstant = 0.6;
+      an.smoothingTimeConstant = 0.55;
       source.connect(an);
       an.connect(ac.destination); // keep audible
       const data = new Uint8Array(an.frequencyBinCount);
+      console.log('[agent] TTS analyser attached');
 
-      const entry = { audioEl, an, data, alive: true };
-      ttsAnalysers.push(entry);
-
+      let polling = false;
       function pollTTS() {
-        if (!entry.alive) return;
-        if (audioEl.paused || audioEl.ended) return;
+        if (audioEl.paused || audioEl.ended) { polling = false; return; }
         an.getByteFrequencyData(data);
         let sum = 0;
         for (let i = 0; i < data.length; i++) sum += data[i];
         const avg = (sum / data.length) / 255;
-        audioLevel = Math.max(audioLevel, avg * 1.4);
+        audioLevel = Math.max(audioLevel, avg * 2.4);
         requestAnimationFrame(pollTTS);
       }
-      audioEl.addEventListener('play', pollTTS);
-      audioEl.addEventListener('ended', () => {
-        entry.alive = false;
-        try { source.disconnect(); an.disconnect(); } catch(e) {}
+      audioEl.addEventListener('play', () => {
+        if (ac.state === 'suspended') ac.resume();
+        if (!polling) { polling = true; pollTTS(); }
       });
     } catch (e) {
-      // Already connected or CORS issue — silently fall back
-      console.warn('TTS audio analyser attach failed:', e.message);
+      console.warn('[agent] TTS analyser attach failed:', e.message);
     }
   }
 
@@ -254,17 +260,33 @@
     if (speechEl) speechEl.classList.remove('visible');
   }
 
-  // ── BROWSER TTS (fallback when no welcome mp3) ────────────
+  // ── BROWSER TTS (Carolla response speak via Speech Synthesis) ──
+  // SpeechSynthesis doesn't expose audio stream, so we simulate audio
+  // amplitude oscillation while utterance is active → particles still react.
+  let synthPulseTimer = 0;
   function speak(text) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang === 'id' ? 'id-ID' : 'en-US';
     u.rate = 1; u.pitch = 1; u.volume = 1;
-    // Pick best matching voice
     const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(v => v.lang.toLowerCase().startsWith(u.lang.toLowerCase()));
+    const v = voices.find(vv => vv.lang.toLowerCase().startsWith(u.lang.toLowerCase()));
     if (v) u.voice = v;
+
+    let speaking = false;
+    u.onstart = () => { speaking = true; simulatePulse(); };
+    u.onend = () => { speaking = false; };
+
+    function simulatePulse() {
+      if (!speaking) return;
+      // Random oscillation 0.25 .. 0.65 to mimic voice envelope
+      const t = performance.now() * 0.005;
+      const pulse = 0.45 + 0.20 * Math.sin(t) + (Math.random() - 0.5) * 0.15;
+      audioLevel = Math.max(audioLevel, Math.max(0.1, Math.min(0.75, pulse)));
+      requestAnimationFrame(simulatePulse);
+    }
+
     window.speechSynthesis.speak(u);
   }
 
@@ -351,21 +373,21 @@
           : '<p>Hello! I\'m <strong>Carolla</strong> 👋</p><p>Welcome. I\'m your digital consultant today — how can I help you?</p>';
         showSpeech(welcome);
 
-        // Welcome audio — analyse for reactive particles
+        // Welcome audio — analyser must attach BEFORE play() so it's in the audio graph
         const fromInternal = document.referrer && document.referrer.includes(window.location.hostname);
         if (!fromInternal) {
           const audioFile = lang === 'id' ? '/audio/welcome_id.mp3' : '/audio/welcome_en.mp3';
           const welcomeAudio = new Audio(audioFile);
-          welcomeAudio.crossOrigin = 'anonymous';
           welcomeAudio.volume = 1.0;
-          welcomeAudio.play().then(() => attachTTSAnalyser(welcomeAudio))
-            .catch(() => {
-              // autoplay blocked — fall back to browser TTS on first user gesture
-              const fallback = lang === 'id'
-                ? 'Selamat datang. Saya Carolla, asisten digital Anda hari ini.'
-                : 'Welcome. I am Carolla, your digital consultant today.';
-              speak(fallback);
-            });
+          // Attach analyser first, then attempt play
+          attachTTSAnalyser(welcomeAudio);
+          welcomeAudio.play().catch(() => {
+            // autoplay blocked — fall back to browser TTS on first user gesture
+            const fallback = lang === 'id'
+              ? 'Selamat datang. Saya Carolla, asisten digital Anda hari ini.'
+              : 'Welcome. I am Carolla, your digital consultant today.';
+            speak(fallback);
+          });
         }
       }, 300);
     }, 600);
@@ -395,16 +417,21 @@
     window.speechSynthesis.getVoices();
   }
 
-  // Trigger welcome voice on first user interaction (browser autoplay policy)
-  function triggerWelcomeOnFirstClick() {
-    if (welcomeSpoken) return;
+  // First user gesture → resume AudioContext (required by autoplay policy
+  // before mic / TTS analyser data can flow)
+  function resumeAudioOnGesture() {
+    ensureAudioCtx(); // creates + resumes
+    if (welcomeSpoken) {
+      document.removeEventListener('click', resumeAudioOnGesture);
+      document.removeEventListener('keydown', resumeAudioOnGesture);
+      document.removeEventListener('touchstart', resumeAudioOnGesture);
+      return;
+    }
     welcomeSpoken = true;
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    document.removeEventListener('click', triggerWelcomeOnFirstClick);
-    document.removeEventListener('keydown', triggerWelcomeOnFirstClick);
   }
-  document.addEventListener('click', triggerWelcomeOnFirstClick);
-  document.addEventListener('keydown', triggerWelcomeOnFirstClick);
+  document.addEventListener('click', resumeAudioOnGesture);
+  document.addEventListener('keydown', resumeAudioOnGesture);
+  document.addEventListener('touchstart', resumeAudioOnGesture);
 
   // ── MIC (Speech Recognition + Audio Analyser) ─────────────
   let recognition = null;
