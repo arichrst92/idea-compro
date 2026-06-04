@@ -31,6 +31,7 @@ async function buildSitemap() {
     { path: '/about',                              priority: '0.7', changefreq: 'monthly' },
     { path: '/contact',                            priority: '0.7', changefreq: 'monthly' },
     { path: '/capability',                         priority: '0.9', changefreq: 'monthly' },
+    { path: '/products',                           priority: '0.9', changefreq: 'monthly' },
     { path: '/blog',                               priority: '0.8', changefreq: 'daily'   },
   ];
   for (let p = 2; p <= totalBlogPages; p++) {

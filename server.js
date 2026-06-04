@@ -107,6 +107,7 @@ app.use((req, res, next) => {
 app.use('/', require('./src/routes/home'));
 app.use('/services', require('./src/routes/services'));
 app.use('/capability', require('./src/routes/capability'));
+app.use('/products', require('./src/routes/products'));
 app.use('/blog', require('./src/routes/blog'));
 app.use('/about', require('./src/routes/about'));
 app.use('/contact', require('./src/routes/contact'));

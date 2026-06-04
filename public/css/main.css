@@ -695,6 +695,104 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .capability-highlight-grid { grid-template-columns: 1fr; gap: 48px; }
 }
 
+/* ─── Products page (IBM catalog) ──────────────────────────────── */
+.ibm-partner-pill {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px; margin-left: 10px;
+  background: var(--ink); color: var(--white);
+  border-radius: var(--radius-pill);
+  font-size: 10px; font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.products-filter-bar { background: var(--bg-soft); border-bottom: 1px solid var(--border); position: sticky; top: var(--nav-h); z-index: 50; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.products-filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 20px 0; }
+.products-wrap { padding: 64px 0 var(--space-section); background: var(--bg); }
+
+.product-category { padding: 48px 0; border-top: 1px solid var(--border); }
+.product-category:first-child { border-top: none; padding-top: 0; }
+.product-category-head { display: grid; grid-template-columns: 56px 1fr; gap: 20px; align-items: flex-start; margin-bottom: 28px; }
+.product-category-num { font-family: var(--font-display); font-size: 36px; font-weight: var(--weight-display); color: var(--blue); line-height: 0.9; letter-spacing: -0.04em; }
+.product-category-title { font-family: var(--font-display); font-size: clamp(24px, 3vw, 32px); font-weight: var(--weight-display); letter-spacing: -0.02em; color: var(--ink); line-height: 1.15; margin-bottom: 8px; }
+.product-category-desc { font-size: 15px; color: var(--text-2); line-height: 1.55; max-width: 720px; }
+
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; padding-left: 76px; }
+
+.product-card {
+  display: flex; flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.product-card:hover {
+  border-color: var(--blue-200);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.product-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.product-card-vendor { width: 22px; height: 22px; object-fit: contain; }
+.product-card-cat-tag {
+  font-size: 10px; font-weight: var(--weight-semibold);
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.product-card-name {
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: var(--weight-semibold);
+  color: var(--ink); margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.product-card-use {
+  font-size: 13.5px; color: var(--text-2);
+  line-height: 1.55; margin-bottom: 18px;
+  flex-grow: 1;
+}
+.product-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding-top: 14px;
+  border-top: 1px solid var(--border-2);
+}
+.product-card-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: var(--weight-semibold);
+  color: var(--blue);
+  transition: color var(--transition);
+}
+.product-card-link:hover { color: var(--blue-600); }
+.product-card-cta {
+  padding: 6px 12px;
+  background: var(--ink); color: var(--white);
+  border-radius: var(--radius-pill);
+  font-size: 12px; font-weight: var(--weight-semibold);
+  transition: background var(--transition);
+}
+.product-card-cta:hover { background: var(--ink-2); color: var(--white); }
+
+/* Fallback badge when SimpleIcons IBM logo fails */
+.product-card-vendor + .product-card-fallback,
+img.product-card-vendor.failed {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  background: var(--ink); color: var(--white);
+  border-radius: 4px;
+  font-size: 9px; font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 1024px) {
+  .product-category-head { grid-template-columns: 40px 1fr; gap: 14px; }
+  .product-category-num { font-size: 28px; }
+  .product-grid { padding-left: 0; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+}
+@media (max-width: 640px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .products-filter-bar { position: relative; top: 0; }
+}
+
 /* ─── Contact ──────────────────────────────────────────────────── */
 .contact-wrap { background: var(--bg); padding-bottom: 96px; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; padding: 64px 0 0; align-items: start; }
