@@ -23,6 +23,11 @@
 </head>
 <body class="agent-body">
   <%- body %>
+  <!-- Render any <script> tags extracted from the body view by
+       express-ejs-layouts (extractScripts: true). Without this, inline
+       scripts inside views (like the language/voice picker) are silently
+       dropped because the layout never references the `scripts` local. -->
+  <%- typeof scripts !== "undefined" ? scripts : "" %>
   <script>window.AGENT_LANG = '<%= lang %>';</script>
   <script src="/js/agent.js?v=sv-29"></script>
 </body>
