@@ -39,13 +39,29 @@
       </div>
       <div class="about-visual">
         <div class="about-visual-inner">
-          <img src="/images/logo-idea.png" alt="IDEA Asia">
+          <img src="/images/logo-idea.png" alt="IDEA Asia" class="about-visual-logo">
           <p class="legal">PT Solusi Inovasi Bangsa</p>
           <p class="reg">AHU-AH.01.09-0249721</p>
-          <div class="cert-row">
-            <span class="cert-pill">ISO 9001:2015</span>
-            <span class="cert-pill">ISO 27001:2013</span>
+
+          <div class="cred-grid" aria-label="<%= lang==='id' ? 'Sertifikasi & Kemitraan' : 'Certifications & Partnerships' %>">
+            <div class="cred-item">
+              <img src="/images/iso-9001-logo.png" alt="ISO 9001:2015" loading="lazy">
+              <span class="cred-label">ISO 9001:2015</span>
+            </div>
+            <div class="cred-item">
+              <img src="/images/iso-27001-logo.png" alt="ISO 27001:2013" loading="lazy">
+              <span class="cred-label">ISO 27001:2013</span>
+            </div>
+            <div class="cred-item">
+              <img src="/images/ibm-certified-logo.png" alt="IBM Certified Partner" loading="lazy">
+              <span class="cred-label">IBM Certified Partner</span>
+            </div>
+            <div class="cred-item">
+              <img src="/images/deloitte-independent-logo.png" alt="Deloitte Independent Contractor" loading="lazy">
+              <span class="cred-label">Deloitte Independent Contractor</span>
+            </div>
           </div>
+
           <div class="city-row">
             <% ['Jakarta','Bandung','Hanoi','Sydney'].forEach(city => { %>
             <span class="city-pill"><%= city %></span>

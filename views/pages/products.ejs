@@ -35,9 +35,9 @@ const grouped = categories.map(cat => ({
 <div class="products-filter-bar">
   <div class="container">
     <div class="products-filters" id="productsFilters">
-      <button type="button" class="filter-btn active" data-cat="all"><%= isId ? 'Semua' : 'All' %></button>
+      <button type="button" class="filter-btn active" data-cat="all" onclick="ideaFilterCat('all',this)"><%= isId ? 'Semua' : 'All' %></button>
       <% categories.forEach(cat => { %>
-      <button type="button" class="filter-btn" data-cat="<%= cat.id %>"><%= isId ? cat.titleId : cat.titleEn %></button>
+      <button type="button" class="filter-btn" data-cat="<%= cat.id %>" onclick="ideaFilterCat('<%= cat.id %>',this)"><%= isId ? cat.titleId : cat.titleEn %></button>
       <% }) %>
     </div>
   </div>
@@ -101,4 +101,4 @@ const grouped = categories.map(cat => ({
   </div>
 </section>
 
-<script src="/js/products-filter.js?v=1" defer></script>
+<script src="/js/products-filter.js?v=2" defer></script>

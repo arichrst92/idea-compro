@@ -545,16 +545,45 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .about-hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 .about-hero h1 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px); font-weight: var(--weight-display); letter-spacing: -0.035em; color: var(--ink); line-height: 1.0; margin-bottom: 24px; }
 .about-hero p { font-size: 17px; color: var(--text-2); line-height: 1.6; margin-bottom: 32px; }
-.about-visual { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-xl); height: 460px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+.about-visual { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-xl); min-height: 460px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
 .about-visual::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, var(--blue-50), transparent 60%); pointer-events: none; }
-.about-visual-inner { text-align: center; position: relative; z-index: 1; padding: 40px; }
-.about-visual-inner img { height: 56px; margin: 0 auto 24px; opacity: 1; }
+.about-visual-inner { text-align: center; position: relative; z-index: 1; padding: 40px 36px; width: 100%; }
+.about-visual-inner .about-visual-logo { height: 56px; width: auto; margin: 0 auto 22px; display: block; opacity: 1; }
 .about-visual-inner .legal { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); margin-bottom: 6px; font-weight: var(--weight-semibold); }
 .about-visual-inner .reg { font-size: 12px; color: var(--text-3); }
+
+/* Credentials grid — ISO, IBM, Deloitte logos */
+.cred-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin: 28px auto 0; max-width: 360px;
+}
+.cred-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: var(--transition);
+}
+.cred-item:hover { border-color: var(--blue-200); box-shadow: var(--shadow-sm); }
+.cred-item img { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+.cred-label {
+  font-size: 10.5px; font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em; color: var(--ink);
+  line-height: 1.25;
+}
+
+/* Legacy support — still used elsewhere */
 .cert-row { display: flex; gap: 8px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
 .cert-pill { padding: 6px 14px; background: var(--blue-50); border: 1px solid var(--blue-100); border-radius: var(--radius-pill); font-size: 11px; color: var(--blue); letter-spacing: 0.04em; font-weight: var(--weight-semibold); }
-.city-row { margin-top: 28px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+.city-row { margin-top: 24px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .city-pill { padding: 5px 12px; background: var(--gray-100); border-radius: var(--radius-pill); font-size: 12px; color: var(--text-2); font-weight: var(--weight-medium); }
+
+@media (max-width: 480px) {
+  .cred-grid { grid-template-columns: 1fr; max-width: 280px; }
+}
 
 .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .split-2 > .pane { padding: 48px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); }
