@@ -187,20 +187,32 @@
         (gltf) => {
           model = gltf.scene;
 
-          // Center and position
-          const box = new THREE.Box3().setFromObject(model);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
+          // ── Measure original model ──
+          const rawBox = new THREE.Box3().setFromObject(model);
+          const rawSize = rawBox.getSize(new THREE.Vector3());
+          const rawCenter = rawBox.getCenter(new THREE.Vector3());
+          console.log('[avatar] raw size (xyz):', rawSize.x.toFixed(2), rawSize.y.toFixed(2), rawSize.z.toFixed(2));
+          console.log('[avatar] raw center:', rawCenter.x.toFixed(2), rawCenter.y.toFixed(2), rawCenter.z.toFixed(2));
 
-          // Move model so feet are at y=0
-          model.position.set(-center.x, -box.min.y, -center.z);
-
-          // Scale to reasonable height (~1.7m)
+          // ── Scale to ~1.7m tall ──
+          // Use max(y, x, z) so very tall OR very wide models are sized correctly
+          const tallestDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
           const targetH = 1.7;
-          const scale = targetH / size.y;
+          const scale = targetH / tallestDim;
           model.scale.setScalar(scale);
 
+          // ── Re-measure after scale, then position so feet at y=0 ──
+          const box = new THREE.Box3().setFromObject(model);
+          const center = box.getCenter(new THREE.Vector3());
+          model.position.set(-center.x, -box.min.y, -center.z);
+
+          // ── Try facing camera. Renderpeople models often face +Z (away). ──
+          // If user sees back of model, change to 0. If side, try Math.PI/2 or -Math.PI/2.
+          model.rotation.y = Math.PI;
+
           scene.add(model);
+          console.log('[avatar] scaled to', scale.toFixed(3), '— final height:', (box.max.y - box.min.y).toFixed(2), 'm');
+          console.log('[avatar] facing direction: rotation.y = Math.PI (back-to-camera by default). Edit agent.js if wrong.');
 
           // Build morph target index
           model.traverse((node) => {
