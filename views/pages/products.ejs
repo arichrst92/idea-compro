@@ -1,16 +1,17 @@
 <%
 // ──────────────────────────────────────────────────────────────────
 // IBM Product Catalog — data sourced from src/data/ibm-products.js
-// `categories` & `products` are injected by src/routes/products.js
+// `categories`, `products`, `activeCat` injected by src/routes/products.js
+// When ?cat= is set, `products` is already filtered server-side.
 // ──────────────────────────────────────────────────────────────────
 const isId = lang === 'id';
 const totalProducts = products.length;
 
-// Group products by category for rendering
-const grouped = categories.map(cat => ({
-  ...cat,
-  items: products.filter(p => p.categoryId === cat.id),
-}));
+// Group products by category, drop categories that have no items
+// (so a filtered view only shows the selected category section).
+const grouped = categories
+  .map(cat => ({ ...cat, items: products.filter(p => p.categoryId === cat.id) }))
+  .filter(cat => cat.items.length > 0);
 %>
 
 <!-- HERO -->
@@ -35,9 +36,9 @@ const grouped = categories.map(cat => ({
 <div class="products-filter-bar">
   <div class="container">
     <div class="products-filters" id="productsFilters">
-      <button type="button" class="filter-btn active" data-cat="all" onclick="ideaFilterCat('all',this)"><%= isId ? 'Semua' : 'All' %></button>
+      <a href="/products" class="filter-btn <%= !activeCat ? 'active' : '' %>"><%= isId ? 'Semua' : 'All' %></a>
       <% categories.forEach(cat => { %>
-      <button type="button" class="filter-btn" data-cat="<%= cat.id %>" onclick="ideaFilterCat('<%= cat.id %>',this)"><%= isId ? cat.titleId : cat.titleEn %></button>
+      <a href="/products?cat=<%= cat.id %>" class="filter-btn <%= activeCat === cat.id ? 'active' : '' %>"><%= isId ? cat.titleId : cat.titleEn %></a>
       <% }) %>
     </div>
   </div>
@@ -101,4 +102,3 @@ const grouped = categories.map(cat => ({
   </div>
 </section>
 
-<script src="/js/products-filter.js?v=2" defer></script>

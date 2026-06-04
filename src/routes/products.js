@@ -3,10 +3,16 @@ const express = require('express');
 const router = express.Router();
 const { CATEGORIES, PRODUCTS, getBySlug, getCategory, getByCategoryId } = require('../data/ibm-products');
 
-// ─── /products — catalog list ─────────────────────────────────
+// ─── /products — catalog list (server-side filter via ?cat=) ──
 router.get('/', (req, res) => {
   const lang = res.locals.lang || 'en';
   const isId = lang === 'id';
+
+  // Server-side category filter, like the blog page (?category=)
+  const activeCat = (typeof req.query.cat === 'string' && CATEGORIES.some(c => c.id === req.query.cat))
+    ? req.query.cat
+    : '';
+  const filteredProducts = activeCat ? PRODUCTS.filter(p => p.categoryId === activeCat) : PRODUCTS;
 
   const title = isId
     ? 'Katalog Produk IBM — IDEA Asia'
@@ -21,7 +27,8 @@ router.get('/', (req, res) => {
     ogImage: '/images/og-products.jpg',
     currentPage: 'products',
     categories: CATEGORIES,
-    products: PRODUCTS,
+    products: filteredProducts,
+    activeCat,
   });
 });
 
