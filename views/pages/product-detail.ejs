@@ -53,7 +53,7 @@ const discussMsg = (isId ? 'Diskusi tentang ' : 'Discussion about ') + product.n
       </div>
 
       <aside class="product-detail-vendor">
-        <img src="https://cdn.simpleicons.org/ibm/0A0F1C" alt="IBM" width="48" height="48" data-fallback="IBM">
+        <span class="vendor-mark vendor-mark-lg" aria-label="IBM">IBM</span>
         <div class="pdv-name">IBM</div>
         <div class="pdv-tag"><%= isId ? 'Vendor resmi' : 'Official vendor' %></div>
       </aside>
@@ -131,7 +131,7 @@ const discussMsg = (isId ? 'Diskusi tentang ' : 'Discussion about ') + product.n
       <article class="product-card">
         <a href="/products/<%= r.slug %>" class="product-card-titlelink" aria-label="<%= r.name %>"></a>
         <div class="product-card-top">
-          <img class="product-card-vendor" src="https://cdn.simpleicons.org/ibm/0A0F1C" alt="IBM" loading="lazy" data-fallback="IBM" width="22" height="22">
+          <span class="vendor-mark" aria-label="IBM">IBM</span>
           <span class="product-card-cat-tag"><%= catTitle %></span>
         </div>
         <h3 class="product-card-name"><%= r.name %></h3>

@@ -143,14 +143,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transition: background var(--transition), border-color var(--transition);
 }
 .navbar.scrolled { background: rgba(255,255,255,0.92); border-color: var(--border); }
-.nav-container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); height: 100%; display: flex; align-items: center; gap: 32px; }
-.nav-logo { display: flex; align-items: center; margin-right: auto; }
+.nav-container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); height: 100%; display: flex; align-items: center; gap: 20px; flex-wrap: nowrap; }
+.nav-logo { display: flex; align-items: center; margin-right: auto; flex-shrink: 0; }
 .logo-img { height: 32px; width: auto; filter: none; }
-.nav-links { display: flex; gap: 4px; }
-.nav-link { padding: 8px 14px; border-radius: var(--radius-md); font-size: 14px; font-weight: var(--weight-medium); color: var(--text-2); transition: color var(--transition), background var(--transition); }
+.nav-links { display: flex; gap: 2px; flex-wrap: nowrap; }
+.nav-link { padding: 8px 11px; border-radius: var(--radius-md); font-size: 13.5px; font-weight: var(--weight-medium); color: var(--text-2); transition: color var(--transition), background var(--transition); white-space: nowrap; }
 .nav-link:hover { color: var(--ink); background: var(--gray-50); }
 .nav-link.active { color: var(--ink); background: var(--gray-100); }
-.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .lang-switcher { display: flex; align-items: center; gap: 4px; padding: 4px 8px; }
 .lang-btn { padding: 4px 8px; font-size: 12px; font-weight: var(--weight-semibold); color: var(--text-3); letter-spacing: 0.02em; transition: color var(--transition); border-radius: var(--radius-sm); }
 .lang-btn:hover, .lang-btn.active { color: var(--ink); }
@@ -744,6 +744,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 14px;
 }
 .product-card-vendor { width: 22px; height: 22px; object-fit: contain; }
+/* Inline IBM monogram — no CDN dependency */
+.vendor-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 22px; padding: 0 7px;
+  background: var(--ink); color: var(--white);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 10px; font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  user-select: none;
+}
+.vendor-mark-lg {
+  height: 40px; padding: 0 14px;
+  font-size: 16px; letter-spacing: 0.08em;
+  border-radius: 6px;
+}
 .product-card-cat-tag {
   font-size: 10px; font-weight: var(--weight-semibold);
   letter-spacing: 0.05em; text-transform: uppercase;
@@ -854,6 +870,7 @@ img.product-card-vendor.failed {
   text-align: center;
 }
 .product-detail-vendor img { width: 48px; height: 48px; object-fit: contain; margin-bottom: 10px; }
+.product-detail-vendor .vendor-mark-lg { margin-bottom: 12px; }
 .pdv-name { font-family: var(--font-display); font-size: 16px; font-weight: var(--weight-semibold); color: var(--ink); }
 .pdv-tag { font-size: 11px; color: var(--text-3); margin-top: 2px; }
 
@@ -1172,6 +1189,21 @@ img.product-card-vendor.failed {
   .split-2 { grid-template-columns: 1fr; }
   .split-2 > .pane { padding: 32px; }
   .hero-content { padding: 0 24px 80px; }
+}
+/* Intermediate: tablet/small-laptop — compact nav before going to hamburger */
+@media (max-width: 1180px) {
+  .nav-container { gap: 12px; }
+  .nav-link { padding: 8px 9px; font-size: 13px; }
+  .agent-toggle-btn span:last-child { display: none; }
+  .agent-toggle-btn { padding: 7px 10px; }
+  .nav-cta { padding: 8px 14px; font-size: 12.5px; }
+}
+@media (max-width: 960px) {
+  :root { --nav-h: 64px; --gutter: 20px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-links.open { display: flex; flex-direction: column; position: fixed; top: var(--nav-h); left: 0; right: 0; background: var(--white); padding: 24px; border-bottom: 1px solid var(--border); gap: 4px; z-index: 999; box-shadow: var(--shadow-lg); }
+  .nav-links.open .nav-link { padding: 10px 14px; font-size: 14px; }
 }
 @media (max-width: 768px) {
   :root { --nav-h: 64px; --gutter: 20px; }

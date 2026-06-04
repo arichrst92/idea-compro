@@ -62,7 +62,7 @@ const grouped = categories.map(cat => ({
         <article class="product-card">
           <a href="/products/<%= p.slug %>" class="product-card-titlelink" aria-label="<%= p.name %>"></a>
           <div class="product-card-top">
-            <img class="product-card-vendor" src="https://cdn.simpleicons.org/ibm/0A0F1C" alt="IBM" loading="lazy" data-fallback="IBM" width="22" height="22">
+            <span class="vendor-mark" aria-label="IBM">IBM</span>
             <span class="product-card-cat-tag"><%= isId ? cat.titleId : cat.titleEn %></span>
           </div>
           <h3 class="product-card-name"><%= p.name %></h3>
