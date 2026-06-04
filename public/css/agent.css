@@ -443,6 +443,30 @@
   }
 }
 
+/* ─── Mobile "tap to enable voice" hint ──────────────────────── */
+.agent-tap-hint {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, calc(-50% + 110px));
+  z-index: 30;
+  padding: 10px 18px;
+  background: rgba(10, 15, 28, 0.92);
+  color: var(--agent-white);
+  border-radius: 100px;
+  font-size: 12.5px; font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 20px rgba(15,23,42,0.18);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  animation: tapHintBob 1.6s ease-in-out infinite;
+}
+.agent-tap-hint.visible { opacity: 1; }
+@keyframes tapHintBob {
+  0%, 100% { transform: translate(-50%, calc(-50% + 110px)); }
+  50%      { transform: translate(-50%, calc(-50% + 118px)); }
+}
+
 /* ─── Language picker (first-visit modal) ────────────────────── */
 .agent-lang-picker {
   position: fixed; inset: 0;

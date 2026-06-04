@@ -546,6 +546,12 @@
     inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
   }
 
+  // Mobile browsers (iOS Safari, Android Chrome) BLOCK SpeechSynthesis
+  // until a user gesture has happened on the page. We queue the welcome
+  // intro and speak it on first tap. Desktop can speak immediately.
+  let pendingIntro = null;
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+
   // ── INIT ──────────────────────────────────────────────────
   function init() {
     resizeCanvas();
@@ -566,19 +572,43 @@
           : '<p>Hello! I\'m <strong>Jarvis</strong> 👋</p><p>Welcome. I\'m your digital consultant today — how can I help you?</p>';
         showSpeech(welcome);
 
-        // Welcome voice — pre-recorded mp3s still say "Carolla" so we skip them
-        // and use Browser TTS (which we control text-wise) for the "Jarvis" intro.
+        // Welcome voice — TTS instead of pre-recorded mp3s (those still say "Carolla")
         const fromInternal = document.referrer && document.referrer.includes(window.location.hostname);
         if (!fromInternal) {
           const introText = lang === 'id'
             ? 'Halo! Saya Jarvis, asisten digital Anda dari IDE Asia. Selamat datang. Katakan apa yang bisa saya bantu hari ini.'
             : 'Hello! I am Jarvis, your digital consultant from IDE Asia. Welcome. Tell me how I can help you today.';
-          // Browser TTS doesn't expose an audio stream, but speak() simulates
-          // amplitude oscillation so particles react during the intro.
-          speak(introText);
+
+          if (isMobile) {
+            // Queue — will play on first tap (see resumeAudioOnGesture)
+            pendingIntro = introText;
+            showTapHint();
+          } else {
+            speak(introText);
+          }
         }
       }, 300);
     }, 600);
+  }
+
+  // Floating "tap to enable voice" hint for mobile users
+  function showTapHint() {
+    if (document.getElementById('agentTapHint')) return;
+    const hint = document.createElement('div');
+    hint.id = 'agentTapHint';
+    hint.className = 'agent-tap-hint';
+    hint.textContent = lang === 'id'
+      ? 'Ketuk layar untuk mengaktifkan suara'
+      : 'Tap the screen to enable voice';
+    document.body.appendChild(hint);
+    setTimeout(() => hint.classList.add('visible'), 50);
+  }
+  function hideTapHint() {
+    const hint = document.getElementById('agentTapHint');
+    if (hint) {
+      hint.classList.remove('visible');
+      setTimeout(() => hint.remove(), 350);
+    }
   }
 
   // ── EVENT WIRING ──────────────────────────────────────────
@@ -613,10 +643,37 @@
     }
   }
 
-  // First user gesture → resume AudioContext (required by autoplay policy
-  // before mic / TTS analyser data can flow)
+  // First user gesture → resume AudioContext + prime SpeechSynthesis.
+  // iOS Safari and Android Chrome BLOCK SpeechSynthesis until a gesture
+  // happens AND requires the speak() call to fire synchronously from
+  // within the gesture handler.
+  let primed = false;
   function resumeAudioOnGesture() {
     ensureAudioCtx(); // creates + resumes
+
+    if (!primed && window.speechSynthesis) {
+      primed = true;
+
+      // Prime trick: speak an empty utterance synchronously from gesture.
+      // This "unlocks" SpeechSynthesis for the rest of the page lifetime.
+      try {
+        const priming = new SpeechSynthesisUtterance(' ');
+        priming.volume = 0;
+        priming.rate = 1;
+        window.speechSynthesis.speak(priming);
+      } catch (e) { /* noop */ }
+
+      // Then immediately play the queued welcome intro (if any).
+      // Must happen in the same gesture tick for iOS.
+      if (pendingIntro) {
+        const text = pendingIntro;
+        pendingIntro = null;
+        hideTapHint();
+        // Small delay so the priming finishes; still inside gesture window
+        setTimeout(() => speak(text), 30);
+      }
+    }
+
     if (welcomeSpoken) {
       document.removeEventListener('click', resumeAudioOnGesture);
       document.removeEventListener('keydown', resumeAudioOnGesture);
