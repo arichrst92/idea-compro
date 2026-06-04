@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const Contact = require('../models/Contact');
 const { sendContactNotification, sendAutoReply } = require('../services/email');
 
 router.get('/', (req, res) => {
@@ -9,28 +10,49 @@ router.get('/', (req, res) => {
     ogImage: '/images/og-contact.jpg',
     currentPage: 'contact',
     success: req.query.success,
-    error: req.query.error
+    error: req.query.error,
   });
 });
 
 router.post('/submit', async (req, res) => {
   try {
-    const { name, email, company, service, message } = req.body;
-    if (!name || !email || !message) return res.redirect('/contact?error=missing_fields');
+    const { name, email, company, phone, service, message } = req.body;
 
-    // Basic email validation
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.redirect('/contact?error=invalid_email');
+    if (!name || !email || !message) {
+      return res.redirect('/contact?error=missing_fields');
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.redirect('/contact?error=invalid_email');
+    }
 
-    // Send emails in parallel (non-blocking — don't fail the request if email fails)
+    // 1) Save ke MongoDB — primary source of truth untuk admin dashboard
+    try {
+      await Contact.create({
+        name:    String(name).trim(),
+        email:   String(email).trim().toLowerCase(),
+        company: company ? String(company).trim() : undefined,
+        phone:   phone   ? String(phone).trim()   : undefined,
+        service: service ? String(service).trim() : 'general',
+        message: String(message).trim(),
+        status:  'new',
+        ip:      req.ip || req.headers['x-forwarded-for'] || '',
+        lang:    res.locals.lang || 'en',
+      });
+      console.log(`Contact saved: ${name} <${email}> — ${service || 'general'}`);
+    } catch (dbErr) {
+      // Jangan hilangkan lead — lanjut kirim email walaupun DB error
+      console.error('Contact DB save failed:', dbErr.message);
+    }
+
+    // 2) Kirim notifikasi email (non-blocking, tidak gagalkan request)
     Promise.all([
-      sendContactNotification({ name, email, company, service, message }),
+      sendContactNotification({ name, email, company, phone, service, message }),
       sendAutoReply({ name, email, service }),
     ]).catch(err => console.error('Email send error:', err.message));
 
-    console.log(`📧 Contact: ${name} <${email}> — ${service || 'general'}`);
     res.redirect('/contact?success=1');
   } catch (e) {
-    console.error('Contact form error:', e);
+    console.error('Contact form error:', e.stack || e);
     res.redirect('/contact?error=server_error');
   }
 });
