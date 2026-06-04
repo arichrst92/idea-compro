@@ -87,16 +87,38 @@
     const cy = H / 2;
     const audioBoost = 1 + audioLevel * 2.5;
 
+    const t = performance.now() * 0.0008;
+    const isIdle = audioLevel < 0.05;
+    // Slow orbital rotation of "home" anchors when idle → cluster gently swirls
+    const orbitSpeed = isIdle ? 0.0006 : 0;
+    const cos = Math.cos(orbitSpeed);
+    const sin = Math.sin(orbitSpeed);
+
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i];
-      // Subtle drift
+
+      // Drift
       n.x += n.vx * audioBoost;
       n.y += n.vy * audioBoost;
-      n.pulse += 0.025 + audioLevel * 0.12;
+      n.pulse += 0.020 + audioLevel * 0.10;
 
-      // Spring back to home position (so cluster stays cohesive)
-      n.x += (n.homeX - n.x) * 0.012;
-      n.y += (n.homeY - n.y) * 0.012;
+      // Loose spring back to home — looser when idle for more freedom
+      const springK = isIdle ? 0.0035 : 0.012;
+      n.x += (n.homeX - n.x) * springK;
+      n.y += (n.homeY - n.y) * springK;
+
+      // Idle waves: gentle sinusoidal undulation, each node phase-shifted
+      if (isIdle) {
+        const wavePhase = t + i * 0.18;
+        n.x += Math.sin(wavePhase) * 0.18 * DPR;
+        n.y += Math.cos(wavePhase * 0.85) * 0.14 * DPR;
+
+        // Slowly rotate the home anchor → cluster appears to revolve
+        const hdx = n.homeX - cx;
+        const hdy = n.homeY - cy;
+        n.homeX = cx + hdx * cos - hdy * sin;
+        n.homeY = cy + hdx * sin + hdy * cos;
+      }
 
       // Audio pulse: push nodes outward from center on loud signals
       if (audioLevel > 0.05) {

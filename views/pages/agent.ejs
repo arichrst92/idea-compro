@@ -8,8 +8,15 @@
 <!-- Background image -->
 <div id="agentBg"></div>
 
-<!-- Three.js canvas -->
+<!-- Particle canvas -->
 <canvas id="agentCanvas"></canvas>
+
+<!-- Center IDEA mark — sits at the heart of the particle cluster -->
+<div class="agent-logo-center" aria-hidden="true">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 18 L70 50 L30 82 L42 82 L82 50 L42 18 Z" fill="#1A50E8"/>
+  </svg>
+</div>
 
 <!-- UI overlay -->
 <div class="agent-ui">
@@ -42,21 +49,6 @@
 
   <!-- Bottom panel -->
   <div class="agent-bottom">
-    <div class="agent-suggestions" id="agentSuggestions">
-      <button class="suggestion-chip" data-msg="<%= lang === 'id' ? 'Apa saja layanan IDEA Asia?' : 'What services does IDEA Asia offer?' %>">
-        <%= lang === 'id' ? '🛠️ Layanan IDEA Asia' : '🛠️ IDEA Asia services' %>
-      </button>
-      <button class="suggestion-chip" data-msg="<%= lang === 'id' ? 'Bagaimana IDEA Asia membantu transformasi digital?' : 'How can IDEA Asia help with digital transformation?' %>">
-        <%= lang === 'id' ? '🚀 Transformasi digital' : '🚀 Digital transformation' %>
-      </button>
-      <button class="suggestion-chip" data-msg="<%= lang === 'id' ? 'Berapa biaya IT outsourcing di IDEA Asia?' : 'What is the cost of IT outsourcing at IDEA Asia?' %>">
-        <%= lang === 'id' ? '💰 Biaya & pricing' : '💰 Pricing & cost' %>
-      </button>
-      <button class="suggestion-chip" data-msg="<%= lang === 'id' ? 'Klien besar apa saja yang sudah bekerja sama?' : 'What are some of your notable clients?' %>">
-        <%= lang === 'id' ? '🏢 Klien IDEA Asia' : '🏢 Notable clients' %>
-      </button>
-    </div>
-
     <div class="agent-input-area">
       <div class="agent-input-wrap">
         <textarea
