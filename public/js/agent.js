@@ -187,72 +187,72 @@
         (gltf) => {
           model = gltf.scene;
 
-          // ── Walk hierarchy: log every mesh + force visible + disable frustum culling ──
-          let meshCount = 0;
+          // ── Inspect first mesh geometry to determine orientation + correct scale ──
+          let firstMesh = null;
+          let geomLocalSize = new THREE.Vector3();
           model.traverse((node) => {
             if (node.isMesh) {
-              meshCount++;
               node.visible = true;
               node.frustumCulled = false;
-              const geom = node.geometry;
-              // Compute geometry bounding box if not already
-              if (geom && !geom.boundingBox) geom.computeBoundingBox();
-              const localSize = geom?.boundingBox?.getSize(new THREE.Vector3()) || new THREE.Vector3();
-              console.log(`[avatar] mesh #${meshCount} "${node.name}" — verts: ${geom?.attributes?.position?.count || 0}, localSize: ${localSize.x.toFixed(2)}×${localSize.y.toFixed(2)}×${localSize.z.toFixed(2)}, worldScale: ${node.getWorldScale(new THREE.Vector3()).x.toFixed(4)}`);
-            }
-            if (node.isSkinnedMesh) {
-              // SkinnedMesh: bounding box derived from skeleton — disable culling forever
-              node.frustumCulled = false;
+              if (!firstMesh) {
+                firstMesh = node;
+                if (!node.geometry.boundingBox) node.geometry.computeBoundingBox();
+                node.geometry.boundingBox.getSize(geomLocalSize);
+              }
             }
           });
-          console.log(`[avatar] total meshes: ${meshCount}`);
+          if (!firstMesh) {
+            console.error('[avatar] no mesh found in model');
+            resolve();
+            return;
+          }
+          console.log('[avatar] geometry-local size:', geomLocalSize.x.toFixed(2), geomLocalSize.y.toFixed(2), geomLocalSize.z.toFixed(2));
 
-          // ── Compute bounds (Box3 may return tiny for SkinnedMesh; fallback to first mesh local size scaled) ──
-          const rawBox = new THREE.Box3().setFromObject(model);
-          const rawSize = rawBox.getSize(new THREE.Vector3());
-          console.log('[avatar] world Box3 size:', rawSize.x.toFixed(3), rawSize.y.toFixed(3), rawSize.z.toFixed(3));
+          // ── Determine which axis is "up" (tallest) in geometry-local space ──
+          let upAxis = 'y';
+          if (geomLocalSize.z > geomLocalSize.x && geomLocalSize.z > geomLocalSize.y) upAxis = 'z';
+          else if (geomLocalSize.x > geomLocalSize.y && geomLocalSize.x > geomLocalSize.z) upAxis = 'x';
 
-          // If Box3 is tiny (skinned mesh without skeleton pose applied), fallback:
-          // use first SkinnedMesh's geometry local bounding box × accumulated scale
-          let needFallback = rawSize.y < 0.5;
-          if (needFallback) {
-            console.warn('[avatar] world Box3 too small — using geometry-local bounds for sizing');
-            let bestSize = new THREE.Vector3();
-            model.traverse((node) => {
-              if (node.isMesh && node.geometry?.boundingBox) {
-                const s = node.geometry.boundingBox.getSize(new THREE.Vector3());
-                const ws = node.getWorldScale(new THREE.Vector3());
-                s.multiply(ws);
-                if (s.length() > bestSize.length()) bestSize = s;
-              }
-            });
-            console.log('[avatar] fallback size:', bestSize.x.toFixed(2), bestSize.y.toFixed(2), bestSize.z.toFixed(2));
-            rawSize.copy(bestSize);
+          // ── Convert geometry up-axis → world Y-up by rotating model ──
+          if (upAxis === 'z') {
+            // Z-up → Y-up: rotate -90° around X (FBX standard)
+            model.rotation.x = -Math.PI / 2;
+            console.log('[avatar] orientation fix: Z-up → Y-up (rotation.x = -π/2)');
+          } else if (upAxis === 'x') {
+            model.rotation.z = Math.PI / 2;
+            console.log('[avatar] orientation fix: X-up → Y-up (rotation.z = π/2)');
+          } else {
+            console.log('[avatar] orientation: already Y-up');
           }
 
-          // ── Scale to ~1.7m tall using whichever dim is largest ──
-          const tallestDim = Math.max(rawSize.x, rawSize.y, rawSize.z, 0.001);
+          // ── Compute correct scale: target 1.7m using TALLEST geometry-local dimension,
+          //    but compensate for any accumulated parent worldScale ──
+          const currentWorldScale = firstMesh.getWorldScale(new THREE.Vector3()).x || 1;
+          const tallest = Math.max(geomLocalSize.x, geomLocalSize.y, geomLocalSize.z);
           const targetH = 1.7;
-          const scale = targetH / tallestDim;
-          model.scale.setScalar(scale);
+          const desiredEffectiveScale = targetH / tallest; // what we want world-scale to be
+          const correction = desiredEffectiveScale / currentWorldScale;
+          model.scale.setScalar(correction);
+          console.log(`[avatar] worldScale was ${currentWorldScale.toFixed(4)}, applied correction ${correction.toFixed(3)} → effective ${(currentWorldScale * correction).toFixed(3)}`);
 
-          // ── Re-measure & center ──
-          // For skinned meshes, Box3.setFromObject might still be unreliable.
-          // Position model so its origin is at world origin and feet roughly at y=0.
-          model.position.set(0, 0, 0);
-          const finalBox = new THREE.Box3().setFromObject(model);
-          if (finalBox.getSize(new THREE.Vector3()).y > 0.5) {
-            const c = finalBox.getCenter(new THREE.Vector3());
-            model.position.set(-c.x, -finalBox.min.y, -c.z);
+          // ── Re-measure & center after scale + rotation ──
+          model.updateMatrixWorld(true);
+          const box = new THREE.Box3().setFromObject(model);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          if (size.y > 0.5) {
+            // Box3 reliable now: center horizontally, feet at y=0
+            model.position.set(-center.x, -box.min.y, -center.z);
+          } else {
+            // Fallback: rough estimate based on geometry tallest
+            model.position.set(0, 0, 0);
           }
+          console.log(`[avatar] final box size: ${size.x.toFixed(2)}×${size.y.toFixed(2)}×${size.z.toFixed(2)} m, pos: ${model.position.x.toFixed(2)},${model.position.y.toFixed(2)},${model.position.z.toFixed(2)}`);
 
-          // ── Rotation. Renderpeople models often face +Z (away from camera). ──
-          // Try PI first; if user sees back, change to 0; if sideways, ±PI/2.
-          model.rotation.y = Math.PI;
+          // ── Sophia natural facing: after Z→Y rotation, model faces +Z (toward camera). ──
+          // If user sees back of head, uncomment: model.rotation.y = Math.PI;
 
           scene.add(model);
-          console.log(`[avatar] applied scale: ${scale.toFixed(3)}, position: ${model.position.x.toFixed(2)},${model.position.y.toFixed(2)},${model.position.z.toFixed(2)}`);
-          console.log('[avatar] If invisible: try setting camera.position closer OR check that mesh material is not transparent');
 
           // Build morph target index
           model.traverse((node) => {
