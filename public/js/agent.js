@@ -560,8 +560,8 @@
         const fromInternal = document.referrer && document.referrer.includes(window.location.hostname);
         if (!fromInternal) {
           const introText = lang === 'id'
-            ? 'Halo! Saya Jarvis, asisten digital Anda dari IDEA Asia. Selamat datang. Katakan apa yang bisa saya bantu hari ini.'
-            : 'Hello! I am Jarvis, your digital consultant from IDEA Asia. Welcome. Tell me how I can help you today.';
+            ? 'Halo! Saya Jarvis, asisten digital Anda dari IDE Asia. Selamat datang. Katakan apa yang bisa saya bantu hari ini.'
+            : 'Hello! I am Jarvis, your digital consultant from IDE Asia. Welcome. Tell me how I can help you today.';
           // Browser TTS doesn't expose an audio stream, but speak() simulates
           // amplitude oscillation so particles react during the intro.
           speak(introText);
