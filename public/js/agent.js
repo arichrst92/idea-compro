@@ -118,10 +118,10 @@
     scene.background = null;
     // fog removed
 
-    // Camera — bust shot, slightly above eye level
-    camera = new THREE.PerspectiveCamera(24, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 1.62, 2.6);
-    camera.lookAt(0, 1.55, 0);
+    // Camera — wide initial view for Sophia (we'll dial in once we see scope)
+    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.4, 4.5);
+    camera.lookAt(0, 1.2, 0);
 
     // Lighting
     const ambient = new THREE.AmbientLight(0x8899bb, 0.4);
@@ -187,70 +187,56 @@
         (gltf) => {
           model = gltf.scene;
 
-          // ── Inspect first mesh geometry to determine orientation + correct scale ──
-          let firstMesh = null;
-          let geomLocalSize = new THREE.Vector3();
+          // ── Force visibility + disable culling on all meshes ──
           model.traverse((node) => {
-            if (node.isMesh) {
-              node.visible = true;
-              node.frustumCulled = false;
-              if (!firstMesh) {
-                firstMesh = node;
-                if (!node.geometry.boundingBox) node.geometry.computeBoundingBox();
-                node.geometry.boundingBox.getSize(geomLocalSize);
-              }
-            }
+            if (node.isMesh) { node.visible = true; node.frustumCulled = false; }
           });
-          if (!firstMesh) {
-            console.error('[avatar] no mesh found in model');
-            resolve();
-            return;
-          }
-          console.log('[avatar] geometry-local size:', geomLocalSize.x.toFixed(2), geomLocalSize.y.toFixed(2), geomLocalSize.z.toFixed(2));
 
-          // ── Determine which axis is "up" (tallest) in geometry-local space ──
-          let upAxis = 'y';
-          if (geomLocalSize.z > geomLocalSize.x && geomLocalSize.z > geomLocalSize.y) upAxis = 'z';
-          else if (geomLocalSize.x > geomLocalSize.y && geomLocalSize.x > geomLocalSize.z) upAxis = 'x';
+          // ── Inspect the actual world-space bounding box AFTER glTF's natural transforms ──
+          // (glTF Y-up conversion was already applied by Blender via export_yup=True)
+          model.updateMatrixWorld(true);
+          const naturalBox = new THREE.Box3().setFromObject(model);
+          const naturalSize = naturalBox.getSize(new THREE.Vector3());
+          const naturalCenter = naturalBox.getCenter(new THREE.Vector3());
+          console.log('[avatar] natural world size:', naturalSize.x.toFixed(3), naturalSize.y.toFixed(3), naturalSize.z.toFixed(3));
+          console.log('[avatar] natural world center:', naturalCenter.x.toFixed(3), naturalCenter.y.toFixed(3), naturalCenter.z.toFixed(3));
 
-          // ── Convert geometry up-axis → world Y-up by rotating model ──
-          if (upAxis === 'z') {
-            // Z-up → Y-up: rotate -90° around X (FBX standard)
-            model.rotation.x = -Math.PI / 2;
-            console.log('[avatar] orientation fix: Z-up → Y-up (rotation.x = -π/2)');
-          } else if (upAxis === 'x') {
-            model.rotation.z = Math.PI / 2;
-            console.log('[avatar] orientation fix: X-up → Y-up (rotation.z = π/2)');
-          } else {
-            console.log('[avatar] orientation: already Y-up');
-          }
-
-          // ── Compute correct scale: target 1.7m using TALLEST geometry-local dimension,
-          //    but compensate for any accumulated parent worldScale ──
-          const currentWorldScale = firstMesh.getWorldScale(new THREE.Vector3()).x || 1;
-          const tallest = Math.max(geomLocalSize.x, geomLocalSize.y, geomLocalSize.z);
+          // Find tallest dimension AFTER natural transform (so we honor glTF's choice of "up")
+          const tallest = Math.max(naturalSize.x, naturalSize.y, naturalSize.z, 0.001);
           const targetH = 1.7;
-          const desiredEffectiveScale = targetH / tallest; // what we want world-scale to be
-          const correction = desiredEffectiveScale / currentWorldScale;
-          model.scale.setScalar(correction);
-          console.log(`[avatar] worldScale was ${currentWorldScale.toFixed(4)}, applied correction ${correction.toFixed(3)} → effective ${(currentWorldScale * correction).toFixed(3)}`);
+          const scale = targetH / tallest;
+          model.scale.setScalar(scale);
+          console.log(`[avatar] applied scale: ${scale.toFixed(3)} (tallest natural axis → 1.7m target)`);
 
-          // ── Re-measure & center after scale + rotation ──
+          // Re-measure after scale
           model.updateMatrixWorld(true);
           const box = new THREE.Box3().setFromObject(model);
           const size = box.getSize(new THREE.Vector3());
           const center = box.getCenter(new THREE.Vector3());
-          if (size.y > 0.5) {
-            // Box3 reliable now: center horizontally, feet at y=0
-            model.position.set(-center.x, -box.min.y, -center.z);
-          } else {
-            // Fallback: rough estimate based on geometry tallest
-            model.position.set(0, 0, 0);
-          }
-          console.log(`[avatar] final box size: ${size.x.toFixed(2)}×${size.y.toFixed(2)}×${size.z.toFixed(2)} m, pos: ${model.position.x.toFixed(2)},${model.position.y.toFixed(2)},${model.position.z.toFixed(2)}`);
+          console.log(`[avatar] scaled world size: ${size.x.toFixed(2)}×${size.y.toFixed(2)}×${size.z.toFixed(2)} m`);
 
-          // ── Sophia natural facing: after Z→Y rotation, model faces +Z (toward camera). ──
-          // If user sees back of head, uncomment: model.rotation.y = Math.PI;
+          // Determine which world axis IS height after scale (largest world dim)
+          let worldUpAxis = 'y';
+          if (size.z > size.x && size.z > size.y) worldUpAxis = 'z';
+          else if (size.x > size.y && size.x > size.z) worldUpAxis = 'x';
+
+          // If world up-axis is NOT Y, rotate model to make it Y
+          if (worldUpAxis === 'z') {
+            model.rotation.x = -Math.PI / 2;
+            console.log('[avatar] rotating: Z-up → Y-up');
+          } else if (worldUpAxis === 'x') {
+            model.rotation.z = Math.PI / 2;
+            console.log('[avatar] rotating: X-up → Y-up');
+          }
+
+          // Final position: center horizontally, feet at y=0
+          model.updateMatrixWorld(true);
+          const finalBox = new THREE.Box3().setFromObject(model);
+          const finalSize = finalBox.getSize(new THREE.Vector3());
+          const finalCenter = finalBox.getCenter(new THREE.Vector3());
+          model.position.set(-finalCenter.x, -finalBox.min.y, -finalCenter.z);
+          console.log(`[avatar] final world size: ${finalSize.x.toFixed(2)}×${finalSize.y.toFixed(2)}×${finalSize.z.toFixed(2)} m`);
+          console.log(`[avatar] final position: ${model.position.x.toFixed(2)}, ${model.position.y.toFixed(2)}, ${model.position.z.toFixed(2)}`);
 
           scene.add(model);
 
