@@ -32,12 +32,18 @@
     radial-gradient(ellipse 800px 400px at 0% 100%, rgba(26,80,232,0.04), transparent 60%),
     var(--agent-white);
   color: var(--agent-ink);
-  height: 100vh;
+  /* Dynamic viewport height — respects mobile keyboard / browser UI */
+  height: 100dvh;
+  min-height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+/* Older browsers without dvh support fall back to vh */
+@supports not (height: 100dvh) {
+  .agent-body { height: 100vh; min-height: 100vh; }
 }
 
 /* Particle canvas — fills viewport behind UI */
@@ -121,9 +127,22 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   pointer-events: none;
 }
+@supports not (height: 100dvh) {
+  .agent-ui { height: 100vh; }
+}
+
+/* When keyboard is open on mobile (visualViewport API sets --kbh > 0) */
+.agent-body.keyboard-open .agent-ui {
+  height: var(--vvh, 100dvh);
+}
+.agent-body.keyboard-open #agentCanvas {
+  /* Shrink canvas to viewport above keyboard so particles don't overlap input */
+  height: var(--vvh, 100dvh) !important;
+}
+.agent-body.keyboard-open .agent-disclaimer { display: none; }
 
 /* Header — frosted glass effect on white */
 .agent-header {

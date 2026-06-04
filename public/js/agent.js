@@ -428,6 +428,23 @@
     return langMatch[0] || voices[0] || null;
   }
 
+  // CACHED voice — picked ONCE on first speak and locked for the session.
+  // Without this, every call to pickJarvisVoice may return a different
+  // voice as iOS asynchronously loads enhanced voices (Damayanti first,
+  // then Daniel a second later → user hears female-then-male inconsistency).
+  let lockedVoice = null;
+  let lockedVoiceLang = null;
+  function getLockedVoice(targetLang) {
+    if (lockedVoice && lockedVoice.lang) return lockedVoice;
+    const v = pickJarvisVoice(targetLang);
+    if (v) {
+      lockedVoice = v;
+      lockedVoiceLang = v.lang;
+      console.log('[agent] voice LOCKED:', v.name, '(', v.lang, ') for session');
+    }
+    return v;
+  }
+
   // Expand common acronyms so TTS pronounces them correctly.
   // "IT" gets read as the pronoun "it" — replace with full words.
   // Brand names (watsonx.ai, QRadar, IBM Z, IDE Asia) stay intact.
@@ -447,33 +464,25 @@
     u.lang = targetLang;
     u.volume = 1;
 
+    // Pick + lock the voice once per session so it never switches
+    // between male/female or ID/EN accent across messages.
+    const v = getLockedVoice(targetLang);
+    if (v) {
+      u.voice = v;
+      // CRITICAL: u.lang must match v.lang or Chrome/iOS will silently
+      // discard u.voice and use the OS default for u.lang.
+      u.lang = v.lang;
+    }
+
     if (isMobile) {
-      // Mobile: use OS defaults — custom pitch/rate + voice selection
-      // often makes iOS silently swallow the utterance. Pronunciation
-      // and gender come from the device default voice.
+      // Mobile: keep rate/pitch at defaults — iOS often rejects custom
+      // values and falls back to the system voice, which breaks our lock.
       u.rate  = 1;
       u.pitch = 1;
     } else {
-      // Desktop: lower pitch + slightly slower rate → masculine consultant tone
+      // Desktop: lower pitch + slightly slower rate → masculine tone
       u.rate  = 0.95;
       u.pitch = 0.85;
-
-      const v = pickJarvisVoice(targetLang);
-      if (v) {
-        u.voice = v;
-        // CRITICAL: Chrome will SILENTLY IGNORE u.voice if v.lang doesn't
-        // match u.lang and fall back to the default voice for u.lang
-        // (which on macOS is "Damayanti" — female — for id-ID).
-        // We force u.lang to match the picked voice so the male voice is
-        // actually used. Trade-off: if we pick Daniel (en-GB) for an
-        // Indonesian user (no native male voice exists), the text will be
-        // pronounced with an English accent — but at least it's MALE.
-        u.lang = v.lang;
-        const langMismatch = v.lang.toLowerCase().split('-')[0] !== targetLang.toLowerCase().split('-')[0];
-        console.log('[agent] using voice:', v.name, v.lang, langMismatch ? '(cross-lang male fallback)' : '');
-      } else {
-        console.warn('[agent] no voice picked — using browser default for', targetLang);
-      }
     }
 
     let speaking = false;
@@ -561,11 +570,33 @@
   let pendingIntro = null;
   const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
 
+  // Mobile keyboard handling — visualViewport API tells us the actual
+  // viewport height when the keyboard opens, so the layout shrinks
+  // cleanly instead of letting the keyboard overlap the input.
+  function setupViewportTracking() {
+    if (!window.visualViewport) return;
+    const vv = window.visualViewport;
+    const body = document.body;
+    function onResize() {
+      const heightPx = vv.height;
+      document.documentElement.style.setProperty('--vvh', heightPx + 'px');
+      // Heuristic: if the visual viewport is significantly shorter than
+      // the layout viewport, the keyboard is open.
+      const layoutH = window.innerHeight;
+      const isOpen = (layoutH - heightPx) > 120;
+      body.classList.toggle('keyboard-open', isOpen);
+    }
+    vv.addEventListener('resize', onResize);
+    vv.addEventListener('scroll', onResize);
+    onResize();
+  }
+
   // ── INIT ──────────────────────────────────────────────────
   function init() {
     resizeCanvas();
     drawFrame();
     window.addEventListener('resize', resizeCanvas);
+    setupViewportTracking();
 
     // Smooth loader sequence
     if (loaderText) loaderText.textContent = 'Initializing…';
@@ -668,9 +699,10 @@
     window.speechSynthesis.getVoices(); // trigger
     if (typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
       window.speechSynthesis.addEventListener('voiceschanged', () => {
-        // After voices arrive, log selected one so it's easy to debug
-        const v = pickJarvisVoice(lang === 'id' ? 'id-ID' : 'en-US');
-        if (v) console.log('[agent] voices loaded — Jarvis voice:', v.name);
+        // Lock the voice ONCE voices are loaded — prevents switching
+        // mid-session as iOS streams in enhanced voices later.
+        const v = getLockedVoice(lang === 'id' ? 'id-ID' : 'en-US');
+        if (v) console.log('[agent] voices ready — locked:', v.name);
       });
     }
   }
@@ -695,16 +727,18 @@
         hideTapHint();
         try {
           if (isMobile) {
-            // Mobile: keep it simple — let the browser pick the default
-            // voice and use natural rate/pitch. This maximizes the chance
-            // that iOS actually emits audio.
+            // Mobile: use locked voice (cached once) so subsequent
+            // messages don't switch voices. speak() must fire SYNCHRONOUSLY
+            // from this gesture for iOS to actually emit audio.
             window.speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(expandAcronymsForTTS(text));
-            u.lang = lang === 'id' ? 'id-ID' : 'en-US';
+            const targetLang = lang === 'id' ? 'id-ID' : 'en-US';
+            const v = getLockedVoice(targetLang);
+            if (v) { u.voice = v; u.lang = v.lang; }
+            else   { u.lang = targetLang; }
             u.volume = 1;
-            u.rate = 1;
-            u.pitch = 1;
-            // Drive the particle pulse manually (no audio stream available)
+            u.rate   = 1;
+            u.pitch  = 1;
             let speaking = false;
             u.onstart = () => { console.log('[agent] mobile TTS started'); speaking = true; mobilePulse(); };
             u.onend   = () => { console.log('[agent] mobile TTS ended'); speaking = false; };
