@@ -118,10 +118,10 @@
     scene.background = null;
     // fog removed
 
-    // Camera — wide initial view for Sophia (we'll dial in once we see scope)
-    camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 1.4, 4.5);
-    camera.lookAt(0, 1.2, 0);
+    // Camera — far back for debug visibility
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 5000);
+    camera.position.set(0, 3, 20);
+    camera.lookAt(0, 1, 0);
 
     // Lighting
     const ambient = new THREE.AmbientLight(0x8899bb, 0.4);
@@ -239,6 +239,18 @@
           console.log(`[avatar] final position: ${model.position.x.toFixed(2)}, ${model.position.y.toFixed(2)}, ${model.position.z.toFixed(2)}`);
 
           scene.add(model);
+
+          // ── DEBUG HELPERS — remove these once positioning is confirmed ──
+          // AxesHelper at origin: red=X, green=Y, blue=Z. 3-meter long.
+          const axes = new THREE.AxesHelper(3);
+          scene.add(axes);
+          // GridHelper at y=0: 20×20 meter floor grid
+          const grid = new THREE.GridHelper(20, 20, 0x888888, 0xcccccc);
+          scene.add(grid);
+          // BoxHelper around the model itself (yellow)
+          const boxHelper = new THREE.BoxHelper(model, 0xffff00);
+          scene.add(boxHelper);
+          console.log('[avatar] DEBUG: AxesHelper + GridHelper + BoxHelper added (camera 20m back). Remove when correctly framed.');
 
           // Build morph target index
           model.traverse((node) => {
