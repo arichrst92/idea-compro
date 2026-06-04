@@ -535,14 +535,24 @@
 }
 .ath-skip:hover { color: var(--agent-ink); }
 
+/* When picker is up, hide the agent UI completely behind it so the
+   loader bar / particle canvas / header don't bleed through the
+   translucent backdrop. Picker JS sets body.picker-active on boot. */
+.agent-body.picker-active #agentLoader,
+.agent-body.picker-active #agentBg,
+.agent-body.picker-active #agentCanvas,
+.agent-body.picker-active .agent-ui {
+  display: none !important;
+}
+
 /* ─── Language picker (first-visit modal) ────────────────────── */
 .agent-lang-picker {
   position: fixed; inset: 0;
   z-index: 200;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  background:
+    radial-gradient(ellipse 1200px 600px at 80% 0%, var(--agent-blue-50), transparent 60%),
+    var(--agent-white);
   padding: 24px;
   animation: alpFadeIn 0.4s ease;
 }

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css?v=sv-13">
-  <link rel="stylesheet" href="/css/agent.css?v=sv-14">
+  <link rel="stylesheet" href="/css/agent.css?v=sv-15">
   <% if (gaId) { %>
   <script async src="https://www.googletagmanager.com/gtag/js?id=<%= gaId %>"></script>
   <script>
@@ -23,12 +23,11 @@
 </head>
 <body class="agent-body">
   <%- body %>
-  <!-- Render any <script> tags extracted from the body view by
-       express-ejs-layouts (extractScripts: true). Without this, inline
-       scripts inside views (like the language/voice picker) are silently
-       dropped because the layout never references the `scripts` local. -->
-  <%- typeof scripts !== "undefined" ? scripts : "" %>
   <script>window.AGENT_LANG = '<%= lang %>';</script>
+  <!-- Picker first — it sets body.picker-active and may navigate away
+       before agent.js's heavy init runs. Loaded from the layout so
+       express-ejs-layouts extractScripts does not eat it. -->
+  <script src="/js/agent-picker.js?v=2"></script>
   <script src="/js/agent.js?v=sv-29"></script>
 </body>
 </html>
