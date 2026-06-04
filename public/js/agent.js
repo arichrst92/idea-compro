@@ -625,21 +625,26 @@
           : '<p>Hello! I\'m <strong>Jarvis</strong> 👋</p><p>Welcome. I\'m your digital consultant today — how can I help you?</p>';
         showSpeech(welcome);
 
-        // Welcome voice — TTS instead of pre-recorded mp3s (those still say "Carolla")
+        // Welcome voice + audio context unlock.
+        // We ALWAYS queue+show the tap hint on mobile because that user
+        // gesture is what unlocks SpeechSynthesis on iOS Safari — without
+        // it, later chat-reply speak() calls will silently fail. On
+        // desktop we skip the intro when coming from internal navigation
+        // to avoid annoying users on every reload.
+        const introText = lang === 'id'
+          ? 'Halo! Saya Jarvis, asisten digital Anda dari IDE Asia. Selamat datang. Katakan apa yang bisa saya bantu hari ini.'
+          : 'Hello! I am Jarvis, your digital consultant from IDE Asia. Welcome. Tell me how I can help you today.';
         const fromInternal = document.referrer && document.referrer.includes(window.location.hostname);
-        if (!fromInternal) {
-          const introText = lang === 'id'
-            ? 'Halo! Saya Jarvis, asisten digital Anda dari IDE Asia. Selamat datang. Katakan apa yang bisa saya bantu hari ini.'
-            : 'Hello! I am Jarvis, your digital consultant from IDE Asia. Welcome. Tell me how I can help you today.';
 
-          if (isMobile) {
-            // Queue — will play on first tap (see resumeAudioOnGesture)
-            pendingIntro = introText;
-            showTapHint();
-          } else {
-            speak(introText);
-          }
+        if (isMobile) {
+          // Always queue intro + show tap hint on mobile so audio unlocks
+          pendingIntro = introText;
+          showTapHint();
+        } else if (!fromInternal) {
+          // Desktop external → speak intro directly
+          speak(introText);
         }
+        // (Desktop internal → silent welcome card, no voice)
       }, 300);
     }, 600);
   }
@@ -687,15 +692,33 @@
     }
   }
 
+  // Prime SpeechSynthesis with a silent utterance INSIDE the gesture
+  // so iOS keeps audio "warm" through the upcoming await fetch. Without
+  // this, the chat reply speak() — fired after an async fetch — falls
+  // outside iOS's gesture window and gets dropped silently.
+  function primeAudioInsideGesture() {
+    if (!window.speechSynthesis) return;
+    try {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      u.rate = 1;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* ignore */ }
+  }
+
   // ── EVENT WIRING ──────────────────────────────────────────
   inputEl.addEventListener('input', autoResize);
   inputEl.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      primeAudioInsideGesture();
       sendMessage(inputEl.value);
     }
   });
-  sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
+  sendBtn.addEventListener('click', () => {
+    primeAudioInsideGesture();
+    sendMessage(inputEl.value);
+  });
 
   if (suggestionsEl) {
     suggestionsEl.querySelectorAll('.suggestion-chip').forEach(chip => {
