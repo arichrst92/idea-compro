@@ -131,16 +131,29 @@
       })(langBtns[i]);
     }
 
-    // Continue button
+    // Continue button — mark onboarded via cookie before navigating.
+    // Server uses this cookie alone to decide whether to show the picker
+    // again, so we must set it BEFORE the navigation request fires.
     continueBtn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
       if (!chosenLang) return;
+
       var voiceName = selectEl.value || '';
       try {
         if (voiceName) localStorage.setItem('jarvisVoice_' + chosenLang, voiceName);
         else localStorage.removeItem('jarvisVoice_' + chosenLang);
-      } catch (e) {}
+      } catch (e2) {}
+
+      // Long-lived cookies, set CLIENT-SIDE so the very next request
+      // already carries them (vs. server set-cookie which only the
+      // request AFTER would see).
+      var oneYear = 365 * 24 * 60 * 60;
+      try {
+        document.cookie = 'jarvisOnboarded=1; max-age=' + oneYear + '; path=/; samesite=lax';
+        document.cookie = 'lang=' + chosenLang + '; max-age=' + oneYear + '; path=/; samesite=lax';
+      } catch (e3) {}
+
       console.log('[picker] continue → /agent?lang=' + chosenLang + ' (voice=' + voiceName + ')');
       window.location.href = '/agent?lang=' + chosenLang;
     });

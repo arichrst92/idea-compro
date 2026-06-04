@@ -135,21 +135,18 @@ router.get('/', (req, res) => {
     res.clearCookie('jarvisOnboarded');
     return res.redirect('/agent');
   }
-  // Sync lang cookie dan override res.locals.lang langsung
+  // Sync lang cookie if ?lang= is in URL — but do NOT mark the user as
+  // onboarded just because a lang is in the URL. The picker JS is the
+  // only thing allowed to set jarvisOnboarded (via document.cookie),
+  // so shared links like /agent?lang=en still trigger the picker for
+  // anyone who hasn't gone through it yet.
   if (req.query.lang && ['en','id'].includes(req.query.lang)) {
     res.cookie('lang', req.query.lang, { maxAge: 365*24*60*60*1000, httpOnly: false });
     res.locals.lang = req.query.lang;
-    // Coming from the picker's Continue button → also mark onboarded
-    res.cookie('jarvisOnboarded', '1', { maxAge: 365*24*60*60*1000, httpOnly: false });
   }
-  // Show the language + voice picker on FIRST visit only.
-  // The query check covers the SAME request that came from Continue
-  // (the cookie set above isn't readable from req.cookies until the
-  // browser sends it on the next request — without this we'd loop the
-  // picker). The cookie check handles every subsequent navigation.
-  const langExplicit =
-    !!req.cookies.jarvisOnboarded ||
-    (!!req.query.lang && ['en','id'].includes(req.query.lang));
+  // langExplicit purely cookie-driven now. ?lang= alone never bypasses
+  // the picker.
+  const langExplicit = !!req.cookies.jarvisOnboarded;
   res.render('pages/agent', {
     title: 'IDEA AI Consultant — ide.asia',
     description: 'Chat with IDEA AI — your intelligent digital consultant. Get instant answers about IT consulting, outsourcing, cloud, and enterprise tech solutions.',
