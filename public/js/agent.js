@@ -600,17 +600,40 @@
     }, 600);
   }
 
-  // Floating "tap to enable voice" hint for mobile users
+  // Floating modal for mobile users — must tap to enable voice,
+  // also reminds them to check silent switch on iPhone.
   function showTapHint() {
     if (document.getElementById('agentTapHint')) return;
-    const hint = document.createElement('div');
-    hint.id = 'agentTapHint';
-    hint.className = 'agent-tap-hint';
-    hint.textContent = lang === 'id'
-      ? 'Ketuk layar untuk mengaktifkan suara'
-      : 'Tap the screen to enable voice';
-    document.body.appendChild(hint);
-    setTimeout(() => hint.classList.add('visible'), 50);
+    const overlay = document.createElement('div');
+    overlay.id = 'agentTapHint';
+    overlay.className = 'agent-tap-hint';
+
+    const title = lang === 'id' ? 'Aktifkan Suara Jarvis' : 'Enable Jarvis Voice';
+    const desc  = lang === 'id'
+      ? 'Tap tombol untuk mulai. Pastikan <strong>mode senyap (silent switch) HP non-aktif</strong> dan volume cukup.'
+      : 'Tap to start. Make sure your phone is <strong>NOT in silent mode</strong> and the volume is up.';
+    const cta   = lang === 'id' ? '🔊 Tap untuk Aktifkan Suara' : '🔊 Tap to Enable Voice';
+    const skip  = lang === 'id' ? 'Lewati (tanpa suara)' : 'Skip (no voice)';
+
+    overlay.innerHTML = `
+      <div class="ath-card">
+        <div class="ath-title">${title}</div>
+        <p class="ath-desc">${desc}</p>
+        <button type="button" class="ath-btn" id="athStart">${cta}</button>
+        <button type="button" class="ath-skip" id="athSkip">${skip}</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+
+    // "Skip" → cancel pending intro, close overlay (no voice)
+    document.getElementById('athSkip').addEventListener('click', (e) => {
+      e.stopPropagation();
+      pendingIntro = null;
+      hideTapHint();
+    });
+    // The main button — let bubble to document so resumeAudioOnGesture fires
+    // AND calls speak() synchronously in that gesture.
   }
   function hideTapHint() {
     const hint = document.getElementById('agentTapHint');
