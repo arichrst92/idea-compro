@@ -445,26 +445,35 @@
     const u = new SpeechSynthesisUtterance(text);
     const targetLang = lang === 'id' ? 'id-ID' : 'en-US';
     u.lang = targetLang;
-    // Lower pitch + slightly slower rate → more masculine, more "consultant" timbre
-    u.rate   = 0.95;
-    u.pitch  = 0.85;
     u.volume = 1;
 
-    const v = pickJarvisVoice(targetLang);
-    if (v) {
-      u.voice = v;
-      // CRITICAL: Chrome will SILENTLY IGNORE u.voice if v.lang doesn't
-      // match u.lang and fall back to the default voice for u.lang
-      // (which on macOS is "Damayanti" — female — for id-ID).
-      // We force u.lang to match the picked voice so the male voice is
-      // actually used. Trade-off: if we pick Daniel (en-GB) for an
-      // Indonesian user (no native male voice exists), the text will be
-      // pronounced with an English accent — but at least it's MALE.
-      u.lang = v.lang;
-      const langMismatch = v.lang.toLowerCase().split('-')[0] !== targetLang.toLowerCase().split('-')[0];
-      console.log('[agent] using voice:', v.name, v.lang, langMismatch ? '(cross-lang male fallback)' : '');
+    if (isMobile) {
+      // Mobile: use OS defaults — custom pitch/rate + voice selection
+      // often makes iOS silently swallow the utterance. Pronunciation
+      // and gender come from the device default voice.
+      u.rate  = 1;
+      u.pitch = 1;
     } else {
-      console.warn('[agent] no voice picked — using browser default for', targetLang);
+      // Desktop: lower pitch + slightly slower rate → masculine consultant tone
+      u.rate  = 0.95;
+      u.pitch = 0.85;
+
+      const v = pickJarvisVoice(targetLang);
+      if (v) {
+        u.voice = v;
+        // CRITICAL: Chrome will SILENTLY IGNORE u.voice if v.lang doesn't
+        // match u.lang and fall back to the default voice for u.lang
+        // (which on macOS is "Damayanti" — female — for id-ID).
+        // We force u.lang to match the picked voice so the male voice is
+        // actually used. Trade-off: if we pick Daniel (en-GB) for an
+        // Indonesian user (no native male voice exists), the text will be
+        // pronounced with an English accent — but at least it's MALE.
+        u.lang = v.lang;
+        const langMismatch = v.lang.toLowerCase().split('-')[0] !== targetLang.toLowerCase().split('-')[0];
+        console.log('[agent] using voice:', v.name, v.lang, langMismatch ? '(cross-lang male fallback)' : '');
+      } else {
+        console.warn('[agent] no voice picked — using browser default for', targetLang);
+      }
     }
 
     let speaking = false;
@@ -643,34 +652,55 @@
     }
   }
 
-  // First user gesture → resume AudioContext + prime SpeechSynthesis.
-  // iOS Safari and Android Chrome BLOCK SpeechSynthesis until a gesture
-  // happens AND requires the speak() call to fire synchronously from
-  // within the gesture handler.
+  // First user gesture → resume AudioContext + speak any queued intro.
+  // iOS Safari / Android Chrome require speak() to be called SYNCHRONOUSLY
+  // from inside the gesture handler — no setTimeout, no async.
   let primed = false;
-  function resumeAudioOnGesture() {
+  function resumeAudioOnGesture(ev) {
+    console.log('[agent] gesture detected:', ev && ev.type);
     ensureAudioCtx(); // creates + resumes
 
     if (!primed && window.speechSynthesis) {
       primed = true;
 
-      // Prime trick: speak an empty utterance synchronously from gesture.
-      // This "unlocks" SpeechSynthesis for the rest of the page lifetime.
-      try {
-        const priming = new SpeechSynthesisUtterance(' ');
-        priming.volume = 0;
-        priming.rate = 1;
-        window.speechSynthesis.speak(priming);
-      } catch (e) { /* noop */ }
-
-      // Then immediately play the queued welcome intro (if any).
-      // Must happen in the same gesture tick for iOS.
+      // Play queued intro SYNCHRONOUSLY in this gesture handler.
+      // On mobile, we use a simplified speak path (no custom voice / pitch)
+      // so iOS doesn't reject the utterance.
       if (pendingIntro) {
         const text = pendingIntro;
         pendingIntro = null;
         hideTapHint();
-        // Small delay so the priming finishes; still inside gesture window
-        setTimeout(() => speak(text), 30);
+        try {
+          if (isMobile) {
+            // Mobile: keep it simple — let the browser pick the default
+            // voice and use natural rate/pitch. This maximizes the chance
+            // that iOS actually emits audio.
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(expandAcronymsForTTS(text));
+            u.lang = lang === 'id' ? 'id-ID' : 'en-US';
+            u.volume = 1;
+            u.rate = 1;
+            u.pitch = 1;
+            // Drive the particle pulse manually (no audio stream available)
+            let speaking = false;
+            u.onstart = () => { console.log('[agent] mobile TTS started'); speaking = true; mobilePulse(); };
+            u.onend   = () => { console.log('[agent] mobile TTS ended'); speaking = false; };
+            u.onerror = (e) => { console.warn('[agent] mobile TTS error:', e.error); speaking = false; };
+            function mobilePulse() {
+              if (!speaking) return;
+              const t = performance.now() * 0.005;
+              audioLevel = Math.max(audioLevel, 0.45 + 0.20 * Math.sin(t));
+              requestAnimationFrame(mobilePulse);
+            }
+            window.speechSynthesis.speak(u);
+            console.log('[agent] mobile speak() called, queued=', window.speechSynthesis.speaking || window.speechSynthesis.pending);
+          } else {
+            // Desktop: full Jarvis voice with male tuning
+            speak(text);
+          }
+        } catch (e) {
+          console.error('[agent] intro speak failed:', e);
+        }
       }
     }
 
