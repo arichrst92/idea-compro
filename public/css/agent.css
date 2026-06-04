@@ -246,6 +246,44 @@
 /* Bottom panel */
 .agent-bottom { margin-top: auto; pointer-events: all; }
 
+/* Action chips — flow inside speech bubble, below message text */
+.agent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--agent-line);
+  animation: actionsAppear 0.35s ease-out;
+}
+@keyframes actionsAppear {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.agent-action-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px;
+  background: var(--agent-ink);
+  border: 1px solid var(--agent-ink);
+  color: var(--agent-white);
+  border-radius: 100px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+.agent-action-chip:hover {
+  background: #1A1F2E;
+  border-color: #1A1F2E;
+  transform: translateY(-1px);
+  box-shadow: var(--agent-shadow-sm);
+}
+.agent-action-chip:active { transform: translateY(0); }
+.agent-action-chip svg { flex-shrink: 0; }
+@media (max-width: 640px) {
+  .agent-action-chip { padding: 6px 11px; font-size: 12px; }
+}
+
 /* Suggestions chips */
 .agent-suggestions {
   display: flex; flex-wrap: wrap; justify-content: center;

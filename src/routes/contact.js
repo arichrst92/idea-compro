@@ -3,7 +3,13 @@ const router = express.Router();
 const Contact = require('../models/Contact');
 const { sendContactNotification, sendAutoReply } = require('../services/email');
 
+const ALLOWED_SERVICES = ['it-consulting', 'it-outsourcing', 'it-hiring', 'cloud-infrastructure', 'it-security', 'squad-delivery', 'software-development', 'ai-development', 'managed-service', 'general'];
+
 router.get('/', (req, res) => {
+  // Allow pre-fill via query params (e.g. from Jarvis action chip)
+  const prefillService = ALLOWED_SERVICES.includes(req.query.service) ? req.query.service : '';
+  const prefillMessage = req.query.msg ? String(req.query.msg).substring(0, 500) : '';
+
   res.render('pages/contact', {
     title: 'Contact Us - IDEAsia - PT Solusi Inovasi Bangsa',
     description: 'Get in touch with IDEAsia - PT Solusi Inovasi Bangsa for IT consulting, outsourcing, cloud infrastructure, and enterprise technology solutions.',
@@ -11,6 +17,8 @@ router.get('/', (req, res) => {
     currentPage: 'contact',
     success: req.query.success,
     error: req.query.error,
+    prefillService,
+    prefillMessage,
   });
 });
 

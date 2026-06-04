@@ -28,7 +28,39 @@ Guidelines:
 - Keep responses concise and structured — use bullet points when listing multiple items
 - For pricing or detailed proposals, always recommend scheduling a consultation at /contact
 - If asked about topics unrelated to IT/technology/IDEA Asia, politely redirect
-- Never make up information — if unsure, acknowledge and suggest contacting the team`;
+- Never make up information — if unsure, acknowledge and suggest contacting the team
+
+ACTION CAPABILITIES — IMPORTANT
+You can suggest concrete next steps as clickable action buttons by appending a special JSON block on the LAST line of your reply.
+
+Format (single line, no markdown, last line of reply):
+[ACTIONS]{"actions":[{"type":"contact","label":"Book a consultation","service":"it-consulting"}]}[/ACTIONS]
+
+Available action types:
+- "contact"  — opens /contact form, pre-fills service select. Required: label. Optional: service (one of: it-consulting, it-outsourcing, it-hiring, cloud-infrastructure, it-security, squad-delivery), message
+- "whatsapp" — opens WhatsApp chat. Required: label. Optional: message (URL-encoded text to pre-fill)
+- "navigate" — go to internal page. Required: label, url (must start with /)
+- "external" — open external URL in new tab. Required: label, url (must start with https://)
+- "call"     — open phone dialer (+62 818-0580-7807). Required: label
+
+Rules for [ACTIONS]:
+- Use AT MOST 2 actions per reply
+- Only include [ACTIONS] when actions clearly help user move forward
+- Skip [ACTIONS] when reply is purely informational (definitions, explanations, "what is X")
+- Translate "label" to user's language (Indonesian/English)
+- Place [ACTIONS] strictly at the very end, on its own line
+
+Examples:
+User: "I want to talk to someone"
+You: "Sure, you can reach our team directly. Our consultants reply within 4 hours during business hours.
+[ACTIONS]{"actions":[{"type":"whatsapp","label":"Chat on WhatsApp","message":"Hi IDEA Asia, I'd like to talk to a consultant."},{"type":"contact","label":"Send a message"}]}[/ACTIONS]"
+
+User: "How much does IT outsourcing cost?"
+You: "Pricing depends on team size, technology stack, and engagement duration. Typically clients see 30% cost reduction vs in-house. Let's discuss your specific needs.
+[ACTIONS]{"actions":[{"type":"contact","label":"Get a quote","service":"it-outsourcing"}]}[/ACTIONS]"
+
+User: "What is cloud migration?"
+You: "Cloud migration is the process of moving data, applications, and workloads from on-premise infrastructure to cloud platforms like AWS, Azure, or GCP. Benefits include scalability, cost optimization, and improved reliability." (NO actions — purely informational)`;
 
 // Override CSP for agent page — Three.js needs blob: workers
 router.use((req, res, next) => {
@@ -111,10 +143,47 @@ router.post('/chat', async (req, res) => {
       }
     );
 
-    const reply = response.data.choices?.[0]?.message?.content;
-    if (!reply) throw new Error('Empty response from AI');
+    const raw = response.data.choices?.[0]?.message?.content;
+    if (!raw) throw new Error('Empty response from AI');
 
-    res.json({ reply });
+    // Extract [ACTIONS]...[/ACTIONS] JSON block if present
+    let reply = raw;
+    let actions = [];
+    const actionMatch = raw.match(/\[ACTIONS\]\s*(\{[\s\S]*?\})\s*\[\/ACTIONS\]/);
+    if (actionMatch) {
+      reply = raw.replace(actionMatch[0], '').trim();
+      try {
+        const parsed = JSON.parse(actionMatch[1]);
+        if (Array.isArray(parsed.actions)) {
+          // Validate + sanitize each action (max 2)
+          const ALLOWED_TYPES = ['contact', 'whatsapp', 'navigate', 'external', 'call'];
+          const ALLOWED_SERVICES = ['it-consulting', 'it-outsourcing', 'it-hiring', 'cloud-infrastructure', 'it-security', 'squad-delivery'];
+          actions = parsed.actions.slice(0, 2).filter(a => {
+            if (!a || typeof a !== 'object') return false;
+            if (!ALLOWED_TYPES.includes(a.type)) return false;
+            if (!a.label || typeof a.label !== 'string') return false;
+            if (a.label.length > 60) return false;
+            if (a.type === 'contact' && a.service && !ALLOWED_SERVICES.includes(a.service)) {
+              delete a.service;
+            }
+            if ((a.type === 'navigate' || a.type === 'external')) {
+              if (typeof a.url !== 'string') return false;
+              if (a.type === 'navigate' && !a.url.startsWith('/')) return false;
+              if (a.type === 'external' && !a.url.startsWith('https://')) return false;
+              if (a.url.length > 200) return false;
+            }
+            if (a.message && typeof a.message === 'string') {
+              a.message = a.message.substring(0, 300);
+            }
+            return true;
+          });
+        }
+      } catch (parseErr) {
+        console.warn('Agent action JSON parse failed:', parseErr.message);
+      }
+    }
+
+    res.json({ reply, actions });
 
   } catch (err) {
     console.error('Agent chat error:', err?.response?.data || err.message);

@@ -265,10 +265,11 @@
     if (!speechEl) return;
     if (speechTyping) speechTyping.style.display = 'flex';
     if (speechText)   speechText.style.display = 'none';
+    clearActions();
     speechEl.classList.add('visible');
   }
 
-  function showSpeech(html) {
+  function showSpeech(html, actions) {
     if (!speechEl) return;
     if (speechTyping) speechTyping.style.display = 'none';
     if (speechText) {
@@ -276,10 +277,87 @@
       speechText.style.display = 'block';
     }
     speechEl.classList.add('visible');
+    renderActions(actions || []);
   }
 
   function hideSpeech() {
     if (speechEl) speechEl.classList.remove('visible');
+    clearActions();
+  }
+
+  // ── ACTION CHIPS ──────────────────────────────────────────
+  function clearActions() {
+    const old = document.getElementById('agentActions');
+    if (old) old.remove();
+  }
+
+  function renderActions(actions) {
+    clearActions();
+    if (!actions || !actions.length) return;
+    const wrap = document.createElement('div');
+    wrap.id = 'agentActions';
+    wrap.className = 'agent-actions';
+    actions.forEach(action => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'agent-action-chip';
+      btn.innerHTML = `${actionIcon(action.type)}<span>${escapeHtml(action.label)}</span>`;
+      btn.addEventListener('click', () => executeAction(action));
+      wrap.appendChild(btn);
+    });
+    // Append inside the speech bubble so chips flow under the message text
+    speechEl.appendChild(wrap);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  function actionIcon(type) {
+    const icons = {
+      contact:  '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 4l6 4.5L14 4"/></svg>',
+      whatsapp: '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M11.6 9.6c-.2-.1-1.2-.6-1.4-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-.2-.1-.8-.3-1.6-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3 0-.1 0-.2-.05-.4-.05-.1-.4-1.1-.6-1.5-.15-.4-.3-.3-.4-.3h-.4c-.1 0-.3 0-.5.2-.2.2-.6.6-.6 1.5s.6 1.7.7 1.9c.1.1 1.3 2 3.1 2.7.5.2.8.3 1 .4.4.1.8.1 1.1.1.3-.1 1-.4 1.2-.8.1-.4.1-.8.1-.8-.05-.1-.2-.15-.4-.25zM8 14a6 6 0 0 1-3.1-.9L2 14l.9-2.9A6 6 0 1 1 8 14z"/></svg>',
+      navigate: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>',
+      external: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h2v2M13 3l-6 6M8 3H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8"/></svg>',
+      call:     '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2.5h2l1.5 3-2 1c.8 1.7 2.3 3.2 4 4l1-2 3.5 1.5v2c0 .8-.7 1.5-1.5 1.5C6.4 13.5 2 9 2 3.5 2 2.7 2.7 2 3 2z"/></svg>',
+    };
+    return icons[type] || '';
+  }
+
+  function executeAction(action) {
+    if (!action || !action.type) return;
+    switch (action.type) {
+      case 'contact': {
+        const params = new URLSearchParams();
+        if (action.service) params.set('service', action.service);
+        if (action.message) params.set('msg', action.message);
+        const url = '/contact' + (params.toString() ? ('?' + params.toString()) : '');
+        window.location.href = url;
+        break;
+      }
+      case 'whatsapp': {
+        const phone = '6281805807807';
+        const text = action.message ? '?text=' + encodeURIComponent(action.message) : '';
+        window.open(`https://wa.me/${phone}${text}`, '_blank', 'noopener');
+        break;
+      }
+      case 'navigate': {
+        if (action.url && action.url.startsWith('/')) {
+          window.location.href = action.url;
+        }
+        break;
+      }
+      case 'external': {
+        if (action.url && action.url.startsWith('https://')) {
+          window.open(action.url, '_blank', 'noopener');
+        }
+        break;
+      }
+      case 'call': {
+        window.location.href = 'tel:+6281805807807';
+        break;
+      }
+    }
   }
 
   // ── BROWSER TTS (Jarvis response speak via Speech Synthesis) ──
@@ -356,7 +434,7 @@
       if (!res.ok) {
         showSpeech(`<p>${data.error || 'Something went wrong.'}</p>`);
       } else {
-        showSpeech(formatResponse(data.reply));
+        showSpeech(formatResponse(data.reply), data.actions);
         history.push({ role: 'user', content: text });
         history.push({ role: 'assistant', content: data.reply });
         speak(data.reply.replace(/\*\*/g, '').replace(/\n/g, ' '));

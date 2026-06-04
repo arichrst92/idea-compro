@@ -47,22 +47,24 @@
           </div>
           <div class="form-group">
             <label for="service"><%= lang==='id' ? 'Layanan yang Diminati' : 'Service of Interest' %></label>
+            <% const sp = typeof prefillService !== 'undefined' ? prefillService : ''; %>
             <select id="service" name="service">
               <option value=""><%= lang==='id' ? 'Pilih layanan...' : 'Select a service...' %></option>
-              <option value="software-development">Software Development & Integration</option>
-              <option value="it-outsourcing">IT Outsourcing</option>
-              <option value="it-hiring">Tech Talent Hiring</option>
-              <option value="cloud-infrastructure">Cloud Infrastructure</option>
-              <option value="it-security">IT Security</option>
-              <option value="squad-delivery">Squad Based Delivery</option>
-              <option value="ai-development">AI Development</option>
-              <option value="managed-service">Managed Service</option>
-              <option value="general"><%= lang==='id' ? 'Umum / Lainnya' : 'General / Other' %></option>
+              <option value="it-consulting"        <%= sp==='it-consulting'?'selected':'' %>>IT Consulting</option>
+              <option value="it-outsourcing"       <%= sp==='it-outsourcing'?'selected':'' %>>IT Outsourcing</option>
+              <option value="it-hiring"            <%= sp==='it-hiring'?'selected':'' %>>Tech Talent Hiring</option>
+              <option value="cloud-infrastructure" <%= sp==='cloud-infrastructure'?'selected':'' %>>Cloud Infrastructure</option>
+              <option value="it-security"          <%= sp==='it-security'?'selected':'' %>>IT Security</option>
+              <option value="squad-delivery"       <%= sp==='squad-delivery'?'selected':'' %>>Squad Based Delivery</option>
+              <option value="software-development" <%= sp==='software-development'?'selected':'' %>>Software Development & Integration</option>
+              <option value="ai-development"       <%= sp==='ai-development'?'selected':'' %>>AI Development</option>
+              <option value="managed-service"      <%= sp==='managed-service'?'selected':'' %>>Managed Service</option>
+              <option value="general"              <%= sp==='general'?'selected':'' %>><%= lang==='id' ? 'Umum / Lainnya' : 'General / Other' %></option>
             </select>
           </div>
           <div class="form-group">
             <label for="message"><%= lang==='id' ? 'Pesan *' : 'Message *' %></label>
-            <textarea id="message" name="message" required placeholder="<%= lang==='id' ? 'Ceritakan tentang proyek atau kebutuhan Anda...' : 'Tell us about your project or requirements...' %>"></textarea>
+            <textarea id="message" name="message" required placeholder="<%= lang==='id' ? 'Ceritakan tentang proyek atau kebutuhan Anda...' : 'Tell us about your project or requirements...' %>"><%= typeof prefillMessage !== 'undefined' ? prefillMessage : '' %></textarea>
           </div>
           <button type="submit" class="btn btn-primary btn-block">
             <%= lang==='id' ? 'Kirim Pesan — Kami Respons Dalam 4 Jam' : 'Send Message — We\'ll Respond Within 4 Hours' %>
