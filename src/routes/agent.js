@@ -129,14 +129,23 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
+  // ?reset=1 → clear the agent-onboarded cookie so the picker shows again.
+  // Useful for testing and as a future "change voice/language" link target.
+  if (req.query.reset === '1') {
+    res.clearCookie('jarvisOnboarded');
+    return res.redirect('/agent');
+  }
   // Sync lang cookie dan override res.locals.lang langsung
   if (req.query.lang && ['en','id'].includes(req.query.lang)) {
     res.cookie('lang', req.query.lang, { maxAge: 365*24*60*60*1000, httpOnly: false });
     res.locals.lang = req.query.lang;
+    // Coming from the picker's Continue button → also mark onboarded
+    res.cookie('jarvisOnboarded', '1', { maxAge: 365*24*60*60*1000, httpOnly: false });
   }
-  // Did the user EXPLICITLY pick a language? (query > cookie). Used to
-  // show a language picker on first visit so Jarvis stays consistent.
-  const langExplicit = !!(req.query.lang || req.cookies.lang);
+  // Show the language + voice picker on FIRST visit only. Onboarded state
+  // is a dedicated cookie (not just lang cookie) so the global site lang
+  // cookie set elsewhere doesn't bypass the agent's voice picker.
+  const langExplicit = !!req.cookies.jarvisOnboarded;
   res.render('pages/agent', {
     title: 'IDEA AI Consultant — ide.asia',
     description: 'Chat with IDEA AI — your intelligent digital consultant. Get instant answers about IT consulting, outsourcing, cloud, and enterprise tech solutions.',
