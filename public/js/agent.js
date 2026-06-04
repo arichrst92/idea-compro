@@ -286,7 +286,11 @@
   }
 
   // ── ACTION CHIPS ──────────────────────────────────────────
+  // Render into the floating bar above the input (the in-speech-bubble
+  // location is gone now that the speech card is hidden).
   function clearActions() {
+    const bar = document.getElementById('agentActionsFloating');
+    if (bar) bar.innerHTML = '';
     const old = document.getElementById('agentActions');
     if (old) old.remove();
   }
@@ -305,8 +309,10 @@
       btn.addEventListener('click', () => executeAction(action));
       wrap.appendChild(btn);
     });
-    // Append inside the speech bubble so chips flow under the message text
-    speechEl.appendChild(wrap);
+    // Prefer the floating bar above the input (speech bubble is hidden)
+    const floatBar = document.getElementById('agentActionsFloating');
+    if (floatBar) floatBar.appendChild(wrap);
+    else if (speechEl) speechEl.appendChild(wrap);
   }
 
   function escapeHtml(s) {
