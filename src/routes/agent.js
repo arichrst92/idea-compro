@@ -142,10 +142,14 @@ router.get('/', (req, res) => {
     // Coming from the picker's Continue button → also mark onboarded
     res.cookie('jarvisOnboarded', '1', { maxAge: 365*24*60*60*1000, httpOnly: false });
   }
-  // Show the language + voice picker on FIRST visit only. Onboarded state
-  // is a dedicated cookie (not just lang cookie) so the global site lang
-  // cookie set elsewhere doesn't bypass the agent's voice picker.
-  const langExplicit = !!req.cookies.jarvisOnboarded;
+  // Show the language + voice picker on FIRST visit only.
+  // The query check covers the SAME request that came from Continue
+  // (the cookie set above isn't readable from req.cookies until the
+  // browser sends it on the next request — without this we'd loop the
+  // picker). The cookie check handles every subsequent navigation.
+  const langExplicit =
+    !!req.cookies.jarvisOnboarded ||
+    (!!req.query.lang && ['en','id'].includes(req.query.lang));
   res.render('pages/agent', {
     title: 'IDEA AI Consultant — ide.asia',
     description: 'Chat with IDEA AI — your intelligent digital consultant. Get instant answers about IT consulting, outsourcing, cloud, and enterprise tech solutions.',
