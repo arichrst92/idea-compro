@@ -363,16 +363,80 @@
   // ── BROWSER TTS (Jarvis response speak via Speech Synthesis) ──
   // SpeechSynthesis doesn't expose audio stream, so we simulate audio
   // amplitude oscillation while utterance is active → particles still react.
-  let synthPulseTimer = 0;
+  // Voice selection prefers a male voice for the Jarvis persona.
+
+  // Male voice name hints (case-insensitive). Includes localized male names
+  // for Indonesian voices on Android/Chrome and macOS/iOS.
+  const MALE_VOICE_HINTS = [
+    'male','man',
+    // English
+    'david','daniel','alex','fred','thomas','aaron','arthur','oliver',
+    'mark','michael','george','james','rishi','reed','ralph','rocko',
+    'eddy','grandpa','gordon','jamie','tom','john','jacob','ryan',
+    // Indonesian
+    'ardi','andika','reza','rian','agus','budi','wahyu','damayanto',
+    // Generic
+    'baritone','bass'
+  ];
+  const FEMALE_VOICE_HINTS = [
+    'female','woman',
+    'samantha','victoria','karen','moira','tessa','fiona','amelie',
+    'siri female','susan','allison','ava','zoe','google.*female',
+    // Indonesian
+    'damayanti','siti','ayu','dewi'
+  ];
+
+  function pickJarvisVoice(targetLang) {
+    if (!window.speechSynthesis) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    const langPrefix = targetLang.toLowerCase().split('-')[0]; // 'en' / 'id'
+    const langMatch  = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
+    const pool = langMatch.length ? langMatch : voices;
+
+    function isMale(v) {
+      const n = (v.name || '').toLowerCase();
+      // Reject obvious female names first
+      if (FEMALE_VOICE_HINTS.some(h => n.includes(h))) return false;
+      return MALE_VOICE_HINTS.some(h => n.includes(h));
+    }
+    function isLikelyFemale(v) {
+      const n = (v.name || '').toLowerCase();
+      return FEMALE_VOICE_HINTS.some(h => n.includes(h));
+    }
+
+    // 1. Exact lang match + explicitly male name
+    let pick = pool.find(isMale);
+    if (pick) return pick;
+
+    // 2. Exact lang match + not explicitly female (could be neutral)
+    pick = pool.find(v => !isLikelyFemale(v));
+    if (pick) return pick;
+
+    // 3. Any male voice (cross-lang fallback)
+    pick = voices.find(isMale);
+    if (pick) return pick;
+
+    // 4. Any matching-lang voice
+    return langMatch[0] || voices[0] || null;
+  }
+
   function speak(text) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang === 'id' ? 'id-ID' : 'en-US';
-    u.rate = 1; u.pitch = 1; u.volume = 1;
-    const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(vv => vv.lang.toLowerCase().startsWith(u.lang.toLowerCase()));
-    if (v) u.voice = v;
+    // Lower pitch + slightly slower rate → more masculine, more "consultant" timbre
+    u.rate   = 0.95;
+    u.pitch  = 0.85;
+    u.volume = 1;
+
+    const v = pickJarvisVoice(u.lang);
+    if (v) {
+      u.voice = v;
+      console.log('[agent] using voice:', v.name, v.lang);
+    }
 
     let speaking = false;
     u.onstart = () => { speaking = true; simulatePulse(); };
@@ -507,9 +571,17 @@
     });
   }
 
+  // Eagerly load voices — Chrome populates them asynchronously, so getVoices()
+  // returns [] on first call until 'voiceschanged' fires.
   if (window.speechSynthesis) {
-    window.speechSynthesis.onvoiceschanged = () => {};
-    window.speechSynthesis.getVoices();
+    window.speechSynthesis.getVoices(); // trigger
+    if (typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
+      window.speechSynthesis.addEventListener('voiceschanged', () => {
+        // After voices arrive, log selected one so it's easy to debug
+        const v = pickJarvisVoice(lang === 'id' ? 'id-ID' : 'en-US');
+        if (v) console.log('[agent] voices loaded — Jarvis voice:', v.name);
+      });
+    }
   }
 
   // First user gesture → resume AudioContext (required by autoplay policy

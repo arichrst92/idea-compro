@@ -1,3 +1,25 @@
+<% if (!langExplicit) { %>
+<!-- Language picker — shown on first visit so Jarvis sticks to one language -->
+<div id="agentLangPicker" class="agent-lang-picker">
+  <div class="alp-card">
+    <img src="/images/logo-idea.png" alt="IDEA Asia" class="alp-logo">
+    <div class="alp-eyebrow">JARVIS · YOUR DIGITAL CONSULTANT</div>
+    <h2 class="alp-title">Choose your language<br><span class="alp-sub">Pilih bahasa Anda</span></h2>
+    <p class="alp-desc">I'll stick to the language you pick so we stay on the same page.</p>
+    <div class="alp-buttons">
+      <a href="/agent?lang=en" class="alp-btn">
+        <span class="alp-flag">EN</span>
+        <span class="alp-btn-text"><strong>English</strong><small>Continue in English</small></span>
+      </a>
+      <a href="/agent?lang=id" class="alp-btn">
+        <span class="alp-flag">ID</span>
+        <span class="alp-btn-text"><strong>Bahasa Indonesia</strong><small>Lanjutkan dalam Bahasa Indonesia</small></span>
+      </a>
+    </div>
+  </div>
+</div>
+<% } %>
+
 <!-- Loading screen -->
 <div id="agentLoader">
   <img src="/images/logo-idea.png" alt="IDEA Asia" class="loader-logo">

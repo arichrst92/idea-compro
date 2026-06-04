@@ -125,12 +125,16 @@ router.get('/', (req, res) => {
     res.cookie('lang', req.query.lang, { maxAge: 365*24*60*60*1000, httpOnly: false });
     res.locals.lang = req.query.lang;
   }
+  // Did the user EXPLICITLY pick a language? (query > cookie). Used to
+  // show a language picker on first visit so Jarvis stays consistent.
+  const langExplicit = !!(req.query.lang || req.cookies.lang);
   res.render('pages/agent', {
     title: 'IDEA AI Consultant — ide.asia',
     description: 'Chat with IDEA AI — your intelligent digital consultant. Get instant answers about IT consulting, outsourcing, cloud, and enterprise tech solutions.',
     ogImage: '/images/og-agent.jpg',
     currentPage: 'agent',
-    layout: 'layouts/agent'
+    layout: 'layouts/agent',
+    langExplicit,
   });
 });
 
