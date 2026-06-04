@@ -4,15 +4,23 @@ const Blog = require('../models/Blog');
 
 router.get('/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
-// Sitemap XML — include blog pagination + hreflang alternates
-router.get('/sitemap.xml', async (req, res) => {
+// ─────────────────────────────────────────────────────────────────
+// Sitemap XML — cached in memory, regenerated max every 1 hour.
+// Googlebot has tight timeout; we don't want to query Mongo on every
+// fetch (200+ blog posts → 500ms-2s).
+// ─────────────────────────────────────────────────────────────────
+const SITEMAP_TTL_MS = 60 * 60 * 1000; // 1 hour
+let sitemapCache = { xml: null, builtAt: 0 };
+
+async function buildSitemap() {
   const baseUrl = process.env.SITE_URL || 'https://ide.asia';
   const BLOGS_PER_PAGE = 9; // match src/routes/blog.js
-  const blogs = await Blog.find({ published: true }).select('slug updatedAt').sort({ updatedAt: -1 });
+  const blogs = await Blog.find({ published: true })
+    .select('slug updatedAt').sort({ updatedAt: -1 }).lean();
   const totalBlogPages = Math.max(1, Math.ceil(blogs.length / BLOGS_PER_PAGE));
 
   const staticPages = [
-    { path: '',                                    priority: '1.0', changefreq: 'weekly'  },
+    { path: '/',                                   priority: '1.0', changefreq: 'weekly'  },
     { path: '/services',                           priority: '0.9', changefreq: 'monthly' },
     { path: '/services/it-consulting',             priority: '0.8', changefreq: 'monthly' },
     { path: '/services/it-outsourcing',            priority: '0.8', changefreq: 'monthly' },
@@ -25,7 +33,6 @@ router.get('/sitemap.xml', async (req, res) => {
     { path: '/capability',                         priority: '0.9', changefreq: 'monthly' },
     { path: '/blog',                               priority: '0.8', changefreq: 'daily'   },
   ];
-  // Blog list pagination
   for (let p = 2; p <= totalBlogPages; p++) {
     staticPages.push({ path: `/blog?page=${p}`, priority: '0.5', changefreq: 'weekly' });
   }
@@ -59,14 +66,38 @@ router.get('/sitemap.xml', async (req, res) => {
     xml += `</url>`;
   }
   xml += '</urlset>';
-  res.header('Content-Type', 'application/xml');
-  res.send(xml);
+  return xml;
+}
+
+router.get('/sitemap.xml', async (req, res, next) => {
+  try {
+    const now = Date.now();
+    const stale = !sitemapCache.xml || (now - sitemapCache.builtAt) > SITEMAP_TTL_MS;
+
+    if (stale) {
+      const xml = await buildSitemap();
+      sitemapCache = { xml, builtAt: now };
+    }
+
+    res.header('Content-Type', 'application/xml; charset=utf-8');
+    res.header('Cache-Control', 'public, max-age=3600'); // CDN/browser cache 1h
+    res.send(sitemapCache.xml);
+  } catch (err) {
+    console.error('Sitemap build error:', err.stack || err);
+    // Fallback: kalau ada cache lama, kirim itu daripada 500
+    if (sitemapCache.xml) {
+      res.header('Content-Type', 'application/xml; charset=utf-8');
+      return res.send(sitemapCache.xml);
+    }
+    next(err);
+  }
 });
 
 // Robots.txt
 router.get('/robots.txt', (req, res) => {
   const baseUrl = process.env.SITE_URL || 'https://ide.asia';
   res.type('text/plain');
+  res.header('Cache-Control', 'public, max-age=86400');
   res.send(`User-agent: *
 Allow: /
 Disallow: /api/
