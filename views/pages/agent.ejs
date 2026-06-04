@@ -4,166 +4,169 @@
   <div class="alp-card">
     <img src="/images/logo-idea.png" alt="IDEA Asia" class="alp-logo">
     <div class="alp-eyebrow">JARVIS · YOUR DIGITAL CONSULTANT</div>
+    <h2 class="alp-title">Choose your language<br><span class="alp-sub">Pilih bahasa Anda</span></h2>
+    <p class="alp-desc">I'll stick to the language you pick so we stay on the same page.</p>
 
-    <!-- Step 1: language -->
-    <div id="alpStepLang">
-      <h2 class="alp-title">Choose your language<br><span class="alp-sub">Pilih bahasa Anda</span></h2>
-      <p class="alp-desc">I'll stick to the language you pick so we stay on the same page.</p>
-      <div class="alp-buttons">
-        <button type="button" class="alp-btn alp-lang-btn" data-lang="en">
-          <span class="alp-flag">EN</span>
-          <span class="alp-btn-text"><strong>English</strong><small>Continue in English</small></span>
-        </button>
-        <button type="button" class="alp-btn alp-lang-btn" data-lang="id">
-          <span class="alp-flag">ID</span>
-          <span class="alp-btn-text"><strong>Bahasa Indonesia</strong><small>Lanjutkan dalam Bahasa Indonesia</small></span>
-        </button>
-      </div>
+    <div class="alp-buttons">
+      <button type="button" class="alp-btn alp-lang-btn" data-lang="en">
+        <span class="alp-flag">EN</span>
+        <span class="alp-btn-text"><strong>English</strong><small>Continue in English</small></span>
+      </button>
+      <button type="button" class="alp-btn alp-lang-btn" data-lang="id">
+        <span class="alp-flag">ID</span>
+        <span class="alp-btn-text"><strong>Bahasa Indonesia</strong><small>Lanjutkan dalam Bahasa Indonesia</small></span>
+      </button>
     </div>
 
-    <!-- Step 2: voice (revealed after lang chosen) -->
-    <div id="alpStepVoice" style="display:none">
-      <h2 class="alp-title alp-title-voice">Choose a voice <span class="alp-optional">(optional)</span></h2>
-      <p class="alp-desc" id="alpVoiceDesc">We've picked the best match for your device — feel free to change it.</p>
+    <!-- Voice picker — hidden until a language is selected -->
+    <div class="alp-voice-section" id="alpVoiceSection" hidden>
       <div class="alp-voice-field">
-        <label for="alpVoiceSelect" class="alp-voice-label">Jarvis voice</label>
+        <label for="alpVoiceSelect" class="alp-voice-label">
+          <span id="alpVoiceLabelText">Choose a voice</span>
+          <span class="alp-optional">(optional)</span>
+        </label>
         <select id="alpVoiceSelect" class="alp-voice-select" aria-label="Voice for Jarvis"></select>
+        <p class="alp-voice-hint" id="alpVoiceHint">Loading voices…</p>
       </div>
-      <div class="alp-voice-actions">
-        <button type="button" id="alpContinue" class="alp-btn-primary">Continue</button>
-        <button type="button" id="alpBack" class="alp-btn-secondary">← Back</button>
-      </div>
+      <button type="button" id="alpContinue" class="alp-btn-primary">Continue</button>
     </div>
   </div>
 </div>
 
 <script>
-  // Language picker controller — runs INLINE so it's available before agent.js
-  // Voice list is platform-specific and only meaningful client-side.
+  // Language + voice picker controller. Single-screen flow: lang first,
+  // then voice dropdown appears in-place, Continue submits. No transitions,
+  // no hidden steps — fewer ways to break visually.
   (function () {
     var pickerEl = document.getElementById('agentLangPicker');
-    if (!pickerEl) return;
+    if (!pickerEl) { console.warn('[picker] picker root missing'); return; }
 
-    var stepLang  = document.getElementById('alpStepLang');
-    var stepVoice = document.getElementById('alpStepVoice');
-    var selectEl  = document.getElementById('alpVoiceSelect');
+    var voiceSection = document.getElementById('alpVoiceSection');
+    var selectEl    = document.getElementById('alpVoiceSelect');
     var continueBtn = document.getElementById('alpContinue');
-    var backBtn   = document.getElementById('alpBack');
-    var descEl    = document.getElementById('alpVoiceDesc');
-    var chosenLang = null;
+    var hintEl      = document.getElementById('alpVoiceHint');
+    var labelTextEl = document.getElementById('alpVoiceLabelText');
+    var chosenLang  = null;
 
-    // Voice load — Chrome / iOS populate asynchronously
-    var voices = [];
-    function loadVoices() {
-      if (!window.speechSynthesis) return;
-      voices = window.speechSynthesis.getVoices() || [];
-    }
-    loadVoices();
-    if (window.speechSynthesis && typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
-      window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
-    }
-
-    // Recommended order per language — first match wins as "Recommended"
     var EN_RECOMMENDED = [
-      'Daniel',                         // iOS/Mac en-GB male (Jarvis tone)
-      'Microsoft Mark',                 // Windows en-US male
-      'Google UK English Male',         // Android
-      'Microsoft David',                // Windows
-      'Alex',                           // Mac en-US premium
-      'Google US English'               // Android default
+      'Daniel',                  // iOS/Mac en-GB male (Jarvis tone)
+      'Microsoft Mark',          // Windows en-US male
+      'Google UK English Male',  // Android
+      'Microsoft David',         // Windows
+      'Alex',                    // Mac en-US premium
+      'Google US English'        // Android default
     ];
     var ID_RECOMMENDED = [
-      'Microsoft Andika',               // Windows id-ID MALE (best)
-      'Google bahasa Indonesia',        // Android — gender depends on device
-      'Damayanti',                      // iOS/Mac id-ID female (only native)
-      'Microsoft Gadis'                 // Windows id-ID female
+      'Microsoft Andika',        // Windows id-ID MALE (best native)
+      'Google bahasa Indonesia', // Android — gender depends on device
+      'Damayanti',               // iOS/Mac id-ID female (native, accepted)
+      'Microsoft Gadis'          // Windows id-ID female
     ];
 
     function scoreVoice(voice, recList) {
       var name = (voice.name || '');
       for (var i = 0; i < recList.length; i++) {
-        if (name.indexOf(recList[i]) !== -1) return i; // lower = better
+        if (name.indexOf(recList[i]) !== -1) return i;
       }
       return 999;
     }
 
+    function getVoicesNow() {
+      try { return window.speechSynthesis ? (window.speechSynthesis.getVoices() || []) : []; }
+      catch (e) { return []; }
+    }
+
     function populateVoices(lang) {
-      selectEl.innerHTML = '';
       var prefix = lang === 'id' ? 'id' : 'en';
       var recList = lang === 'id' ? ID_RECOMMENDED : EN_RECOMMENDED;
-
+      var voices = getVoicesNow();
       var matching = voices.filter(function (v) {
         return v.lang && v.lang.toLowerCase().indexOf(prefix) === 0;
       });
 
-      if (!matching.length) {
-        var opt = document.createElement('option');
-        opt.textContent = '(No ' + (lang === 'id' ? 'Indonesian' : 'English') + ' voices on this device — using browser default)';
-        opt.disabled = true;
-        opt.selected = true;
-        selectEl.appendChild(opt);
-        descEl.textContent = lang === 'id'
-          ? 'Perangkat Anda belum memiliki suara Indonesia. Kami akan pakai suara default browser.'
-          : 'Your device has no English voices configured. We will use the browser default.';
-        return;
+      selectEl.innerHTML = '';
+
+      if (matching.length) {
+        matching.sort(function (a, b) { return scoreVoice(a, recList) - scoreVoice(b, recList); });
+        matching.forEach(function (v, i) {
+          var opt = document.createElement('option');
+          opt.value = v.name;
+          opt.textContent = v.name + ' (' + v.lang + ')' + (i === 0 ? ' — Recommended' : '');
+          selectEl.appendChild(opt);
+        });
+        hintEl.textContent = lang === 'id'
+          ? 'Catatan: di iOS/macOS, suara Bahasa Indonesia hanya tersedia dalam suara perempuan (Damayanti).'
+          : 'For a "Jarvis"-style consultant tone, Daniel (British male) is recommended where available.';
+        return true;
       }
 
-      matching.sort(function (a, b) {
-        return scoreVoice(a, recList) - scoreVoice(b, recList);
-      });
-
-      matching.forEach(function (v, i) {
-        var opt = document.createElement('option');
-        opt.value = v.name;
-        // Show name + lang code; flag the first (recommended)
-        var suffix = ' (' + v.lang + ')';
-        if (i === 0) suffix += ' — Recommended';
-        opt.textContent = v.name + suffix;
-        selectEl.appendChild(opt);
-      });
-
-      descEl.textContent = lang === 'id'
-        ? 'Catatan: di iOS dan macOS, suara Bahasa Indonesia hanya tersedia dalam suara perempuan (Damayanti).'
-        : 'For a "Jarvis"-style consultant tone, Daniel (British male) is recommended where available.';
+      var opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = (lang === 'id'
+        ? 'Suara browser default'
+        : 'Browser default voice');
+      selectEl.appendChild(opt);
+      hintEl.textContent = lang === 'id'
+        ? 'Tidak ada suara Bahasa Indonesia di perangkat ini — pakai default browser.'
+        : 'No matching voices on this device — using browser default.';
+      return false;
     }
 
-    // Click on language → reveal voice step
-    Array.prototype.forEach.call(document.querySelectorAll('.alp-lang-btn'), function (btn) {
-      btn.addEventListener('click', function () {
-        chosenLang = btn.dataset.lang;
-        // If voices not yet loaded, give it a moment
-        if (!voices.length && window.speechSynthesis) {
-          loadVoices();
-          setTimeout(function () {
-            loadVoices();
-            populateVoices(chosenLang);
-          }, 250);
-        }
-        populateVoices(chosenLang);
-        stepLang.style.display = 'none';
-        stepVoice.style.display = 'block';
+    function pickLang(lang) {
+      chosenLang = lang;
+      labelTextEl.textContent = lang === 'id' ? 'Pilih suara Jarvis' : 'Choose a voice';
+      continueBtn.textContent = lang === 'id' ? 'Lanjutkan' : 'Continue';
+
+      // Highlight the active lang button
+      Array.prototype.forEach.call(document.querySelectorAll('.alp-lang-btn'), function (b) {
+        b.classList.toggle('selected', b.dataset.lang === lang);
       });
+
+      // Show voice section
+      voiceSection.hidden = false;
+      voiceSection.style.display = 'block';
+      hintEl.textContent = 'Loading voices…';
+
+      // Try populate immediately + retry once voices arrive
+      var ok = populateVoices(lang);
+      if (!ok) {
+        // Retry up to 5 times over ~1.5s in case voices load late
+        var tries = 0;
+        var retry = setInterval(function () {
+          tries++;
+          if (populateVoices(lang) || tries >= 5) clearInterval(retry);
+        }, 300);
+      }
+
+      // Scroll Continue into view on small screens
+      if (continueBtn.scrollIntoView) continueBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Wire up language buttons
+    Array.prototype.forEach.call(document.querySelectorAll('.alp-lang-btn'), function (btn) {
+      btn.addEventListener('click', function () { pickLang(btn.dataset.lang); });
     });
 
-    backBtn.addEventListener('click', function () {
-      stepVoice.style.display = 'none';
-      stepLang.style.display = 'block';
-      chosenLang = null;
-    });
-
+    // Continue → save voice + navigate
     continueBtn.addEventListener('click', function () {
       if (!chosenLang) return;
       var voiceName = selectEl.value || '';
-      // Persist explicit user choice — agent.js reads this in pickJarvisVoice
       try {
-        if (voiceName) {
-          localStorage.setItem('jarvisVoice_' + chosenLang, voiceName);
-        } else {
-          localStorage.removeItem('jarvisVoice_' + chosenLang);
-        }
+        if (voiceName) localStorage.setItem('jarvisVoice_' + chosenLang, voiceName);
+        else localStorage.removeItem('jarvisVoice_' + chosenLang);
       } catch (e) { /* private mode */ }
       window.location.href = '/agent?lang=' + chosenLang;
     });
+
+    // Eagerly trigger voice loading
+    if (window.speechSynthesis) {
+      getVoicesNow();
+      if (typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
+        window.speechSynthesis.addEventListener('voiceschanged', function () {
+          if (chosenLang) populateVoices(chosenLang);
+        });
+      }
+    }
   })();
 </script>
 <% } %>
