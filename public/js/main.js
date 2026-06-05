@@ -111,7 +111,9 @@
       if (start >= target) clearInterval(timer);
     }, 16);
   }
-  const statNums = document.querySelectorAll('.stat-num[data-count]');
+  // Animate both the legacy 5-stat strip (.stat-num) and the refined
+  // 3-mega-stat layout (.proof-num) on the home page.
+  const statNums = document.querySelectorAll('.stat-num[data-count], .proof-num[data-count]');
   if (statNums.length && 'IntersectionObserver' in window) {
     const obs2 = new IntersectionObserver(entries => {
       entries.forEach(e => {
