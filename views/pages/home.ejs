@@ -1,10 +1,10 @@
-<!-- HERO -->
+<!-- ════════════════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════════════════ -->
 <section class="hero" id="hero">
   <div class="hero-line"></div>
   <div class="hero-line-2"></div>
   <div class="hero-glow"></div>
-
-  <!-- Animated node-graph canvas — shared across all navbar page heroes -->
   <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
 
   <div class="hero-content">
@@ -13,22 +13,24 @@
       <%= lang === 'id' ? 'Mitra Teknologi Enterprise' : 'Enterprise Technology Partner' %>
     </div>
     <h1 class="hero-title">
-      <%= lang === 'id' ? 'Integrated' : 'Integrated' %><br>
+      Integrated<br>
       <em>Digital</em><br>
-      <%= lang === 'id' ? 'Ecosystem' : 'Ecosystem' %>
+      Ecosystem
     </h1>
     <div class="hero-bottom">
       <div>
         <p class="hero-desc">
-          <% if(lang==='id'){ %>Ceritakan Tantangan IT Terbesar Anda.<br>Kami Akan Tunjukkan Cara Mengatasinya.<% } else { %>Tell Us Your Biggest IT Challenge.<br>We'll Tell You How to Solve It.<% } %>
+          <% if(lang==='id'){ %>Ceritakan tantangan IT terbesar Anda.<br>Kami akan tunjukkan cara mengatasinya.<% } else { %>Tell us your biggest IT challenge.<br>We'll tell you how to solve it.<% } %>
         </p>
         <p class="hero-sub">
-          <%= lang==='id' ? 'Jadwalkan sesi strategi 30 menit dengan konsultan IDEA — tanpa sales pitch, hanya perspektif ahli untuk situasi spesifik Anda.' : 'Book a 30-minute strategy session with an IDEA consultant — no sales pitch, just expert perspective on your specific situation.' %>
+          <%= lang==='id'
+            ? 'Jadwalkan sesi strategi 30 menit dengan konsultan IDE Asia — tanpa sales pitch, hanya perspektif ahli untuk situasi spesifik Anda.'
+            : 'Book a 30-minute strategy session with an IDE Asia consultant — no sales pitch, just expert perspective on your specific situation.' %>
         </p>
       </div>
       <div class="hero-actions">
-        <a href="/contact" class="btn btn-primary btn-large"><%= lang==='id' ? 'Jadwalkan Sesi Strategi 30 Menit' : 'Book a 30-Min Strategy Call' %></a>
-        <a href="/services" class="btn btn-outline btn-large"><%= lang==='id' ? 'Lihat Layanan' : 'Our Services' %></a>
+        <a href="/contact" class="btn btn-primary btn-large"><%= lang==='id' ? 'Jadwalkan Sesi Strategi' : 'Book a Strategy Call' %></a>
+        <a href="/services" class="btn btn-ghost btn-large"><%= lang==='id' ? 'Lihat Layanan' : 'Explore Services' %> →</a>
       </div>
     </div>
   </div>
@@ -38,283 +40,210 @@
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-track">
-    <div class="ticker-item"><span class="ticker-dot"></span>IT Consulting</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>IT Outsourcing</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>Cloud Infrastructure</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>IT Security</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>IT Hiring</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>Squad Based Delivery</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>Digital Transformation</div>
-    <div class="ticker-item"><span class="ticker-dot"></span>Enterprise Technology</div>
+<!-- ════════════════════════════════════════════════════════════════
+     TRUSTED BY — client logos for instant credibility
+     ════════════════════════════════════════════════════════════════ -->
+<section class="trusted-by">
+  <div class="container">
+    <p class="trusted-by-label"><%= lang === 'id'
+      ? 'Dipercaya oleh enterprise di Asia Tenggara'
+      : 'Trusted by enterprises across Southeast Asia' %></p>
+    <div class="trusted-by-row">
+      <span class="trusted-mark">BRI</span>
+      <span class="trusted-mark">UOB</span>
+      <span class="trusted-mark">Bank Jakarta</span>
+      <span class="trusted-mark">Telkomsel</span>
+      <span class="trusted-mark">Pertamina</span>
+      <span class="trusted-mark">Accenture</span>
+      <span class="trusted-mark">Semen Indonesia</span>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- SERVICES CAROUSEL -->
-<section class="services-section" id="services">
+<!-- ════════════════════════════════════════════════════════════════
+     MANIFESTO — single large editorial statement
+     ════════════════════════════════════════════════════════════════ -->
+<section class="manifesto-section">
+  <div class="container">
+    <div class="manifesto-inner reveal">
+      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Pernyataan Kami' : 'Our Statement' %></div>
+      <p class="manifesto-text">
+        <%= lang === 'id'
+          ? 'Kami membangun, mengoperasikan, dan mengamankan sistem yang menjalankan enterprise di Asia Tenggara — bukan hanya menjual jam konsultan.'
+          : 'We build, operate, and secure the systems that run Southeast Asian enterprises — not just sell consulting hours.' %>
+      </p>
+      <p class="manifesto-foot">
+        <%= lang === 'id'
+          ? 'Setiap konsultan yang merekomendasikan arsitektur kepada Anda harus bersedia mengoperasikannya di hari ke-91. Tidak ada pengecualian.'
+          : 'Every consultant who recommends an architecture has to be willing to operate it on day 91. No exceptions.' %>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SERVICES — editorial 6-card grid (replaces carousel)
+     ════════════════════════════════════════════════════════════════ -->
+<section class="services-section-grid" id="services">
   <div class="container">
     <div class="services-intro">
       <div>
         <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Apa yang Kami Lakukan' : 'What We Do' %></div>
-        <h2 class="section-title"><% if(lang==='id'){ %>Layanan<br><span class="section-title-muted">Kami</span><% } else { %>Our<br><span class="section-title-muted">Services</span><% } %></h2>
+        <h2 class="section-title"><% if(lang==='id'){ %>Enam Lini<br><span class="section-title-muted">Layanan Inti</span><% } else { %>Six Service Lines<br><span class="section-title-muted">Built for Scale</span><% } %></h2>
       </div>
       <div class="services-intro-right">
         <p class="services-intro-desc">
           <%= lang === 'id'
-            ? 'Solusi teknologi enterprise komprehensif yang dirancang untuk mendorong pertumbuhan bisnis yang berkelanjutan di era digital.'
-            : 'Comprehensive enterprise technology solutions designed to drive sustainable business growth in the digital era.' %>
+            ? 'Dari konsultasi strategis hingga operasi SOC 24/7. Dari sourcing talenta hingga implementasi watsonx. Spesialisasi sektor, bukan generalist.'
+            : 'From strategic consulting to 24/7 SOC operations. From talent sourcing to watsonx implementation. Sector-specialized, not generalist.' %>
         </p>
-        <a href="/services" class="btn btn-outline"><%= lang === 'id' ? 'Semua Layanan' : 'All Services' %></a>
+        <a href="/services" class="btn btn-outline"><%= lang === 'id' ? 'Semua Layanan' : 'All Services' %> →</a>
       </div>
     </div>
-  </div>
 
-  <div class="services-carousel-wrapper">
-    <div class="services-carousel" id="servicesCarousel">
+    <div class="services-grid">
+      <a href="/services/it-consulting" class="service-tile reveal">
+        <div class="service-tile-num">01</div>
+        <h3 class="service-tile-title"><%= lang === 'id' ? 'IT Consulting' : 'IT Consulting' %></h3>
+        <p class="service-tile-desc"><%= lang === 'id'
+          ? 'Strategi transformasi digital, review arsitektur, peta jalan, dan tata kelola IT untuk enterprise teregulasi.'
+          : 'Digital transformation strategy, architecture review, roadmap, and IT governance for regulated enterprises.' %></p>
+        <span class="service-tile-link"><%= lang === 'id' ? 'Pelajari' : 'Learn more' %> →</span>
+      </a>
 
-      <div class="service-slide">
-        <div class="service-slide-inner">
-          <div>
-            <div class="service-slide-num">01 / 06</div>
-            <h3><%= lang === 'id' ? 'Konsultasi IT' : 'IT Consulting' %></h3>
-            <p><%= lang === 'id' ? 'Konsultasi teknologi strategis untuk menyelaraskan investasi IT dengan tujuan bisnis jangka panjang perusahaan Anda.' : 'Strategic technology advisory to align IT investments with your long-term business objectives and digital vision.' %></p>
-            <ul class="service-features">
-              <li><%= lang === 'id' ? 'Strategi Transformasi Digital' : 'Digital Transformation Strategy' %></li>
-              <li><%= lang === 'id' ? 'Review Arsitektur IT' : 'IT Architecture Review' %></li>
-              <li><%= lang === 'id' ? 'Peta Jalan Teknologi' : 'Technology Roadmap' %></li>
-              <li><%= lang === 'id' ? 'Framework Tata Kelola IT' : 'IT Governance Framework' %></li>
-            </ul>
-          </div>
-          <a href="/services/it-consulting" class="service-link"><%= lang === 'id' ? 'Pelajari Lebih Lanjut' : 'Learn More' %> →</a>
-        </div>
-        <div class="service-slide-visual">
-          <div class="service-visual-num">01</div>
-          <div class="service-visual-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 28L16 20L22 26L32 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="12" r="3" fill="currentColor" opacity="0.4"/></svg>
-          </div>
-        </div>
-      </div>
+      <a href="/services/it-outsourcing" class="service-tile reveal reveal-delay-1">
+        <div class="service-tile-num">02</div>
+        <h3 class="service-tile-title"><%= lang === 'id' ? 'IT Outsourcing' : 'IT Outsourcing' %></h3>
+        <p class="service-tile-desc"><%= lang === 'id'
+          ? 'Layanan IT terkelola end-to-end. SLA 99.5%, helpdesk dwibahasa, operasi 24/7. ISO 27001 tersertifikasi.'
+          : 'End-to-end managed services. 99.5% SLA, bilingual helpdesk, 24/7 operations. ISO 27001 certified.' %></p>
+        <span class="service-tile-link"><%= lang === 'id' ? 'Pelajari' : 'Learn more' %> →</span>
+      </a>
 
-      <div class="service-slide">
-        <div class="service-slide-inner">
-          <div>
-            <div class="service-slide-num">02 / 06</div>
-            <h3><%= lang === 'id' ? 'Outsourcing IT' : 'IT Outsourcing' %></h3>
-            <p><%= lang === 'id' ? 'Layanan IT terkelola end-to-end yang mengurangi kompleksitas operasional sambil meningkatkan kualitas dan keandalan layanan.' : 'End-to-end managed IT services that reduce operational complexity while elevating service quality and reliability.' %></p>
-            <ul class="service-features">
-              <li><%= lang === 'id' ? 'Layanan IT Terkelola' : 'Managed IT Services' %></li>
-              <li><%= lang === 'id' ? 'Helpdesk & Dukungan' : 'Helpdesk & Support' %></li>
-              <li><%= lang === 'id' ? 'Manajemen Infrastruktur' : 'Infrastructure Management' %></li>
-              <li><%= lang === 'id' ? 'Operasi Berbasis SLA' : 'SLA-driven Operations' %></li>
-            </ul>
-          </div>
-          <a href="/services/it-outsourcing" class="service-link"><%= lang === 'id' ? 'Pelajari Lebih Lanjut' : 'Learn More' %> →</a>
-        </div>
-        <div class="service-slide-visual">
-          <div class="service-visual-num">02</div>
-          <div class="service-visual-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.4"/><path d="M12 20a8 8 0 0 1 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M28 20a8 8 0 0 1-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-        </div>
-      </div>
+      <a href="/services/it-hiring" class="service-tile reveal reveal-delay-2">
+        <div class="service-tile-num">03</div>
+        <h3 class="service-tile-title"><%= lang === 'id' ? 'IT Hiring' : 'IT Hiring' %></h3>
+        <p class="service-tile-desc"><%= lang === 'id'
+          ? '500+ kandidat tervetting. Shortlist 5–7 hari. Permanent, kontrak, staff augmentation.'
+          : '500+ pre-vetted candidates. 5–7 day shortlist. Permanent, contract, staff augmentation.' %></p>
+        <span class="service-tile-link"><%= lang === 'id' ? 'Pelajari' : 'Learn more' %> →</span>
+      </a>
 
-      <div class="service-slide">
-        <div class="service-slide-inner">
-          <div>
-            <div class="service-slide-num">03 / 06</div>
-            <h3><%= lang === 'id' ? 'Rekrutmen IT' : 'IT Hiring' %></h3>
-            <p><%= lang === 'id' ? 'Akuisisi talenta ahli yang menghubungkan profesional teknologi terbaik dengan organisasi yang mencari talenta digital yang tepat.' : 'Expert talent acquisition connecting top-tier tech professionals with organizations seeking the right digital talent.' %></p>
-            <ul class="service-features">
-              <li><%= lang === 'id' ? 'Pencarian Talenta Teknis' : 'Technical Talent Sourcing' %></li>
-              <li><%= lang === 'id' ? 'Penambahan Staf IT' : 'IT Staff Augmentation' %></li>
-              <li><%= lang === 'id' ? 'Penempatan Eksekutif IT' : 'Executive IT Placement' %></li>
-              <li><%= lang === 'id' ? 'Asesmen Teknis' : 'Technical Assessments' %></li>
-            </ul>
-          </div>
-          <a href="/services/it-hiring" class="service-link"><%= lang === 'id' ? 'Pelajari Lebih Lanjut' : 'Learn More' %> →</a>
-        </div>
-        <div class="service-slide-visual">
-          <div class="service-visual-num">03</div>
-          <div class="service-visual-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="14" r="6" stroke="currentColor" stroke-width="2"/><path d="M8 34c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-        </div>
-      </div>
+      <a href="/services/cloud-infrastructure" class="service-tile reveal">
+        <div class="service-tile-num">04</div>
+        <h3 class="service-tile-title"><%= lang === 'id' ? 'Cloud Infrastructure' : 'Cloud Infrastructure' %></h3>
+        <p class="service-tile-desc"><%= lang === 'id'
+          ? 'Migrasi dan operasi multi-cloud — AWS, Azure, GCP, IBM Cloud. Zero-downtime methodology.'
+          : 'Migration and operations across AWS, Azure, GCP, and IBM Cloud. Zero-downtime methodology.' %></p>
+        <span class="service-tile-link"><%= lang === 'id' ? 'Pelajari' : 'Learn more' %> →</span>
+      </a>
 
-      <div class="service-slide">
-        <div class="service-slide-inner">
-          <div>
-            <div class="service-slide-num">04 / 06</div>
-            <h3><%= lang === 'id' ? 'Infrastruktur Cloud' : 'Cloud Infrastructure' %></h3>
-            <p><%= lang === 'id' ? 'Arsitektur cloud modern, migrasi, dan optimasi di AWS, Azure, dan GCP untuk mendukung perusahaan digital Anda.' : 'Modern cloud architecture, migration, and optimization across AWS, Azure, and GCP to power your digital enterprise.' %></p>
-            <ul class="service-features">
-              <li><%= lang === 'id' ? 'Migrasi Cloud' : 'Cloud Migration' %></li>
-              <li><%= lang === 'id' ? 'Arsitektur Multi-Cloud' : 'Multi-Cloud Architecture' %></li>
-              <li>DevOps & CI/CD</li>
-              <li><%= lang === 'id' ? 'Kubernetes & Kontainer' : 'Kubernetes & Containers' %></li>
-            </ul>
-          </div>
-          <a href="/services/cloud-infrastructure" class="service-link"><%= lang === 'id' ? 'Pelajari Lebih Lanjut' : 'Learn More' %> →</a>
-        </div>
-        <div class="service-slide-visual">
-          <div class="service-visual-num">04</div>
-          <div class="service-visual-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 28a8 8 0 0 1 0-16h.5A10 10 0 0 1 30 20a6 6 0 0 1-2 11.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-        </div>
-      </div>
+      <a href="/services/it-security" class="service-tile reveal reveal-delay-1">
+        <div class="service-tile-num">05</div>
+        <h3 class="service-tile-title"><%= lang === 'id' ? 'IT Security' : 'IT Security' %></h3>
+        <p class="service-tile-desc"><%= lang === 'id'
+          ? 'Audit, penetration testing, SOC + SIEM, Zero Trust. CEH/OSCP. OJK & BI experienced.'
+          : 'Audit, penetration testing, SOC + SIEM, Zero Trust. CEH/OSCP. OJK & BI experienced.' %></p>
+        <span class="service-tile-link"><%= lang === 'id' ? 'Pelajari' : 'Learn more' %> →</span>
+      </a>
 
-      <div class="service-slide">
-        <div class="service-slide-inner">
-          <div>
-            <div class="service-slide-num">05 / 06</div>
-            <h3><%= lang === 'id' ? 'Keamanan IT' : 'IT Security' %></h3>
-            <p><%= lang === 'id' ? 'Solusi keamanan siber komprehensif yang melindungi perusahaan dari ancaman yang terus berkembang dengan strategi pertahanan proaktif.' : 'Comprehensive cybersecurity solutions protecting your enterprise from evolving threats with proactive defense strategies.' %></p>
-            <ul class="service-features">
-              <li><%= lang === 'id' ? 'Audit & Asesmen Keamanan' : 'Security Audit & Assessment' %></li>
-              <li>Penetration Testing</li>
-              <li>SOC & SIEM</li>
-              <li><%= lang === 'id' ? 'Implementasi Zero Trust' : 'Zero Trust Implementation' %></li>
-            </ul>
-          </div>
-          <a href="/services/it-security" class="service-link"><%= lang === 'id' ? 'Pelajari Lebih Lanjut' : 'Learn More' %> →</a>
-        </div>
-        <div class="service-slide-visual">
-          <div class="service-visual-num">05</div>
-          <div class="service-visual-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 6L8 11v11c0 7 5.5 13.5 12 16 6.5-2.5 12-9 12-16V11L20 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-        </div>
-      </div>
-
-      <div class="service-slide">
-        <div class="service-slide-inner">
-          <div>
-            <div class="service-slide-num">06 / 06</div>
-            <h3>Squad Based<br>Delivery</h3>
-            <p><%= lang === 'id' ? 'Squad lintas fungsi agile yang tertanam dalam organisasi Anda untuk mempercepat pengiriman produk dan inovasi digital dalam skala besar.' : 'Agile, cross-functional squads embedded in your organization to accelerate product delivery and digital innovation at scale.' %></p>
-            <ul class="service-features">
-              <li><%= lang === 'id' ? 'Squad Agile Dedikasi' : 'Dedicated Agile Squads' %></li>
-              <li><%= lang === 'id' ? 'Rekayasa Produk' : 'Product Engineering' %></li>
-              <li>Design & UX</li>
-              <li><%= lang === 'id' ? 'Manajemen Pengiriman' : 'Delivery Management' %></li>
-            </ul>
-          </div>
-          <a href="/services/squad-delivery" class="service-link"><%= lang === 'id' ? 'Pelajari Lebih Lanjut' : 'Learn More' %> →</a>
-        </div>
-        <div class="service-slide-visual">
-          <div class="service-visual-num">06</div>
-          <div class="service-visual-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="12" cy="14" r="4" stroke="currentColor" stroke-width="2"/><circle cx="28" cy="14" r="4" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="10" r="4" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.15"/><path d="M4 34c0-4.4 3.6-8 8-8M28 26c4.4 0 8 3.6 8 8M14 34c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="carousel-controls">
-      <div class="carousel-progress">
-        <div class="carousel-progress-item active"></div>
-        <div class="carousel-progress-item"></div>
-        <div class="carousel-progress-item"></div>
-        <div class="carousel-progress-item"></div>
-        <div class="carousel-progress-item"></div>
-        <div class="carousel-progress-item"></div>
-      </div>
-      <div class="carousel-nav">
-        <button class="carousel-btn" id="carouselPrev" aria-label="Previous">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="carousel-btn" id="carouselNext" aria-label="Next">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
+      <a href="/services/squad-delivery" class="service-tile reveal reveal-delay-2">
+        <div class="service-tile-num">06</div>
+        <h3 class="service-tile-title"><%= lang === 'id' ? 'Squad Delivery' : 'Squad Delivery' %></h3>
+        <p class="service-tile-desc"><%= lang === 'id'
+          ? 'Squad agile lintas-fungsi 5–9 orang. Sprint 2-minggu. Rekayasa produk full-stack.'
+          : 'Cross-functional agile squads of 5–9. 2-week sprints. Full-stack product engineering.' %></p>
+        <span class="service-tile-link"><%= lang === 'id' ? 'Pelajari' : 'Learn more' %> →</span>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<section class="stats-strip">
+<!-- ════════════════════════════════════════════════════════════════
+     PROOF NUMBERS — 3 mega-stats (replaces 5-stat strip)
+     ════════════════════════════════════════════════════════════════ -->
+<section class="proof-numbers">
   <div class="container">
-    <div class="stats-grid stats-grid-5">
-      <div class="stat-item reveal">
-        <div class="stat-num" data-count="100" data-suffix="+">0+</div>
-        <div class="stat-label"><%= lang === 'id' ? 'Klien Enterprise' : 'Enterprise Clients' %></div>
+    <div class="proof-grid">
+      <div class="proof-item reveal">
+        <div class="proof-num" data-count="100" data-suffix="+">0+</div>
+        <div class="proof-label"><%= lang === 'id' ? 'Klien enterprise' : 'Enterprise clients' %></div>
+        <div class="proof-detail"><%= lang === 'id' ? 'Lintas banking, telko, energi, manufaktur, pemerintahan.' : 'Across banking, telco, energy, manufacturing, government.' %></div>
       </div>
-      <div class="stat-item reveal reveal-delay-1">
-        <div class="stat-num" data-count="12" data-suffix="+">0+</div>
-        <div class="stat-label"><%= lang === 'id' ? 'Tahun Pengalaman' : 'Years Experience' %></div>
+      <div class="proof-divider"></div>
+      <div class="proof-item reveal reveal-delay-1">
+        <div class="proof-num" data-count="13" data-suffix="+">0+</div>
+        <div class="proof-label"><%= lang === 'id' ? 'Tahun pengalaman' : 'Years operating' %></div>
+        <div class="proof-detail"><%= lang === 'id' ? 'Proyek pertama 2013. Resmi 2019. ISO 9001 & 27001.' : 'First project 2013. Incorporated 2019. ISO 9001 & 27001.' %></div>
       </div>
-      <div class="stat-item reveal reveal-delay-2">
-        <div class="stat-num" data-count="5" data-suffix="">0</div>
-        <div class="stat-label"><%= lang === 'id' ? 'Perwakilan Negara' : 'Country Representatives' %></div>
-      </div>
-      <div class="stat-item reveal reveal-delay-3">
-        <div class="stat-num" data-count="20" data-suffix="+">0+</div>
-        <div class="stat-label"><%= lang === 'id' ? 'Cakupan Klien Global' : 'Worldwide Client Coverage' %></div>
-      </div>
-      <div class="stat-item reveal reveal-delay-3">
-        <div class="stat-num" data-count="6" data-suffix="">0</div>
-        <div class="stat-label"><%= lang === 'id' ? 'Layanan Utama' : 'Core Services' %></div>
+      <div class="proof-divider"></div>
+      <div class="proof-item reveal reveal-delay-2">
+        <div class="proof-num" data-count="30" data-suffix="+">0+</div>
+        <div class="proof-label"><%= lang === 'id' ? 'Produk IBM' : 'IBM products' %></div>
+        <div class="proof-detail"><%= lang === 'id' ? 'IBM Certified Partner — watsonx hingga IBM Z.' : 'IBM Certified Partner — watsonx through IBM Z.' %></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- WHY IDEA -->
+<!-- ════════════════════════════════════════════════════════════════
+     WHY IDEA
+     ════════════════════════════════════════════════════════════════ -->
 <section class="why-section">
   <div class="container">
     <div class="why-grid">
       <div class="why-left reveal">
-        <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Mengapa IDEA?' : 'Why IDEA?' %></div>
-        <h2 class="section-title"><% if(lang==='id'){ %>Bukan Vendor,<br><span class="section-title-muted">Mitra Strategis</span><% } else { %>Not a Vendor,<br><span class="section-title-muted">A Strategic Partner</span><% } %></h2>
-        <p><%= lang === 'id' ? 'IDEA hadir sebagai ekosistem digital yang terintegrasi, memberikan solusi menyeluruh dari konsultasi strategis hingga eksekusi teknis yang terukur di seluruh Asia.' : 'IDEA exists as an integrated digital ecosystem, delivering end-to-end solutions from strategic consulting to measurable technical execution across Asia.' %></p>
-        <a href="/about" class="btn btn-outline"><%= lang === 'id' ? 'Tentang Kami' : 'About Us' %></a>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Mengapa IDE Asia' : 'Why IDE Asia' %></div>
+        <h2 class="section-title"><% if(lang==='id'){ %>Bukan Vendor.<br><span class="section-title-muted">Mitra Strategis.</span><% } else { %>Not a Vendor.<br><span class="section-title-muted">A Strategic Partner.</span><% } %></h2>
+        <p><%= lang === 'id'
+          ? 'Konsultan yang berani mengoperasikan apa yang mereka rancang. Implementasi yang berani membawa SLA. Tim yang berani menyebutkan klien yang sudah kami tangani.'
+          : 'Consultants willing to operate what they design. Implementation that carries the SLA. A team willing to name the clients we have served.' %></p>
+        <a href="/about" class="btn btn-outline"><%= lang === 'id' ? 'Tentang Kami' : 'About Us' %> →</a>
       </div>
       <div class="why-cards reveal reveal-delay-1">
         <div class="why-card">
           <div class="why-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>
           </div>
           <h4><%= lang === 'id' ? 'Eksekusi Cepat' : 'Rapid Execution' %></h4>
-          <p><%= lang === 'id' ? 'Bergerak dengan kecepatan startup namun keandalan enterprise.' : 'Moving with startup speed but enterprise-grade reliability.' %></p>
+          <p><%= lang === 'id' ? 'Kecepatan startup dengan keandalan enterprise.' : 'Startup speed with enterprise-grade reliability.' %></p>
         </div>
         <div class="why-card">
           <div class="why-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
           </div>
           <h4><%= lang === 'id' ? 'Fokus Hasil' : 'Outcome Focus' %></h4>
-          <p><%= lang === 'id' ? 'Setiap keputusan teknis terkait langsung dengan KPI bisnis.' : 'Every technical decision tied directly to business KPIs.' %></p>
+          <p><%= lang === 'id' ? 'Setiap keputusan teknis terkait KPI bisnis.' : 'Every technical decision tied to business KPIs.' %></p>
         </div>
         <div class="why-card">
           <div class="why-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13.5 13.5 0 0 1 0 18"/><path d="M12 3a13.5 13.5 0 0 0 0 18"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13.5 13.5 0 0 1 0 18"/><path d="M12 3a13.5 13.5 0 0 0 0 18"/></svg>
           </div>
           <h4><%= lang === 'id' ? 'Keahlian Asia' : 'Asia Expertise' %></h4>
-          <p><%= lang === 'id' ? 'Pemahaman mendalam tentang lanskap teknologi Asia Tenggara.' : 'Deep understanding of Southeast Asian technology landscape.' %></p>
+          <p><%= lang === 'id' ? 'OJK, BI, BSSN, UU PDP — kami fasih.' : 'OJK, BI, BSSN, UU PDP — we speak the regulator\'s language.' %></p>
         </div>
         <div class="why-card">
           <div class="why-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>
           </div>
           <h4><%= lang === 'id' ? 'Security First' : 'Security First' %></h4>
-          <p><%= lang === 'id' ? 'Keamanan tertanam di setiap lapisan solusi yang kami bangun.' : 'Security embedded in every layer of every solution we build.' %></p>
+          <p><%= lang === 'id' ? 'ISO 27001:2013 tersertifikasi. SOC 24/7.' : 'ISO 27001:2013 certified. 24/7 SOC.' %></p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CAPABILITY HIGHLIGHT -->
+<!-- ════════════════════════════════════════════════════════════════
+     CAPABILITY HIGHLIGHT
+     ════════════════════════════════════════════════════════════════ -->
 <section class="capability-highlight">
   <div class="container">
     <div class="capability-highlight-grid">
       <div class="reveal">
         <div class="section-eyebrow"><span class="section-eyebrow-dot"></span><%= lang === 'id' ? 'Kapabilitas' : 'Capability' %></div>
-        <h2 class="section-title"><% if(lang==='id'){ %>Stack & Talenta<br><span class="section-title-muted">untuk Setiap Bentuk Pertumbuhan</span><% } else { %>The Stack & Talent<br><span class="section-title-muted">for Every Growth Shape</span><% } %></h2>
-        <p style="font-size:16px;color:var(--text-2);line-height:1.6;margin-top:20px;margin-bottom:28px">
+        <h2 class="section-title"><% if(lang==='id'){ %>Stack & Talenta<br><span class="section-title-muted">untuk Setiap Pertumbuhan</span><% } else { %>The Stack & Talent<br><span class="section-title-muted">for Every Growth Shape</span><% } %></h2>
+        <p style="font-size:16px;color:var(--text-2);line-height:1.65;margin-top:20px;margin-bottom:28px;max-width:480px">
           <%= lang === 'id'
             ? 'Dari React sampai Kubernetes sampai SIEM. Dari frontend engineer sampai SOC analyst. Daftar lengkap teknologi yang kami operasikan dan peran yang kami isi.'
             : 'From React to Kubernetes to SIEM. From frontend engineers to SOC analysts. The full inventory of technologies we operate and roles we deliver.' %>
@@ -343,25 +272,27 @@
         </div>
 
         <div class="capability-logos">
-          <img src="https://cdn.simpleicons.org/react/0A0F1C"      alt="React"     loading="lazy" data-fallback="RE">
-          <img src="https://cdn.simpleicons.org/nextdotjs/0A0F1C"  alt="Next.js"   loading="lazy" data-fallback="NX">
-          <img src="https://cdn.simpleicons.org/nodedotjs/0A0F1C"  alt="Node.js"   loading="lazy" data-fallback="ND">
-          <img src="https://cdn.simpleicons.org/python/0A0F1C"     alt="Python"    loading="lazy" data-fallback="PY">
-          <img src="https://cdn.simpleicons.org/go/0A0F1C"         alt="Go"        loading="lazy" data-fallback="GO">
-          <img src="https://cdn.simpleicons.org/postgresql/0A0F1C" alt="PostgreSQL" loading="lazy" data-fallback="PG">
-          <img src="https://cdn.simpleicons.org/redis/0A0F1C"      alt="Redis"     loading="lazy" data-fallback="RD">
-          <img src="https://cdn.simpleicons.org/mongodb/0A0F1C"    alt="MongoDB"   loading="lazy" data-fallback="MO">
-          <img src="https://cdn.simpleicons.org/kubernetes/0A0F1C" alt="Kubernetes" loading="lazy" data-fallback="K8">
-          <img src="https://cdn.simpleicons.org/docker/0A0F1C"     alt="Docker"    loading="lazy" data-fallback="DK">
-          <img src="https://cdn.simpleicons.org/terraform/0A0F1C"  alt="Terraform" loading="lazy" data-fallback="TF">
-          <img src="https://cdn.simpleicons.org/grafana/0A0F1C"    alt="Grafana"   loading="lazy" data-fallback="GR">
+          <img src="https://cdn.simpleicons.org/react/0A0F1C"       alt="React"      loading="lazy" data-fallback="RE">
+          <img src="https://cdn.simpleicons.org/nextdotjs/0A0F1C"   alt="Next.js"    loading="lazy" data-fallback="NX">
+          <img src="https://cdn.simpleicons.org/nodedotjs/0A0F1C"   alt="Node.js"    loading="lazy" data-fallback="ND">
+          <img src="https://cdn.simpleicons.org/python/0A0F1C"      alt="Python"     loading="lazy" data-fallback="PY">
+          <img src="https://cdn.simpleicons.org/go/0A0F1C"          alt="Go"         loading="lazy" data-fallback="GO">
+          <img src="https://cdn.simpleicons.org/postgresql/0A0F1C"  alt="PostgreSQL" loading="lazy" data-fallback="PG">
+          <img src="https://cdn.simpleicons.org/redis/0A0F1C"       alt="Redis"      loading="lazy" data-fallback="RD">
+          <img src="https://cdn.simpleicons.org/mongodb/0A0F1C"     alt="MongoDB"    loading="lazy" data-fallback="MO">
+          <img src="https://cdn.simpleicons.org/kubernetes/0A0F1C"  alt="Kubernetes" loading="lazy" data-fallback="K8">
+          <img src="https://cdn.simpleicons.org/docker/0A0F1C"      alt="Docker"     loading="lazy" data-fallback="DK">
+          <img src="https://cdn.simpleicons.org/terraform/0A0F1C"   alt="Terraform"  loading="lazy" data-fallback="TF">
+          <img src="https://cdn.simpleicons.org/grafana/0A0F1C"     alt="Grafana"    loading="lazy" data-fallback="GR">
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- IBM PRODUCTS HIGHLIGHT -->
+<!-- ════════════════════════════════════════════════════════════════
+     IBM PRODUCTS HIGHLIGHT
+     ════════════════════════════════════════════════════════════════ -->
 <section class="products-highlight">
   <div class="container">
     <div class="products-highlight-grid">
@@ -375,7 +306,7 @@
         </h2>
         <p class="ph-lead">
           <%= lang === 'id'
-            ? '30+ produk IBM — dari watsonx sampai mainframe Z — yang kami sourcing, deploy, integrasikan, dan support untuk perbankan, asuransi, telko, dan pemerintahan.'
+            ? '30+ produk IBM — dari watsonx hingga mainframe Z — yang kami sourcing, deploy, integrasikan, dan support untuk perbankan, asuransi, telko, dan pemerintahan.'
             : '30+ IBM products — from watsonx to Z mainframes — that we source, deploy, integrate, and support for banking, insurance, telco, and government.' %>
         </p>
         <div class="ph-cta-row">
@@ -387,7 +318,7 @@
       <div class="reveal reveal-delay-1">
         <div class="ph-cards">
           <a href="/products/watsonx-ai" class="ph-card">
-            <div class="ph-card-top"><span class="ph-card-cat"><%= lang === 'id' ? 'AI' : 'AI' %></span></div>
+            <div class="ph-card-top"><span class="ph-card-cat">AI</span></div>
             <div class="ph-card-name">watsonx.ai</div>
             <div class="ph-card-use"><%= lang === 'id' ? 'Studio foundation model enterprise' : 'Enterprise foundation model studio' %></div>
           </a>
@@ -412,7 +343,7 @@
             <div class="ph-card-use"><%= lang === 'id' ? 'Observability real-time' : 'Real-time observability' %></div>
           </a>
           <a href="/products/ibm-z" class="ph-card">
-            <div class="ph-card-top"><span class="ph-card-cat"><%= lang === 'id' ? 'Mainframe' : 'Mainframe' %></span></div>
+            <div class="ph-card-top"><span class="ph-card-cat">Mainframe</span></div>
             <div class="ph-card-name">IBM Z</div>
             <div class="ph-card-use"><%= lang === 'id' ? 'Sistem inti transaksi global' : 'The world\'s transaction backbone' %></div>
           </a>
@@ -422,7 +353,29 @@
   </div>
 </section>
 
-<!-- RECENT BLOG -->
+<!-- ════════════════════════════════════════════════════════════════
+     TESTIMONIAL — editorial pull quote
+     ════════════════════════════════════════════════════════════════ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <div class="testimonial-mark" aria-hidden="true">"</div>
+      <blockquote class="testimonial-quote">
+        <%= lang === 'id'
+          ? 'Tim IDE Asia tidak hanya merekomendasikan arsitektur — mereka membawanya ke produksi, lalu mengoperasikannya 24/7. Itu pembeda yang sulit ditemukan di market ini.'
+          : 'The IDE Asia team didn\'t just recommend an architecture — they took it to production, then operated it 24/7. That\'s a rare combination in this market.' %>
+      </blockquote>
+      <div class="testimonial-attr">
+        <div class="testimonial-author"><%= lang === 'id' ? 'CTO, salah satu bank top-10 di Indonesia' : 'CTO, top-10 Indonesian bank' %></div>
+        <div class="testimonial-context"><%= lang === 'id' ? 'Engagement: cloud migration + SOC modernization, 18 bulan' : 'Engagement: cloud migration + SOC modernization, 18 months' %></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     RECENT BLOG
+     ════════════════════════════════════════════════════════════════ -->
 <% if (recentBlogs && recentBlogs.length > 0) { %>
 <section class="blog-preview-section">
   <div class="container">
@@ -431,7 +384,7 @@
         <div class="section-eyebrow"><span class="section-eyebrow-dot"></span>Insights</div>
         <h2 class="section-title"><% if(lang==='id'){ %>Artikel<br><span class="section-title-muted">Terbaru</span><% } else { %>Latest<br><span class="section-title-muted">Articles</span><% } %></h2>
       </div>
-      <a href="/blog" class="btn btn-outline"><%= lang === 'id' ? 'Semua Artikel' : 'All Articles' %></a>
+      <a href="/blog" class="btn btn-outline"><%= lang === 'id' ? 'Semua Artikel' : 'All Articles' %> →</a>
     </div>
     <div class="blog-preview-grid">
       <% recentBlogs.forEach((blog, i) => { %>
@@ -450,17 +403,18 @@
 </section>
 <% } %>
 
-<!-- CTA -->
+<!-- ════════════════════════════════════════════════════════════════
+     CTA
+     ════════════════════════════════════════════════════════════════ -->
 <section class="cta-section">
   <div class="container">
     <div class="cta-inner reveal">
-      <h2><% if(lang==='id'){ %>Bergabung dengan 20+ Enterprise di Asia yang Mempercayai IDEA<% } else { %>Join 20+ Enterprises Across Asia That Trust IDEA<% } %></h2>
+      <h2><% if(lang==='id'){ %>Bergabung dengan 100+ Enterprise di Asia<br>yang Mempercayai IDE Asia<% } else { %>Join 100+ Enterprises Across Asia<br>That Trust IDE Asia<% } %></h2>
       <p><% if(lang==='id'){ %>Dari BRI hingga Telkomsel hingga Pertamina — kami telah membuktikannya. Mari bicara tentang apa yang bisa kami bangun untuk Anda.<% } else { %>From BRI to Telkomsel to Pertamina — we've delivered. Let's talk about what we can build for you.<% } %></p>
       <div class="cta-btns">
-        <a href="/contact" class="btn btn-primary btn-large"><%= lang==='id' ? 'Jadwalkan Sesi Strategi 30 Menit' : 'Book a 30-Min Strategy Call' %></a>
+        <a href="/contact" class="btn btn-primary btn-large"><%= lang==='id' ? 'Jadwalkan Sesi Strategi' : 'Book a Strategy Call' %></a>
         <a href="/services" class="btn btn-outline btn-large"><%= lang==='id' ? 'Lihat Layanan' : 'View Services' %></a>
       </div>
     </div>
   </div>
 </section>
-
